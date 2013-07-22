@@ -15,7 +15,7 @@ namespace SassyStudio.Scss.Commands
     {
         readonly ITextBuffer Buffer;
         public CommentSelection(IVsTextView adapter, IWpfTextView textView)
-            : base(adapter, textView, typeof(VSCommandIdConstants).GUID, (uint)VSCommandIdConstants.COMMENT_BLOCK, (uint)VSCommandIdConstants.UNCOMMENT_BLOCK)
+            : base(adapter, textView, typeof(VSCommandIdConstants).GUID, (uint)VSCommandIdConstants.COMMENTBLOCK, (uint)VSCommandIdConstants.COMMENT_BLOCK, (uint)VSCommandIdConstants.UNCOMMENT_BLOCK, (uint)VSCommandIdConstants.UNCOMMENTBLOCK)
         {
             Buffer = textView.TextBuffer;
         }
@@ -29,7 +29,6 @@ namespace SassyStudio.Scss.Commands
         {
             if (TextView.Selection.IsEmpty) return false;
 
-            bool comment = commandId == ((uint)VSCommandIdConstants.COMMENT_BLOCK);
 
             var snapshot = Buffer.CurrentSnapshot;
             int start = TextView.Selection.Start.Position.Position;
@@ -41,13 +40,25 @@ namespace SassyStudio.Scss.Commands
                 {
                     var line = snapshot.GetLineFromPosition(start);
                     var text = line.GetText();
-                    if (comment && !string.IsNullOrEmpty(text))
+                    switch (commandId)
                     {
-                        edit.Insert(line.Start.Position, "//");
-                    }
-                    else if (text.StartsWith("//"))
-                    {
-                        edit.Delete(line.Start.Position, 2);
+                        case (uint)VSCommandIdConstants.COMMENTBLOCK:
+                        case (uint)VSCommandIdConstants.COMMENT_BLOCK:
+                        {
+                            if (!string.IsNullOrEmpty(text))
+                                edit.Insert(line.Start.Position, "//");
+
+                            break;
+                        }
+                        case (uint)VSCommandIdConstants.UNCOMMENTBLOCK:
+                        case (uint)VSCommandIdConstants.UNCOMMENT_BLOCK:
+                        {
+                            if (text.StartsWith("//"))
+                                edit.Delete(line.Start.Position, 2);
+
+                            break;
+                        }
+                        default: break;
                     }
 
                     start = line.EndIncludingLineBreak.Position;
