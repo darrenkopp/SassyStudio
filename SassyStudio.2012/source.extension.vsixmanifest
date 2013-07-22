@@ -3,7 +3,7 @@
   <Metadata>
     <Identity Id="SassyStudio..141b7a26-b79d-4ca0-9102-77e7cc7e0ec8" Version="0.2" Language="en-US" Publisher="Darren Kopp" />
     <DisplayName>SassyStudio</DisplayName>
-    <Description xml:space="preserve">Provides some support for sass files in visual studioProvides </Description>
+    <Description xml:space="preserve">Provides some support for sass files in visual studio</Description>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
