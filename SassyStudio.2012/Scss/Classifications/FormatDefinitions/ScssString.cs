@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.StringValue)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssString : ClassificationFormatDefinition
+    sealed class ScssString : ColorResolvingFormatDefinition
     {
-        public ScssString()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssString(IEditorFormatMapService service)
+            : base(service, "CSS String Value")
         {
             DisplayName = "SCSS String";
             ForegroundCustomizable = true;

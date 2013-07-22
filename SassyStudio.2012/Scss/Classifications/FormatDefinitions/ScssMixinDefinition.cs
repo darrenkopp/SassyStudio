@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.MixinDefinition)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssMixinDefinition : ClassificationFormatDefinition
+    sealed class ScssMixinDefinition : ColorResolvingFormatDefinition
     {
-        public ScssMixinDefinition()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssMixinDefinition(IEditorFormatMapService service)
+            : base(service, "User Types(Interfaces)", "{E0187991-B458-4F7E-8CA9-42C9A573B56C}")
         {
             DisplayName = "SCSS Mixin Definition";
             ForegroundCustomizable = true;

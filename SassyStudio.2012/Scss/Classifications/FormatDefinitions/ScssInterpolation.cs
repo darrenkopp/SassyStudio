@@ -14,12 +14,16 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.Interpolation)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssInterpolation : ClassificationFormatDefinition
+    sealed class ScssInterpolation : ColorResolvingFormatDefinition
     {
-        public ScssInterpolation()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssInterpolation(IEditorFormatMapService service)
+            : base(service, "HTML Server-Side Script", foreground:true, background: true)
         {
             DisplayName = "SCSS Interpolation";
             ForegroundCustomizable = true;
+            BackgroundCustomizable = true;
             IsBold = true;
         }
     }

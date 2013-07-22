@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.Keyword)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssKeyword : ClassificationFormatDefinition
+    sealed class ScssKeyword : ColorResolvingFormatDefinition
     {
-        public ScssKeyword()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssKeyword(IEditorFormatMapService service)
+            : base(service, "Keyword")
         {
             DisplayName = "SCSS Keyword";
             ForegroundCustomizable = true;

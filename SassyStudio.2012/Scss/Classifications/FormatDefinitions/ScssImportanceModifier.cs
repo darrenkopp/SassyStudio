@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.ImportanceModifier)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssImportanceModifier : ClassificationFormatDefinition
+    sealed class ScssImportanceModifier : ColorResolvingFormatDefinition
     {
-        public ScssImportanceModifier()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssImportanceModifier(IEditorFormatMapService service)
+            : base(service, "CSS Keyword")
         {
             DisplayName = "SCSS Importance Modifier";
             ForegroundCustomizable = true;

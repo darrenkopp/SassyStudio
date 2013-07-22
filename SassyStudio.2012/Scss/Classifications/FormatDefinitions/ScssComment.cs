@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.Comment)]
     [Order(After = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssComment : ClassificationFormatDefinition
+    sealed class ScssComment : ColorResolvingFormatDefinition
     {
-        public ScssComment()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssComment(IEditorFormatMapService service)
+            : base(service, "Comment")
         {
             DisplayName = "SCSS Comment";
             ForegroundCustomizable = true;

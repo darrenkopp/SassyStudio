@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.FunctionReference)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssFunctionReference : ClassificationFormatDefinition
+    sealed class ScssFunctionReference : ColorResolvingFormatDefinition
     {
-        public ScssFunctionReference()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssFunctionReference(IEditorFormatMapService service)
+            : base(service, "User Types(Delegates)", "E0187991-B458-4F7E-8CA9-42C9A573B56C")
         {
             DisplayName = "SCSS Function Reference";
             ForegroundCustomizable = true;

@@ -1,4 +1,4 @@
-SassyStudio
+# SassyStudio
 =================
 
 SassyStudio provides a small amount of integration with Visual Studio to the experience using
@@ -14,3 +14,13 @@ In the near future I am planning to add support for the following (assuming VS/W
 - File generation so that when you save or build it will compile a css file
 - Error / warning integration
 - Multiline comments
+
+
+### Release Notes
+
+**v0.1**
+- Basic Syntax Highlighting Support
+- Basic Outlining Support 
+
+**v0.2** 
+- Match Existing Color Settings

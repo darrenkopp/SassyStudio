@@ -14,9 +14,12 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.VariableReference)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssVariableReference : ClassificationFormatDefinition
+    sealed class ScssVariableReference : ColorResolvingFormatDefinition
     {
-        public ScssVariableReference()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [ImportingConstructor]
+        public ScssVariableReference(IEditorFormatMapService service)
+            : base(service, "CSS Property Value")
         {
             DisplayName = "SCSS Variable Reference";
             ForegroundCustomizable = true;
