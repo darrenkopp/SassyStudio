@@ -1,5 +1,4 @@
 # SassyStudio
-=================
 
 SassyStudio provides a small amount of integration with Visual Studio to the experience using
 SASS / SCSS a bit friendlier. Here's what we provide so far:
@@ -24,3 +23,6 @@ In the near future I am planning to add support for the following (assuming VS/W
 
 **v0.2** 
 - Match Existing Color Settings
+
+**v0.3**
+- Support for Comment / Uncomment selection

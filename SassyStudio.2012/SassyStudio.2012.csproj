@@ -50,6 +50,8 @@
     <Compile Include="Scss\Classifications\Evaluators\RegexListClassificationMatchEvaluator.cs" />
     <Compile Include="Scss\Classifications\ScssClassifier.cs" />
     <Compile Include="Scss\Classifications\ScssClassifierProvider.cs" />
+    <Compile Include="Scss\Commands\CommandTargetBase.cs" />
+    <Compile Include="Scss\Commands\CommentSelection.cs" />
     <Compile Include="Scss\ScssContentTypeDefinition.cs" />
     <Compile Include="Scss\Classifications\ScssClassificationTypes.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssComment.cs" />
@@ -65,6 +67,7 @@
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssUserFunctionReference.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssVariableDefinition.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssVariableReference.cs" />
+    <Compile Include="Scss\ScssViewCreationListener.cs" />
     <Compile Include="Scss\Taggers\ScssOutliningTagger.cs" />
     <Compile Include="Scss\Taggers\ScssOutliningTaggingProvider.cs" />
     <Compile Include="Scss\ScssWellKnownFunctionNames.cs" />
@@ -78,11 +81,18 @@
   <ItemGroup />
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Editor, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Language.StandardClassification, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.Shell, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.Data, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.UI, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
