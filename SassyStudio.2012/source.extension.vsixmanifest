@@ -4,9 +4,14 @@
     <Identity Id="SassyStudio..141b7a26-b79d-4ca0-9102-77e7cc7e0ec8" Version="0.4" Language="en-US" Publisher="Darren Kopp" />
     <DisplayName>SassyStudio</DisplayName>
     <Description xml:space="preserve">Provides some support for sass files in visual studio</Description>
+    <MoreInfo>http://github.com/darrenkopp/SassyStudio</MoreInfo>
+    <License>Licenses.txt</License>
+    <Tags>sass scss</Tags>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[11.0,12.0)" />
+    <InstallationTarget Version="[11.0,12.0)" Id="Microsoft.VisualStudio.Premium" />
+    <InstallationTarget Version="[11.0,12.0)" Id="Microsoft.VisualStudio.Ultimate" />
   </Installation>
   <Dependencies>
     <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
@@ -14,5 +19,6 @@
   <Assets>
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
     <Asset Type="Microsoft.VisualStudio.Assembly" d:Source="File" Path="NSass.Wrapper.x86.dll" AssemblyName="NSass.Wrapper.proxy, Version=0.0.3.0, Culture=neutral, PublicKeyToken=null" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
   </Assets>
 </PackageManifest>
