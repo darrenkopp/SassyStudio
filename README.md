@@ -18,11 +18,15 @@ In the near future I am planning to add support for the following (assuming VS/W
 ### Release Notes
 
 **v0.1**
+
 - Basic Syntax Highlighting Support
 - Basic Outlining Support 
 
 **v0.2** 
+
 - Match Existing Color Settings
 
 **v0.3**
-- Support for Comment / Uncomment selection
+
+- Support for Comment / Uncomment selection (<kbd>ctrl</kbd> + <kbd>K</kbd>, <kbd>C</kbd> / <kbd>U</kbd>)
+- Warnings for deprecated functionality
