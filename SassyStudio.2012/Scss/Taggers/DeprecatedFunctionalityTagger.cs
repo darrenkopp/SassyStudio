@@ -19,7 +19,7 @@ namespace SassyStudio.Scss.Taggers
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             if (buffer != null)
-                return buffer.Properties.GetOrCreateSingletonProperty<DeprecatedFunctionalityTagger>(() => new DeprecatedFunctionalityTagger(buffer)) as ITagger<T>;
+                return buffer.Properties.GetOrCreateSingletonProperty<DeprecatedFunctionalityTagger>(() => new DeprecatedFunctionalityTagger()) as ITagger<T>;
 
             return null;
         }
@@ -27,11 +27,9 @@ namespace SassyStudio.Scss.Taggers
 
     class DeprecatedFunctionalityTagger : ITagger<IErrorTag>
     {
-        readonly ITextBuffer Buffer;
         readonly Tuple<Regex, string>[] WarningProviders;
-        public DeprecatedFunctionalityTagger(ITextBuffer buffer)
+        public DeprecatedFunctionalityTagger()
         {
-            Buffer = buffer;
             WarningProviders = new[] {
                 CreateProvider(@"\![\w\d-_]+(?<!(important|default))", "Variables in the form !name are no longer supported. Use the $name syntax instead."),
                 CreateProvider(@"(?:(?:\!|\$)[\w\d-_]+)(?=\s+?=)", "Variable assignment using '=' is no longer supported. Use the $name: value syntax instead.")
@@ -71,7 +69,7 @@ namespace SassyStudio.Scss.Taggers
             }
         }
 
-        private Tuple<Regex,string> CreateProvider(string pattern, string message)
+        private static Tuple<Regex,string> CreateProvider(string pattern, string message)
         {
             return Tuple.Create(new Regex(pattern, RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase), message);
         }

@@ -41,6 +41,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Sass\SassContentTypeDefinition.cs" />
     <Compile Include="Scss\Classifications\ClassificationMatchResult.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ColorResolvingFormatDefinition.cs" />

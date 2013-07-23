@@ -53,7 +53,7 @@ namespace SassyStudio.Scss.Commands
                         case (uint)VSCommandIdConstants.UNCOMMENTBLOCK:
                         case (uint)VSCommandIdConstants.UNCOMMENT_BLOCK:
                         {
-                            if (text.StartsWith("//"))
+                            if (text.StartsWith("//", StringComparison.OrdinalIgnoreCase))
                                 edit.Delete(line.Start.Position, 2);
 
                             break;
