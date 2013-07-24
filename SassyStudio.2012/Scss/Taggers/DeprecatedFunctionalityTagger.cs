@@ -31,8 +31,8 @@ namespace SassyStudio.Scss.Taggers
         public DeprecatedFunctionalityTagger()
         {
             WarningProviders = new[] {
-                CreateProvider(@"\![\w\d-_]+(?<!\!(important|default))", "Variables in the form !name are no longer supported. Use the $name syntax instead."),
-                CreateProvider(@"(?:(?:\!|\$)[\w\d-_]+)(?=\s+?=)", "Variable assignment using '=' is no longer supported. Use the $name: value syntax instead.")
+                CreateProvider(@"\!(?!default|important)[a-z0-9-_]+", "Variables in the form !name are no longer supported. Use the $name syntax instead."),
+                CreateProvider(@"(?:\!|\$)[a-z0-9-_]+(?=\s*=[^=]+)", "Variable assignment using '=' is no longer supported. Use the $name: value syntax instead.")
             };
         }
 
