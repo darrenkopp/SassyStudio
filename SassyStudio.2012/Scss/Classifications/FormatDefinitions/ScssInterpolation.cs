@@ -19,7 +19,7 @@ namespace SassyStudio.Scss.Classifications
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ImportingConstructor]
         public ScssInterpolation(IEditorFormatMapService service)
-            : base(service, "HTML Server-Side Script", foreground:true, background: true)
+            : base(service, "Preprocessor Keyword", category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}", foreground: true, background: true)
         {
             DisplayName = "SCSS Interpolation";
             ForegroundCustomizable = true;
