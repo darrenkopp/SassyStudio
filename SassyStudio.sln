@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE.md = LICENSE.md
 		Licenses.txt = Licenses.txt
 		README.md = README.md
+		ReleaseNotes.md = ReleaseNotes.md
 		ThirdPartyLicenses.md = ThirdPartyLicenses.md
 	EndProjectSection
 EndProject

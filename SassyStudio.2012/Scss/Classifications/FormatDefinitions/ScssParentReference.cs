@@ -20,7 +20,7 @@ namespace SassyStudio.Scss.Classifications
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [ImportingConstructor]
         public ScssParentReference(IEditorFormatMapService service)
-            : base(service, "Operator")
+            : base(service, "Keyword", category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}", foreground: true)
         {
             DisplayName = "SCSS Parent Reference";
             ForegroundCustomizable = true;
