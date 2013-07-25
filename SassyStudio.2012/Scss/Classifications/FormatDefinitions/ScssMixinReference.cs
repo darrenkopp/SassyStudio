@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Language.StandardClassification;
 
 namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.MixinReference)]
+    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.SymbolReference)]
     [Name(ScssClassificationTypes.MixinReference)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]

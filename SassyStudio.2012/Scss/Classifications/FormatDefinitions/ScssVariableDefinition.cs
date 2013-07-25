@@ -13,6 +13,7 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.VariableDefinition)]
+    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.SymbolDefinition)]
     [Name(ScssClassificationTypes.VariableDefinition)]
     [Order(After = Priority.Default)]
     [UserVisible(true)]
