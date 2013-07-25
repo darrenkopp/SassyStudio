@@ -50,11 +50,8 @@ namespace SassyStudio.Scss.Classifications
             var strings = registry.GetClassificationType(ScssClassificationTypes.StringValue);
             yield return new RegexClassificationMatchEvaluator(strings, @"([""'])(?:(?=(\\?))\2.)*?\1");
 
-            // /* style */ comments
+            // comments
             var comments = registry.GetClassificationType(ScssClassificationTypes.Comment);
-            yield return new RegexClassificationMatchEvaluator(comments, @"/\*.*?\*/", RegexOptions.Multiline);
-
-            // // style comments
             yield return new RegexClassificationMatchEvaluator(comments, @"//.*");
 
             // parent references

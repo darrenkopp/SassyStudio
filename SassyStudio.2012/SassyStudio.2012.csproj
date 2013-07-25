@@ -83,6 +83,8 @@
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssVariableReference.cs" />
     <Compile Include="Scss\ScssViewCreationListener.cs" />
     <Compile Include="Scss\Taggers\DeprecatedFunctionalityTagger.cs" />
+    <Compile Include="Scss\Taggers\MultilineTagger.cs" />
+    <Compile Include="Scss\Taggers\ScssTagger.cs" />
     <Compile Include="Scss\Taggers\ScssOutliningTagger.cs" />
     <Compile Include="Scss\Taggers\ScssOutliningTaggingProvider.cs" />
     <Compile Include="Scss\ScssWellKnownFunctionNames.cs" />
