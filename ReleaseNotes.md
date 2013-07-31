@@ -24,6 +24,12 @@
 - Add options controlling css generation and project integration
 - Better color matching
 
+## 0.5
+
+- Support for Visual Studio 2013
+- Fix overzealous warnings on ==
+- Support multiline comment formatting somewhat
+
 By default, CSS files will be generated on save, added to the project nested under the .scss file if
 the css file was not already part of the project, and it will be configured as Content. You can
 disable each aspect individually, though some aspects don't matter if others are disabled.
