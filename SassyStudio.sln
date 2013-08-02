@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ThirdPartyLicenses.md = ThirdPartyLicenses.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Compiler", "SassyStudio.Compiler\SassyStudio.Compiler.csproj", "{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{8185CB00-8C58-41F1-BF06-7E87F470AD4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8185CB00-8C58-41F1-BF06-7E87F470AD4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8185CB00-8C58-41F1-BF06-7E87F470AD4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
