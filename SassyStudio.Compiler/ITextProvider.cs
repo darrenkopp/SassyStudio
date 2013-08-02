@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SassyStudio.Compiler
+{
+    public interface ITextProvider
+    {
+        int Length { get; }
+        char this[int index] { get; }
+    }
+}
