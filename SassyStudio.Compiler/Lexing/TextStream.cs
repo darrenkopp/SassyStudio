@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Text;
 
 namespace SassyStudio.Compiler.Lexing
 {
-    public class TextStream : ITextStream
+    class TextStream : ITextStream
     {
         private readonly NormalizingTextStream Inner;
         public TextStream(ITextProvider text)
