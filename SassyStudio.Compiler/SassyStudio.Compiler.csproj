@@ -66,6 +66,8 @@
     <Compile Include="Parsing\HtmlComment.cs" />
     <Compile Include="Parsing\IItemFactory.cs" />
     <Compile Include="Parsing\ImportanceModifier.cs" />
+    <Compile Include="Parsing\ImportDirective.cs" />
+    <Compile Include="Parsing\ImportFile.cs" />
     <Compile Include="Parsing\IParser.cs" />
     <Compile Include="Parsing\IParserFactory.cs" />
     <Compile Include="Parsing\ISassItemFactory.cs" />
@@ -77,6 +79,7 @@
     <Compile Include="Parsing\ParseItem.cs" />
     <Compile Include="Parsing\ParseItemList.cs" />
     <Compile Include="Parsing\Parser.cs" />
+    <Compile Include="Parsing\StringInterpolation.cs" />
     <Compile Include="Parsing\SystemFunctionReference.cs" />
     <Compile Include="Parsing\UserFunctionDefinition.cs" />
     <Compile Include="Parsing\UserFunctionReference.cs" />

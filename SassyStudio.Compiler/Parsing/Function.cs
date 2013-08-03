@@ -9,9 +9,11 @@ namespace SassyStudio.Compiler.Parsing
     public class Function : ComplexItem
     {
         static readonly ICollection<string> WellKnownFunctions = new HashSet<string>(BuiltInFunctionNames);
+
+        readonly SassClassifierType FunctionClassifierType;
         public Function(SassClassifierType classifierType = SassClassifierType.SystemFunction)
         {
-            ClassifierType = classifierType;
+            FunctionClassifierType = classifierType;
             Arguments = new List<FunctionArgument>();
         }
 
@@ -23,7 +25,7 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (IsFunctionCall(stream))
             {
-                Name = Children.AddCurrentAndAdvance(stream, ClassifierType);
+                Name = Children.AddCurrentAndAdvance(stream, FunctionClassifierType);
 
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                     OpenBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
@@ -68,7 +70,10 @@ namespace SassyStudio.Compiler.Parsing
         public static bool IsWellKnownFunction(ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.Function)
-                return WellKnownFunctions.Contains(text.GetText(stream.Current.Start, stream.Current.Length));
+            {
+                var functionName = text.GetText(stream.Current.Start, stream.Current.Length);
+                return WellKnownFunctions.Contains(functionName);
+            }
 
             return false;
         }
@@ -106,10 +111,10 @@ namespace SassyStudio.Compiler.Parsing
                 yield return "transparentize";
 
                 // other color functions
-                yield return @"adjust-color";
-                yield return @"scale-color";
-                yield return @"change-color";
-                yield return @"ie-hex-str";
+                yield return "adjust-color";
+                yield return "scale-color";
+                yield return "change-color";
+                yield return "ie-hex-str";
 
                 // string functions
                 yield return "unquote";
@@ -133,7 +138,7 @@ namespace SassyStudio.Compiler.Parsing
                 yield return "index";
 
                 // introspection functions
-                yield return @"type-of";
+                yield return "type-of";
                 yield return "unit";
                 yield return "unitless";
                 yield return "comparable";

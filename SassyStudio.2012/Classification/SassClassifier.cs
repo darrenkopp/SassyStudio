@@ -40,7 +40,9 @@ namespace SassyStudio.Classification
                     var classificationType = ClassifierContextCache.Get(item.ClassifierType).GetClassification(Registry);
                     if (classificationType != null)
                     {
-                        //Logger.Log(tree.SourceText.GetText(s.Start, s.Length));
+                        if (classificationType.Classification.Contains("string"))
+                            Logger.Log(tree.SourceText.GetText(s));
+
                         results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), classificationType));
                     }
                 }
@@ -63,13 +65,13 @@ namespace SassyStudio.Classification
         {
             foreach (var item in items.Where(x => x.Start <= end && x.End >= start))
             {
+                yield return item;                
+
                 // depth first children
                 var complex = item as ComplexItem;
                 if (complex != null)
                     foreach (var child in Traverse(complex.Children, start, end))
                         yield return child;
-
-                yield return item;
             }
         }
     }
