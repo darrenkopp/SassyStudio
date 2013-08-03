@@ -2,18 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Lexing
 {
     public class Lexer : ILexer
     {
-        TokenList Tokenize(ITextStream stream)
+        public TimeSpan LastTokenizationDuration { get; protected set; }
+        TokenList Tokenize(ITextStream stream, IParsingExecutionContext context)
         {
+            DateTime start = DateTime.Now;
             var tokens = new TokenList();
             tokens.Add(Token.CreateEmpty(TokenType.StartOfFile, stream.Position));
 
-            while (true)
+            while (!context.IsCancellationRequested)
             {
                 if (stream.Position >= stream.Length)
                     break;
@@ -21,19 +24,24 @@ namespace SassyStudio.Compiler.Lexing
                 if (ConsumeComment(stream, tokens))
                     continue;
 
+                if (ConsumeWhitespace(stream))
+                    continue;
+
                 Token token;
                 if (TryCreateToken(stream, out token))
                     tokens.Add(token);
             }
 
-
+            // close stream with end of file token
             tokens.Add(Token.CreateEmpty(TokenType.EndOfFile, stream.Length));
+
+            LastTokenizationDuration = DateTime.Now - start;
             return tokens;
         }
 
-        public Task<TokenList> TokenizeAsync(ITextStream stream)
+        public Task<TokenList> TokenizeAsync(ITextStream stream, IParsingExecutionContext context)
         {
-            return Task.Run(() => Tokenize(stream));
+            return Task.Run(() => Tokenize(stream, context));
         }
 
         private bool ConsumeComment(ITextStream stream, TokenList tokens)
@@ -104,14 +112,14 @@ namespace SassyStudio.Compiler.Lexing
             switch (stream.Current)
             {
                 // whitespace characters
-                case ' ':
-                case '\r':
-                case '\f':
-                case '\n':
-                case '\t':
-                    type = TokenType.Whitespace;
-                    ConsumeWhitespace(stream);
-                    break;
+                //case ' ':
+                //case '\r':
+                //case '\f':
+                //case '\n':
+                //case '\t':
+                //    type = TokenType.Whitespace;
+                //    ConsumeWhitespace(stream);
+                //    break;
                 // quoted strings
                 case '\'':
                 case '"':
@@ -520,10 +528,22 @@ namespace SassyStudio.Compiler.Lexing
             return false;
         }
 
-        private void ConsumeWhitespace(ITextStream stream)
+        private bool ConsumeWhitespace(ITextStream stream)
         {
-            while (IsWhitespace(stream.Current))
-                stream.Advance();
+            switch (stream.Current)
+            {
+                case ' ':
+                case '\t':
+                case '\f':
+                case '\n':
+                case '\r':
+                    while (IsWhitespace(stream.Current))
+                        stream.Advance();
+
+                    return true;
+            }
+
+            return false;
         }
 
         static bool IsWhitespace(char c)

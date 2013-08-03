@@ -10,8 +10,8 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace SassyStudio.Scss.Classifications
 {
-    [Export(typeof(IClassifierProvider))]
-    [ContentType(ScssContentTypeDefinition.ScssContentType)]
+    //[Export(typeof(IClassifierProvider))]
+    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
     class ScssClassifierProvider : IClassifierProvider
     {
         [Import, System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
