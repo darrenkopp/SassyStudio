@@ -10,6 +10,11 @@ namespace SassyStudio.Compiler.Lexing
     public class Lexer : ILexer
     {
         public TimeSpan LastTokenizationDuration { get; protected set; }
+        public Task<TokenList> TokenizeAsync(ITextStream stream, IParsingExecutionContext context)
+        {
+            return Task.Run(() => Tokenize(stream, context));
+        }
+
         TokenList Tokenize(ITextStream stream, IParsingExecutionContext context)
         {
             DateTime start = DateTime.Now;
@@ -27,6 +32,9 @@ namespace SassyStudio.Compiler.Lexing
                 if (ConsumeWhitespace(stream))
                     continue;
 
+                if (ConsumeInterpolation(stream, tokens))
+                    continue;
+
                 Token token;
                 if (TryCreateToken(stream, out token))
                     tokens.Add(token);
@@ -37,72 +45,6 @@ namespace SassyStudio.Compiler.Lexing
 
             LastTokenizationDuration = DateTime.Now - start;
             return tokens;
-        }
-
-        public Task<TokenList> TokenizeAsync(ITextStream stream, IParsingExecutionContext context)
-        {
-            return Task.Run(() => Tokenize(stream, context));
-        }
-
-        private bool ConsumeComment(ITextStream stream, TokenList tokens)
-        {
-            if (stream.Current == '/')
-            {
-                int start = stream.Position;
-                var next = stream.Peek(1);
-                if (next == '/')
-                {
-                    stream.Advance(2);
-                    tokens.Add(Token.Create(TokenType.CppComment, start, 2));
-
-                    if (!IsNewLine(stream.Current))
-                        ConsumeCommentText(stream, tokens, s => IsNewLine(s.Peek(1)));
-
-                    return true;
-                }
-                else if (next == '*')
-                {
-                    stream.Advance(2);
-                    tokens.Add(Token.Create(TokenType.OpenCssComment, start, 2));
-
-                    start = stream.Position;
-                    ConsumeCommentText(stream, tokens, s => s.Peek(1) == '*' && s.Peek(2) == '/');
-
-                    if (stream.Current == '*' && stream.Peek(1) == '/')
-                    {
-                        start = stream.Position;
-                        stream.Advance(2);
-                        tokens.Add(Token.Create(TokenType.CloseCssComment, start, 2));
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
-
-            return false;
-        }
-
-        private bool ConsumeCommentText(ITextStream stream, TokenList tokens, Func<ITextStream, bool> predicate)
-        {
-            int start = stream.Position;
-            while (stream.Position < stream.Length)
-            {
-                if (predicate(stream))
-                    break;
-
-                stream.Advance();
-            }
-
-            if (start != stream.Position)
-            {
-                stream.Advance();
-                tokens.Add(Token.Create(TokenType.CommentText, start, stream.Position - start));
-                return true;
-            }
-
-            return false;
         }
 
         private bool TryCreateToken(ITextStream stream, out Token token)
@@ -119,7 +61,8 @@ namespace SassyStudio.Compiler.Lexing
                     ConsumeString(stream, out type);
                     break;
                 case '#':
-                    type = ConsumeHash(stream);
+                    type = TokenType.Hash;
+                    stream.Advance();
                     break;
                 case '$':
                     type = ConsumeDollar(stream);
@@ -199,6 +142,8 @@ namespace SassyStudio.Compiler.Lexing
                 case 'u':
                 case 'U':
                     type = ConsumeUnicode(stream);
+                    if (type == TokenType.Unknown && ConsumeIdentifier(stream))
+                        type = DetermineIdentifierType(stream);
                     break;
                 case '|':
                     type = ConsumePipe(stream);
@@ -210,22 +155,115 @@ namespace SassyStudio.Compiler.Lexing
                     type = TokenType.Bang;
                     stream.Advance();
                     break;
-                default:
-                    // just add as unknown token
-                    type = TokenType.Unknown;
+                case '&':
+                    type = TokenType.ParentReference;
                     stream.Advance();
                     break;
-            }
-
-            if (type == TokenType.Unknown && ConsumeIdentifier(stream))
-            {
-                type = TokenType.Identifier;
-                if (stream.Peek(1) == '(')
-                    type = TokenType.Function;
+                default:
+                {
+                    if (ConsumeIdentifier(stream))
+                    {
+                        type = DetermineIdentifierType(stream);
+                    }
+                    else
+                    {
+                        // just add as unknown token
+                        type = TokenType.Unknown;
+                        stream.Advance();
+                    }
+                    break;
+                }
             }
 
             token = Token.Create(type, start, stream.Position - start);
             return true;
+        }
+
+        private bool ConsumeComment(ITextStream stream, TokenList tokens)
+        {
+            if (stream.Current == '/')
+            {
+                int start = stream.Position;
+                var next = stream.Peek(1);
+                if (next == '/')
+                {
+                    stream.Advance(2);
+                    tokens.Add(Token.Create(TokenType.CppComment, start, 2));
+
+                    if (!IsNewLine(stream.Current))
+                        ConsumeCommentText(stream, tokens, s => IsNewLine(s.Peek(1)));
+
+                    return true;
+                }
+                else if (next == '*')
+                {
+                    stream.Advance(2);
+                    tokens.Add(Token.Create(TokenType.OpenCssComment, start, 2));
+
+                    start = stream.Position;
+                    ConsumeCommentText(stream, tokens, s => s.Peek(1) == '*' && s.Peek(2) == '/');
+
+                    if (stream.Current == '*' && stream.Peek(1) == '/')
+                    {
+                        start = stream.Position;
+                        stream.Advance(2);
+                        tokens.Add(Token.Create(TokenType.CloseCssComment, start, 2));
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool ConsumeCommentText(ITextStream stream, TokenList tokens, Func<ITextStream, bool> predicate)
+        {
+            int start = stream.Position;
+            while (stream.Position < stream.Length)
+            {
+                if (predicate(stream))
+                    break;
+
+                stream.Advance();
+            }
+
+            if (start != stream.Position)
+            {
+                stream.Advance();
+                tokens.Add(Token.Create(TokenType.CommentText, start, stream.Position - start));
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ConsumeInterpolation(ITextStream stream, TokenList tokens)
+        {
+            if (stream.Current == '#' && stream.Peek(1) == '{')
+            {
+                tokens.Add(Token.Create(TokenType.OpenInterpolation, stream.Position, 2));
+                stream.Advance(2);
+
+                while (stream.Current != '}' && !IsNewLine(stream.Current))
+                {
+                    Token token;
+                    if (TryCreateToken(stream, out token))
+                        tokens.Add(token);
+                }
+
+                if (stream.Current == '}')
+                {
+                    tokens.Add(Token.Create(TokenType.CloseInterpolation, stream.Position, 1));
+                    stream.Advance();
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private TokenType ConsumeUnicode(ITextStream stream)
@@ -403,6 +441,9 @@ namespace SassyStudio.Compiler.Lexing
 
         private bool IsNonAscii(char c)
         {
+            if (c == '}' || c == '{')
+                return false;
+
             return (int)c >= 80;
         }
 
@@ -475,29 +516,6 @@ namespace SassyStudio.Compiler.Lexing
             return type;
         }
 
-        private TokenType ConsumeHash(ITextStream stream)
-        {
-            var type = TokenType.Hash;
-            stream.Advance();
-            if (stream.Current == '{')
-            {
-                type = TokenType.StringInterpolation;
-
-                // consume until close paren
-                while (stream.Advance())
-                {
-                    if (stream.Current == '}')
-                    {
-                        // consume } as well
-                        stream.Advance();
-                        break;
-                    }
-                }
-            }
-
-            return type;
-        }
-
         private bool ConsumeString(ITextStream stream, out TokenType type)
         {
             type = TokenType.Unknown;
@@ -505,58 +523,66 @@ namespace SassyStudio.Compiler.Lexing
             {
                 case '\'':
                 case '"':
+                {
+                    var open = stream.Current;
+                    while (stream.Advance())
                     {
-                        var open = stream.Current;
-                        while (stream.Advance())
+                        // check for valid escapes
+                        if (stream.Current == '\\')
                         {
-                            // check for valid escapes
-                            if (stream.Current == '\\')
-                            {
-                                stream.Advance();
-                                if (IsNewLine(stream.Current))
-                                {
-                                    stream.Advance();
-                                    continue;
-                                }
-
-                                // if escaping open quote, consume and advance
-                                if (stream.Current == open)
-                                {
-                                    stream.Advance();
-                                    continue;
-                                }
-
-                                if (IsValidEscape('\\', stream.Current))
-                                {
-                                    stream.Advance();
-                                    continue;
-                                }
-                            }
-
-                            // unescaped new line is bad news bears
+                            stream.Advance();
                             if (IsNewLine(stream.Current))
                             {
-                                // go back to right before the new line
-                                stream.Reverse(1);
-                                type = TokenType.BadString;
-                                return true;
+                                stream.Advance();
+                                continue;
                             }
 
-                            // happy days, we have properly quoted string
+                            // if escaping open quote, consume and advance
                             if (stream.Current == open)
-                                break;
+                            {
+                                stream.Advance();
+                                continue;
+                            }
+
+                            if (IsValidEscape('\\', stream.Current))
+                            {
+                                stream.Advance();
+                                continue;
+                            }
                         }
 
-                        // consume closing quote
-                        if (stream.Current == open)
-                            stream.Advance();
+                        // unescaped new line is bad news bears
+                        if (IsNewLine(stream.Current))
+                        {
+                            // go back to right before the new line
+                            //stream.Reverse(1);
+                            type = TokenType.BadString;
+                            return true;
+                        }
 
-                        type = TokenType.String;
-                        break;
+                        // happy days, we have properly quoted string
+                        if (stream.Current == open)
+                            break;
                     }
+
+                    // consume closing quote
+                    if (stream.Current == open)
+                        stream.Advance();
+
+                    type = TokenType.String;
+                    break;
+                }
             }
 
             return type != TokenType.Unknown;
+        }
+
+        static TokenType DetermineIdentifierType(ITextStream stream)
+        {
+            if (stream.Current == '(')
+                return TokenType.Function;
+
+            return TokenType.Identifier;
         }
 
         private bool IsValidEscape(char first, char second)

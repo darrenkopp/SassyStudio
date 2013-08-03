@@ -45,9 +45,6 @@ namespace SassyStudio.Compiler.Parsing
                 Children.Add(item);
             }
 
-            if (Mode == ExpresionMode.Argument && stream.Current.Type == TokenType.CloseFunctionBrace)
-                Children.AddCurrentAndAdvance(stream);
-
             if (ImportanceModifier.IsImportanceModifier(text, stream))
             {
                 Modifier = new ImportanceModifier();
@@ -69,8 +66,14 @@ namespace SassyStudio.Compiler.Parsing
 
         static bool IsValueTerminator(ExpresionMode mode, ITokenStream stream)
         {
-            if (stream.Current.Type == TokenType.Bang || stream.Current.Type == TokenType.Semicolon || stream.Current.Type == TokenType.OpenCurlyBrace)
-                return true;
+            switch (stream.Current.Type)
+            {
+                case TokenType.EndOfFile:
+                case TokenType.Bang:
+                case TokenType.Semicolon:
+                case TokenType.OpenCurlyBrace:
+                    return true;
+            }
 
             if (mode == ExpresionMode.Argument)
                 return stream.Current.Type == TokenType.Comma || stream.Current.Type == TokenType.CloseFunctionBrace;

@@ -16,7 +16,6 @@ namespace SassyStudio
         String,
         BadString,
         Hash,
-        StringInterpolation,
         Dollar,
         SuffixMatch,
         OpenFunctionBrace,
@@ -51,6 +50,9 @@ namespace SassyStudio
         At,
         UnicodeRange,
         Function,
-        Bang
+        Bang,
+        ParentReference,
+        OpenInterpolation,
+        CloseInterpolation
     }
 }

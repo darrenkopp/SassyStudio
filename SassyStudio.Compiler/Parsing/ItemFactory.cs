@@ -14,8 +14,8 @@ namespace SassyStudio.Compiler.Parsing
             ExternalItemFactory = externalItemFactory ?? new DefaultSassItemFactory();
         }
 
-        public ParseItem Create<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem
-        {            
+        public ParseItem Create<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem, new()
+        {
             var type = typeof(T);
 
             // attempt to create with external factory
@@ -24,12 +24,12 @@ namespace SassyStudio.Compiler.Parsing
                 : null;
 
             if (item == null)
-                item = Activator.CreateInstance(type, true) as ParseItem;
+                item = new T();
 
             return item;
         }
 
-        public T CreateSpecific<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem
+        public T CreateSpecific<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem, new()
         {
             return (T)Create<T>(parent, text, stream);
         }
@@ -70,6 +70,12 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Function:
                     item = CreateFunction(parent, text, stream);
                     break;
+                case TokenType.ParentReference:
+                    item = new TokenItem(SassClassifierType.ParentReference);
+                    break;
+                case TokenType.OpenInterpolation:
+                    item = new StringInterpolation();
+                    break;
             }
 
             return item != null;
@@ -102,6 +108,7 @@ namespace SassyStudio.Compiler.Parsing
                     case "mixin": return new MixinDefinition();
                     case "include": return new MixinReference();
                     case "function": return new UserFunctionDefinition();
+                    case "import": return new ImportDirective();
                     default: return new AtRule();
                 }
             }
