@@ -47,6 +47,10 @@ namespace SassyStudio
         OpenCssComment,
         CommentText,
         CppComment,
-        CloseCssComment
+        CloseCssComment,
+        At,
+        UnicodeRange,
+        Function,
+        Bang
     }
 }

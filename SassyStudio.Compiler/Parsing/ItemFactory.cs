@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -38,6 +39,12 @@ namespace SassyStudio.Compiler.Parsing
             item = null;
             switch (stream.Current.Type)
             {
+                case TokenType.EndOfFile:
+                    item = null;
+                    return false;
+                case TokenType.StartOfFile:
+                    item = Create<Stylesheet>(parent, text, stream);
+                    break;
                 case TokenType.String:
                 case TokenType.BadString:
                     item = new TokenItem(SassClassifierType.String);
@@ -48,15 +55,71 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.CppComment:
                     item = new CppComment();
                     break;
-                case TokenType.EndOfFile:
-                    item = null;
-                    return false;
-                case TokenType.StartOfFile:
-                    item = Create<Stylesheet>(parent, text, stream);
+                case TokenType.OpenHtmlComment:
+                    item = new HtmlComment();
+                    break;
+                case TokenType.At:
+                    item = CreateAtRule(parent, text, stream);
+                    break;
+                case TokenType.Dollar:
+                    item = CreateVariableDefinitionOrReference(parent, text, stream);
+                    break;
+                case TokenType.Bang:
+                    item = CreateBang(parent, text, stream);
+                    break;
+                case TokenType.Function:
+                    item = CreateFunction(parent, text, stream);
                     break;
             }
 
             return item != null;
+        }
+
+        private ParseItem CreateFunction(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            if (Function.IsWellKnownFunction(text, stream))
+                return new SystemFunctionReference();
+
+            return new UserFunctionReference();
+        }
+
+        private ParseItem CreateBang(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            if (VariableName.IsVariable(text, stream))
+                return CreateVariableDefinitionOrReference(parent, text, stream);
+
+            return new TokenItem();
+        }
+
+        private ParseItem CreateAtRule(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            var nameToken = stream.Peek(1);
+            if (nameToken.Type == TokenType.Identifier)
+            {
+                var ruleName = text.GetText(nameToken.Start, nameToken.Length);
+                switch (ruleName)
+                {
+                    case "mixin": return new MixinDefinition();
+                    case "include": return new MixinReference();
+                    case "function": return new UserFunctionDefinition();
+                    default: return new AtRule();
+                }
+            }
+
+            return new TokenItem();
+        }
+
+        private ParseItem CreateVariableDefinitionOrReference(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            if (stream.Peek(1).Type == TokenType.Identifier)
+            {
+                if (stream.Peek(2).Type == TokenType.Colon)
+                    return new VariableDefinition();
+
+                return new VariableReference();
+            }
+
+            return new TokenItem();
         }
     }
 }

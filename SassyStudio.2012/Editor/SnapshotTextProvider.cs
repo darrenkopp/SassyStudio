@@ -19,5 +19,21 @@ namespace SassyStudio.Editor
         public int Length { get { return Snapshot.Length; } }
 
         public char this[int index] { get { return Snapshot[index]; } }
+
+        public string GetText(int start, int length)
+        {
+            length = Math.Min(length, Length - start);
+
+            return Snapshot.GetText(start, length);
+        }
+
+        public bool CompareOrdinal(int start, string value)
+        {
+            var text = GetText(start, value.Length);
+            if (text == value)
+                return true;
+
+            return false;
+        }
     }
 }

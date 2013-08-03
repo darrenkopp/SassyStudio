@@ -10,5 +10,7 @@ namespace SassyStudio.Compiler
     {
         int Length { get; }
         char this[int index] { get; }
+        string GetText(int start, int length);
+        bool CompareOrdinal(int start, string value);
     }
 }

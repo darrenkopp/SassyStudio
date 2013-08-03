@@ -33,7 +33,6 @@ namespace SassyStudio.Compiler.Parsing
             if (stream.Current.Type != TokenType.EndOfFile && stream.Current.Type != TokenType.EndOfFile)
             {
                 var token = stream.Current;
-                TokenType = token.Type;
                 _Start = token.Start;
                 _Length = token.Length;
                 _End = _Start + _Length;

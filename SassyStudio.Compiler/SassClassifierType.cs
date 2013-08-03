@@ -21,6 +21,7 @@ namespace SassyStudio
         ImportanceModifier,
         ParentReference,
         Interpolation,
-        SystemFunction
+        SystemFunction,
+        FunctionBrace
     }
 }

@@ -46,16 +46,17 @@ namespace SassyStudio.Compiler.Lexing
 
         private bool ConsumeComment(ITextStream stream, TokenList tokens)
         {
-            int start = stream.Position;
             if (stream.Current == '/')
             {
+                int start = stream.Position;
                 var next = stream.Peek(1);
                 if (next == '/')
                 {
                     stream.Advance(2);
                     tokens.Add(Token.Create(TokenType.CppComment, start, 2));
 
-                    ConsumeCommentText(stream, tokens, s => IsNewLine(s.Peek(1)));
+                    if (!IsNewLine(stream.Current))
+                        ConsumeCommentText(stream, tokens, s => IsNewLine(s.Peek(1)));
 
                     return true;
                 }
@@ -64,12 +65,14 @@ namespace SassyStudio.Compiler.Lexing
                     stream.Advance(2);
                     tokens.Add(Token.Create(TokenType.OpenCssComment, start, 2));
 
-                    ConsumeCommentText(stream, tokens, s => s.Peek(1) == '*');
+                    start = stream.Position;
+                    ConsumeCommentText(stream, tokens, s => s.Peek(1) == '*' && s.Peek(2) == '/');
 
                     if (stream.Current == '*' && stream.Peek(1) == '/')
                     {
-                        tokens.Add(Token.Create(TokenType.CloseCssComment, stream.Position, 2));
+                        start = stream.Position;
                         stream.Advance(2);
+                        tokens.Add(Token.Create(TokenType.CloseCssComment, start, 2));
                     }
 
                     return true;
@@ -111,21 +114,10 @@ namespace SassyStudio.Compiler.Lexing
             TokenType type = TokenType.Unknown;
             switch (stream.Current)
             {
-                // whitespace characters
-                //case ' ':
-                //case '\r':
-                //case '\f':
-                //case '\n':
-                //case '\t':
-                //    type = TokenType.Whitespace;
-                //    ConsumeWhitespace(stream);
-                //    break;
-                // quoted strings
                 case '\'':
                 case '"':
                     ConsumeString(stream, out type);
                     break;
-                // hash
                 case '#':
                     type = ConsumeHash(stream);
                     break;
@@ -168,6 +160,10 @@ namespace SassyStudio.Compiler.Lexing
                     type = TokenType.Semicolon;
                     stream.Advance();
                     break;
+                case '@':
+                    type = TokenType.At;
+                    stream.Advance();
+                    break;
                 case '<':
                     type = HandleLessThanSign(stream);
                     break;
@@ -200,15 +196,19 @@ namespace SassyStudio.Compiler.Lexing
                     type = TokenType.Number;
                     ConsumeNumber(stream);
                     break;
-                //case 'u':
-                //case 'U':
-                //    type = ConsumeUnicode(stream);
-                //    break;
+                case 'u':
+                case 'U':
+                    type = ConsumeUnicode(stream);
+                    break;
                 case '|':
                     type = ConsumePipe(stream);
                     break;
                 case '~':
                     type = ConsumeTilde(stream);
+                    break;
+                case '!':
+                    type = TokenType.Bang;
+                    stream.Advance();
                     break;
                 default:
                     // just add as unknown token
@@ -218,7 +218,11 @@ namespace SassyStudio.Compiler.Lexing
             }
 
             if (type == TokenType.Unknown && ConsumeIdentifier(stream))
+            {
                 type = TokenType.Identifier;
+                if (stream.Peek(1) == '(')
+                    type = TokenType.Function;
+            }
 
             token = Token.Create(type, start, stream.Position - start);
             return true;
@@ -226,8 +230,48 @@ namespace SassyStudio.Compiler.Lexing
 
         private TokenType ConsumeUnicode(ITextStream stream)
         {
-            // TODO: attempt to figure out if unicode range
+            if (ConsumeUnicodeRange(stream))
+                return TokenType.UnicodeRange;
+
             return TokenType.Unknown;
+        }
+
+        private bool ConsumeUnicodeRange(ITextStream stream)
+        {
+            return stream.InUndoContext(start =>
+            {
+                if (stream.Peek(1) == '+' && (IsHexDigit(stream.Peek(2)) || stream.Peek(2) == '?'))
+                {
+                    stream.Advance(3);
+                    int hexPosition = 1;
+                    while (hexPosition < 6)
+                    {
+                        if (!IsHexDigit(stream.Current))
+                            break;
+
+                        hexPosition++;
+                        stream.Advance();
+                    }
+
+                    if (stream.Current == '-' && IsHexDigit(stream.Peek(1)))
+                    {
+                        stream.Advance(2);
+                        hexPosition = 1;
+                        while (hexPosition < 6)
+                        {
+                            if (!IsHexDigit(stream.Current))
+                                break;
+                        }
+
+                        hexPosition++;
+                        stream.Advance();
+                    }
+
+                    return start != stream.Position;
+                }
+
+                return false;
+            });
         }
 
         private TokenType ConsumeTilde(ITextStream stream)
@@ -569,6 +613,14 @@ namespace SassyStudio.Compiler.Lexing
                 default:
                     return false;
             }
+        }
+
+        private bool IsHexDigit(char c)
+        {
+            if ((c < '0' || c > '9') && (c < 'a' || c > 'f'))
+                return ((c >= 'A') && (c <= 'F'));
+
+            return true;
         }
     }
 }

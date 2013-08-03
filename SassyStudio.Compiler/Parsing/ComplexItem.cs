@@ -18,7 +18,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public override int End { get { return (Children.Count == 0) ? 0 : Children[Children.Count - 1].End; } }
 
-        public override int Length { get { return (End - Start) + 1; } }
+        public override int Length { get { return End - Start; } }
 
         public override void Freeze()
         {
