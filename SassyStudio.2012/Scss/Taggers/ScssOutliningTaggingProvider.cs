@@ -10,9 +10,9 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace SassyStudio.Scss.Taggers
 {
-    [Export(typeof(ITaggerProvider))]
-    [TagType(typeof(IOutliningRegionTag))]
-    [ContentType(ScssContentTypeDefinition.ScssContentType)]
+    //[Export(typeof(ITaggerProvider))]
+    //[TagType(typeof(IOutliningRegionTag))]
+    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
     class ScssOutliningTaggingProvider : ITaggerProvider
     {
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag

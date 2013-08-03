@@ -21,7 +21,8 @@ namespace SassyStudio.Compiler.Lexing
 
         public bool Advance(int offset = 1)
         {
-            while (offset-- > 0)
+            int end = Position + offset;
+            while (Position < end)
                 Inner.Advance();
 
             return Position < Length;
@@ -29,7 +30,8 @@ namespace SassyStudio.Compiler.Lexing
 
         public bool Reverse(int offset = 1)
         {
-            while (offset-- > 0)
+            int end = Position - offset;
+            while (Position > end)
                 Inner.Reverse();
 
             return Position > 0;

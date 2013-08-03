@@ -71,14 +71,8 @@ namespace SassyStudio.Editor
             {
                 var context = new ParsingExecutionContext(new BufferSnapshotChangedCancellationToken(Buffer, snapshot));
                 var items = await Parser.ParseAsync(new SnapshotTextProvider(snapshot), context);
-                if (!context.IsCancellationRequested)
-                {
-                    Logger.Log(string.Format("Tokend in {0:#0.0}ms", Parser.LastTokenizationDuration.TotalMilliseconds));
-                    Logger.Log(string.Format("Parsed in {0:#0.0}ms", Parser.LastParsingDuration.TotalMilliseconds));
-                }
 
                 var tree = new SassDocumentTree(snapshot, items);
-
                 return tree;
             }
             catch (Exception ex)

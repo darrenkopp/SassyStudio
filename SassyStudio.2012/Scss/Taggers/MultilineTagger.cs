@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Scss.Taggers
 {
-    [Export(typeof(ITaggerProvider))]
-    [TagType(typeof(IClassificationTag))]
-    [ContentType(ScssContentTypeDefinition.ScssContentType)]
+    //[Export(typeof(ITaggerProvider))]
+    //[TagType(typeof(IClassificationTag))]
+    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
     class MultilineTaggerProvider : ITaggerProvider
     {
         [Import, System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
