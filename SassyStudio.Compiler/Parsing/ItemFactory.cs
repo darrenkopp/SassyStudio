@@ -73,6 +73,12 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.ParentReference:
                     item = new TokenItem(SassClassifierType.ParentReference);
                     break;
+                case TokenType.OpenCurlyBrace:
+                    item = new BlockItem();
+                    break;
+                case TokenType.Period:
+                    item = CreatePeriod(parent, text, stream);
+                    break;
                 case TokenType.Identifier:
                 case TokenType.OpenInterpolation:
                     item = CreateIdentLikeItem(parent, text, stream);
@@ -98,11 +104,13 @@ namespace SassyStudio.Compiler.Parsing
             if (IsInValueContext(parent))
                 return CreateIdentLikeValue(parent, text, stream);
 
+            // check for list of selectors
+            if (RuleSet.IsRuleSet(stream))
+                return new RuleSet();
+
             // check for property declaration
             if (PropertyDeclaration.IsDeclaration(stream))
                 return new PropertyDeclaration();
-
-            // TODO: selectors
 
             if (stream.Current.Type == TokenType.OpenInterpolation)
                 return new StringInterpolation();
@@ -187,6 +195,14 @@ namespace SassyStudio.Compiler.Parsing
 
                 return new VariableReference();
             }
+
+            return new TokenItem();
+        }
+
+        private ParseItem CreatePeriod(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            if (stream.Peek(1).Type == TokenType.Identifier)
+                return new ClassName();
 
             return new TokenItem();
         }

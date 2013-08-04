@@ -100,6 +100,11 @@ namespace SassyStudio.Compiler.Lexing
                 case ':':
                     type = TokenType.Colon;
                     stream.Advance();
+                    if (stream.Peek(1) == ':')
+                    {
+                        type = TokenType.DoubleColon;
+                        stream.Advance();
+                    }
                     break;
                 case ';':
                     type = TokenType.Semicolon;

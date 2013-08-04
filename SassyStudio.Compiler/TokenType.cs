@@ -59,6 +59,7 @@ namespace SassyStudio
         NotEqual,
         GreaterThanEqual,
         LessThanEqual,
-        Equal
+        Equal,
+        DoubleColon
     }
 }

@@ -18,6 +18,8 @@ namespace SassyStudio.Compiler.Lexing
             Length = length;
         }
 
+        public int End { get { return Start + Length; } }
+
         public static Token CreateEmpty(TokenType type, int position)
         {
             return new Token(type, position, 0);
