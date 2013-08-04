@@ -23,6 +23,9 @@ namespace SassyStudio
         Interpolation,
         SystemFunction,
         FunctionBrace,
-        Punctuation
+        Punctuation,
+        CurlyBrace,
+        Operator,
+        ClassName
     }
 }

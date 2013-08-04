@@ -18,5 +18,17 @@ namespace SassyStudio.Compiler.Lexing
 
             return result;
         }
+
+        public static bool CompareOrdinal(this ITextStream stream, string value)
+        {
+            if (value == null) 
+                return false;
+
+            for (int i = 0; i < value.Length; i++)
+                if (value[i] != stream.Peek(i))
+                    return false;
+
+                return true;
+        }
     }
 }

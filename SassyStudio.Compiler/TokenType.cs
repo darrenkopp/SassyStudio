@@ -33,7 +33,6 @@ namespace SassyStudio
         Colon,
         Semicolon,
         OpenHtmlComment,
-        LessThanSign,
         OpenBrace,
         CloseBrace,
         OpenCurlyBrace,
@@ -53,6 +52,13 @@ namespace SassyStudio
         Bang,
         ParentReference,
         OpenInterpolation,
-        CloseInterpolation
+        CloseInterpolation,
+        LessThan,
+        GreaterThan,
+        DoubleEqual,
+        NotEqual,
+        GreaterThanEqual,
+        LessThanEqual,
+        Equal
     }
 }

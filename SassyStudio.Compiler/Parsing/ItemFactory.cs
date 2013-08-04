@@ -45,6 +45,9 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.StartOfFile:
                     item = Create<Stylesheet>(parent, text, stream);
                     break;
+                case TokenType.Identifier:
+                    item = CreateIdentifier(parent, text, stream);
+                    break;
                 case TokenType.String:
                 case TokenType.BadString:
                     item = new TokenItem(SassClassifierType.String);
@@ -81,6 +84,22 @@ namespace SassyStudio.Compiler.Parsing
             return item != null;
         }
 
+        public bool TryCreateParsedOrDefault(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item)
+        {
+            if (!TryCreate(parent, text, stream, out item))
+                item = new TokenItem();
+
+            if (!item.Parse(this, text, stream))
+                item = null;
+
+            return item != null;
+        }
+
+        private ParseItem CreateIdentifier(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            return new TokenItem();
+        }
+
         private ParseItem CreateFunction(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
             if (Function.IsWellKnownFunction(text, stream))
@@ -91,6 +110,9 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateBang(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
+            if (ImportanceModifier.IsImportanceModifier(text, stream))
+                return new ImportanceModifier();
+
             if (VariableName.IsVariable(text, stream))
                 return CreateVariableDefinitionOrReference(parent, text, stream);
 
@@ -109,6 +131,13 @@ namespace SassyStudio.Compiler.Parsing
                     case "include": return new MixinReference();
                     case "function": return new UserFunctionDefinition();
                     case "import": return new ImportDirective();
+                    case "extend": return new ExtendDirective();
+                    case "for": return new ForLoopDirective();
+                    case "while": return new WhileLoopDirective();
+                    case "each": return new EachLoopDirective();
+                    case "if":
+                    case "else":
+                    case "else if": return new ConditionalControlDirective();
                     default: return new AtRule();
                 }
             }

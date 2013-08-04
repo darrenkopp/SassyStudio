@@ -53,13 +53,21 @@
     <Compile Include="Lexing\TokenList.cs" />
     <Compile Include="ParsingExecutionContext.cs" />
     <Compile Include="Parsing\AtRule.cs" />
+    <Compile Include="Parsing\BlockItem.cs" />
+    <Compile Include="Parsing\ClassName.cs" />
     <Compile Include="Parsing\Comment.cs" />
     <Compile Include="Parsing\ComplexItem.cs" />
+    <Compile Include="Parsing\ConditionalControlDirective.cs" />
+    <Compile Include="Parsing\ControlDirective.cs" />
+    <Compile Include="Parsing\ControlDirectiveBody.cs" />
     <Compile Include="Parsing\CppComment.cs" />
     <Compile Include="Parsing\CssComment.cs" />
     <Compile Include="Parsing\DefaultParserFactory.cs" />
     <Compile Include="Parsing\DefaultSassItemFactory.cs" />
+    <Compile Include="Parsing\EachLoopDirective.cs" />
     <Compile Include="Parsing\ExpresionMode.cs" />
+    <Compile Include="Parsing\ExtendDirective.cs" />
+    <Compile Include="Parsing\ForLoopDirective.cs" />
     <Compile Include="Parsing\Function.cs" />
     <Compile Include="Parsing\FunctionArgument.cs" />
     <Compile Include="Parsing\FunctionArgumentDefinition.cs" />
@@ -73,6 +81,7 @@
     <Compile Include="Parsing\ISassItemFactory.cs" />
     <Compile Include="Parsing\ItemFactory.cs" />
     <Compile Include="Parsing\ITokenStream.cs" />
+    <Compile Include="Parsing\ListItem.cs" />
     <Compile Include="Parsing\MixinDefinition.cs" />
     <Compile Include="Parsing\MixinName.cs" />
     <Compile Include="Parsing\MixinReference.cs" />
@@ -86,6 +95,7 @@
     <Compile Include="Parsing\VariableDefinition.cs" />
     <Compile Include="Parsing\VariableName.cs" />
     <Compile Include="Parsing\VariableReference.cs" />
+    <Compile Include="Parsing\WhileLoopDirective.cs" />
     <Compile Include="SassClassifierType.cs" />
     <Compile Include="Parsing\Stylesheet.cs" />
     <Compile Include="Parsing\TokenItem.cs" />

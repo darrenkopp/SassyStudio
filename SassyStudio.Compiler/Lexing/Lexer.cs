@@ -108,7 +108,7 @@ namespace SassyStudio.Compiler.Lexing
                     stream.Advance();
                     break;
                 case '<':
-                    type = HandleLessThanSign(stream);
+                    type = ConsumeLessThanSign(stream);
                     break;
                 case '[':
                     type = TokenType.OpenBrace;
@@ -154,10 +154,27 @@ namespace SassyStudio.Compiler.Lexing
                 case '!':
                     type = TokenType.Bang;
                     stream.Advance();
+                    if (stream.Current == '=')
+                    {
+                        stream.Advance();
+                        type = TokenType.NotEqual;
+                    }
                     break;
                 case '&':
                     type = TokenType.ParentReference;
                     stream.Advance();
+                    break;
+                case '>':
+                    type = ConsumeGreaterThanSign(stream);
+                    break;
+                case '=':
+                    type = TokenType.Equal;
+                    stream.Advance();
+                    if (stream.Current == '=')
+                    {
+                        stream.Advance();
+                        type = TokenType.DoubleEqual;
+                    }
                     break;
                 default:
                 {
@@ -342,16 +359,34 @@ namespace SassyStudio.Compiler.Lexing
             return TokenType.Pipe;
         }
 
-        private TokenType HandleLessThanSign(ITextStream stream)
+        private TokenType ConsumeLessThanSign(ITextStream stream)
         {
             stream.Advance();
-            if (stream.Peek(1) == '!' && stream.Peek(2) == '-' && stream.Peek(3) == '-')
+            if (stream.Current == '=')
+            {
+                stream.Advance();
+                return TokenType.LessThanEqual;
+            }
+
+            if (stream.Current == '!' && stream.Peek(1) == '-' && stream.Peek(2) == '-')
             {
                 stream.Advance(3);
                 return TokenType.OpenHtmlComment;
             }
 
-            return TokenType.LessThanSign;
+            return TokenType.LessThan;
+        }
+
+        private TokenType ConsumeGreaterThanSign(ITextStream stream)
+        {
+            stream.Advance();
+            if (stream.Current == '=')
+            {
+                stream.Advance();
+                return TokenType.GreaterThanEqual;
+            }
+
+            return TokenType.GreaterThan;
         }
 
         private TokenType ConsumePeriod(ITextStream stream)
@@ -579,6 +614,13 @@ namespace SassyStudio.Compiler.Lexing
 
         static TokenType DetermineIdentifierType(ITextStream stream)
         {
+            // handle conditional statements
+            if (stream.Current == ' ' && stream.CompareOrdinal(" if"))
+            {
+                stream.Advance(3);
+                return TokenType.Identifier;
+            }
+
             if (stream.Current == '(')
                 return TokenType.Function;
 

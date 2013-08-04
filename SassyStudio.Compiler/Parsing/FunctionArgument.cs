@@ -20,14 +20,11 @@ namespace SassyStudio.Compiler.Parsing
             while (!IsTerminator(stream))
             {
                 ParseItem item;
-                if (!itemFactory.TryCreate(this, text, stream, out item) || !item.Parse(itemFactory, text, stream))
+                if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out item))
                 {
-                    item = new TokenItem();
-                    item.Parse(itemFactory, text, stream);
+                    Values.Add(item);
+                    Children.Add(item);
                 }
-
-                Values.Add(item);
-                Children.Add(item);
             }
 
             if (stream.Current.Type == TokenType.Comma)
