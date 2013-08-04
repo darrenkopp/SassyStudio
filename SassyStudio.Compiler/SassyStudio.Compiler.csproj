@@ -85,9 +85,12 @@
     <Compile Include="Parsing\MixinDefinition.cs" />
     <Compile Include="Parsing\MixinName.cs" />
     <Compile Include="Parsing\MixinReference.cs" />
+    <Compile Include="Parsing\NestedPropertyBlock.cs" />
     <Compile Include="Parsing\ParseItem.cs" />
     <Compile Include="Parsing\ParseItemList.cs" />
     <Compile Include="Parsing\Parser.cs" />
+    <Compile Include="Parsing\PropertyDeclaration.cs" />
+    <Compile Include="Parsing\PropertyName.cs" />
     <Compile Include="Parsing\StringInterpolation.cs" />
     <Compile Include="Parsing\SystemFunctionReference.cs" />
     <Compile Include="Parsing\UserFunctionDefinition.cs" />

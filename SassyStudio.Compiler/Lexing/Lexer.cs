@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace SassyStudio.Compiler.Lexing
 
         TokenList Tokenize(ITextStream stream, IParsingExecutionContext context)
         {
-            DateTime start = DateTime.Now;
+            var watch = Stopwatch.StartNew();
             var tokens = new TokenList();
             tokens.Add(Token.CreateEmpty(TokenType.StartOfFile, stream.Position));
 
@@ -43,7 +44,8 @@ namespace SassyStudio.Compiler.Lexing
             // close stream with end of file token
             tokens.Add(Token.CreateEmpty(TokenType.EndOfFile, stream.Length));
 
-            LastTokenizationDuration = DateTime.Now - start;
+            watch.Stop();
+            LastTokenizationDuration = watch.Elapsed;
             return tokens;
         }
 
