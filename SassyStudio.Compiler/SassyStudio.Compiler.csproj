@@ -91,6 +91,10 @@
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\PropertyDeclaration.cs" />
     <Compile Include="Parsing\PropertyName.cs" />
+    <Compile Include="Parsing\RuleBlock.cs" />
+    <Compile Include="Parsing\RuleSet.cs" />
+    <Compile Include="Parsing\Selector.cs" />
+    <Compile Include="Parsing\SimpleSelector.cs" />
     <Compile Include="Parsing\StringInterpolation.cs" />
     <Compile Include="Parsing\SystemFunctionReference.cs" />
     <Compile Include="Parsing\UserFunctionDefinition.cs" />

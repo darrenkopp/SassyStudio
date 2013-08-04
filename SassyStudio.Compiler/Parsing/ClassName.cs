@@ -7,6 +7,11 @@ namespace SassyStudio.Compiler.Parsing
 {
     class ClassName : ComplexItem
     {
+        public ClassName(SassClassifierType classifierType = SassClassifierType.ClassName)
+        {
+            ClassifierType = classifierType;
+        }
+
         public TokenItem Dot { get; protected set; }
         public TokenItem Name { get; protected set; }
 
@@ -14,8 +19,8 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (IsValidName(stream))
             {
-                Dot = Children.AddCurrentAndAdvance(stream, SassClassifierType.ClassName);
-                Name = Children.AddCurrentAndAdvance(stream, SassClassifierType.ClassName);
+                Dot = Children.AddCurrentAndAdvance(stream, ClassifierType);
+                Name = Children.AddCurrentAndAdvance(stream, ClassifierType);
             }
 
             return Children.Count > 0;

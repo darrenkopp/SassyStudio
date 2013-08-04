@@ -11,6 +11,7 @@ namespace SassyStudio.Compiler.Parsing
         private int _Start;
         private int _End;
         private int _Length;
+        
         public TokenItem(SassClassifierType classifierType = SassClassifierType.Default)
         {
             ClassifierType = classifierType;
@@ -27,6 +28,8 @@ namespace SassyStudio.Compiler.Parsing
         public override int Start { get { return _Start; } }
         public override int End { get { return _End; } }
         public override int Length { get { return _Length; } }
+        public TokenType SourceType { get; protected set; }
+
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -36,6 +39,7 @@ namespace SassyStudio.Compiler.Parsing
                 _Start = token.Start;
                 _Length = token.Length;
                 _End = _Start + _Length;
+                SourceType = token.Type;
 
                 stream.Advance();
                 return true;
