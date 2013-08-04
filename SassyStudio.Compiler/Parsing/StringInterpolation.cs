@@ -25,13 +25,8 @@ namespace SassyStudio.Compiler.Parsing
                 while (!IsTerminator(stream.Current.Type))
                 {
                     ParseItem item;
-                    if (!itemFactory.TryCreate(this, text, stream, out item) || !item.Parse(itemFactory, text, stream))
-                    {
-                        item = new TokenItem();
-                        item.Parse(itemFactory, text, stream);
-                    }
-
-                    Children.Add(item);
+                    if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out item))
+                        Children.Add(item);
                 }
 
                 if (stream.Current.Type == TokenType.CloseInterpolation)

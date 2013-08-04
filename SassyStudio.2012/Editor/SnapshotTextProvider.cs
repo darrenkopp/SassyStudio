@@ -29,11 +29,22 @@ namespace SassyStudio.Editor
 
         public bool CompareOrdinal(int start, string value)
         {
-            var text = GetText(start, value.Length);
-            if (text == value)
-                return true;
+            if (string.IsNullOrEmpty(value))
+                return false;
 
-            return false;
+            var text = GetText(start, value.Length);
+
+            return text == value;
+        }
+
+        public bool StartsWithOrdinal(int start, string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            var text = GetText(start, value.Length);
+
+            return text.StartsWith(value, StringComparison.Ordinal);
         }
     }
 }

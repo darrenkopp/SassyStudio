@@ -21,7 +21,7 @@ namespace SassyStudio
             try
             {
                 var builder = new StringBuilder(message);
-                builder.Insert(0, DateTime.Now.ToString("hh:mm:ss tt': '"));
+                builder.Insert(0, DateTime.Now.ToString("hh:mm:ss.fff tt': '"));
                 builder.AppendLine();
                 Pane.OutputString(builder.ToString());
                 if (activatePane)

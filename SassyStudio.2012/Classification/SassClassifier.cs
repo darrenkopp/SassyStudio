@@ -40,9 +40,6 @@ namespace SassyStudio.Classification
                     var classificationType = ClassifierContextCache.Get(item.ClassifierType).GetClassification(Registry);
                     if (classificationType != null)
                     {
-                        if (classificationType.Classification.Contains("string"))
-                            Logger.Log(tree.SourceText.GetText(s));
-
                         results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), classificationType));
                     }
                 }
