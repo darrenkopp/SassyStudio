@@ -45,9 +45,6 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.StartOfFile:
                     item = Create<Stylesheet>(parent, text, stream);
                     break;
-                case TokenType.Identifier:
-                    item = CreateIdentifier(parent, text, stream);
-                    break;
                 case TokenType.String:
                 case TokenType.BadString:
                     item = new TokenItem(SassClassifierType.String);
@@ -76,8 +73,9 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.ParentReference:
                     item = new TokenItem(SassClassifierType.ParentReference);
                     break;
+                case TokenType.Identifier:
                 case TokenType.OpenInterpolation:
-                    item = new StringInterpolation();
+                    item = CreateIdentLikeItem(parent, text, stream);
                     break;
             }
 
@@ -95,9 +93,44 @@ namespace SassyStudio.Compiler.Parsing
             return item != null;
         }
 
-        private ParseItem CreateIdentifier(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        private ParseItem CreateIdentLikeItem(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
+            if (IsInValueContext(parent))
+                return CreateIdentLikeValue(parent, text, stream);
+
+            // check for property declaration
+            if (PropertyDeclaration.IsDeclaration(stream))
+                return new PropertyDeclaration();
+
+            // TODO: selectors
+
+            if (stream.Current.Type == TokenType.OpenInterpolation)
+                return new StringInterpolation();
+
+            // normal identifier
             return new TokenItem();
+        }
+
+        private bool IsInValueContext(ComplexItem parent)
+        {
+            if (parent == null)
+                return false;
+
+            return !(
+                   parent is Stylesheet
+                || parent is BlockItem
+            );
+        }
+
+        private ParseItem CreateIdentLikeValue(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            switch (stream.Current.Type)
+            {
+                case TokenType.OpenInterpolation:
+                    return new StringInterpolation();
+                default:
+                    return new TokenItem();
+            }
         }
 
         private ParseItem CreateFunction(ComplexItem parent, ITextProvider text, ITokenStream stream)

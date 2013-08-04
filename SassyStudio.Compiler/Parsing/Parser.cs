@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -25,12 +26,13 @@ namespace SassyStudio.Compiler.Parsing
         {
             var tokens = await TokenizeAsync(text, context);
 
-            DateTime start = DateTime.Now;
+            var watch = Stopwatch.StartNew();
 
             var stream = CreateTokenStream(tokens, context);
             var results = Parse(text, new ItemFactory(itemFactory), stream, context);
 
-            LastParsingDuration = DateTime.Now - start;
+            watch.Stop();
+            LastParsingDuration = watch.Elapsed;
             return results;
         }
 
