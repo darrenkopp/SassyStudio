@@ -24,15 +24,7 @@ namespace SassyStudio.Classification
 
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
-            ITextDocument document;
-            if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out document))
-            {
-                var editor = buffer.Properties.GetOrCreateSingletonProperty(() => new SassEditorDocument(buffer, new System.IO.FileInfo(document.FilePath), ParserFactory.Create()));
-
-                return buffer.Properties.GetOrCreateSingletonProperty(() => new SassClassifier(Registry, editor));
-            }
-
-            return null;
+            return buffer.Properties.GetOrCreateSingletonProperty(() => new SassClassifier(buffer, Registry, ParserFactory));
         }
     }
 }

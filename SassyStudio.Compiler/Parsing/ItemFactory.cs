@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using SassyStudio.Compiler.Lexing;
 
 namespace SassyStudio.Compiler.Parsing
 {
@@ -69,6 +70,9 @@ namespace SassyStudio.Compiler.Parsing
                     break;
                 case TokenType.Function:
                     item = CreateFunction(parent, text, stream);
+                    break;
+                case TokenType.Hash:
+                    item = CreateHash(parent, text, stream);
                     break;
                 case TokenType.ParentReference:
                     item = new TokenItem(SassClassifierType.ParentReference);
@@ -205,6 +209,34 @@ namespace SassyStudio.Compiler.Parsing
                 return new ClassName();
 
             return new TokenItem();
+        }
+
+        private ParseItem CreateHash(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            var value = stream.Peek(1);
+            if (value.Type == TokenType.Identifier)
+            {
+                if (parent is Selector || parent is SimpleSelector)
+                    return new IdName();
+
+                if ((value.Length == 3 || value.Length == 6) && IsHex(text, value))
+                    return new HexColorValue();
+            }
+
+            return new TokenItem();
+        }
+
+        private bool IsHex(ITextProvider text, Token value)
+        {
+            var hex = text.GetText(value.Start, value.Length);
+            for (int i = 0; i < hex.Length; i++)
+            {
+                char c = hex[i];
+                if (!(char.IsDigit(c) || ((c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f'))))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

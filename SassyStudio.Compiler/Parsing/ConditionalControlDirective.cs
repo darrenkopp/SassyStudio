@@ -15,13 +15,11 @@ namespace SassyStudio.Compiler.Parsing
         }
         
         public ParseItemList ConditionStatements { get; protected set; }
-        //public BinaryExpression Condition { get; protected set; }
         public ICollection<ConditionalControlDirective> ElseStatements { get { return _ElseStatements; } }
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (IsConditionalDirective(text, stream) || IsConditionalContinuationDirective(text, stream))
+            if ((IsConditionalDirective(text, stream) || IsConditionalContinuationDirective(text, stream)) && ParseRule(itemFactory, text, stream))
             {
-                ParseRule(itemFactory, text, stream);
                 while (!IsConditionTerminator(stream.Current.Type))
                 {
                     ParseItem item;

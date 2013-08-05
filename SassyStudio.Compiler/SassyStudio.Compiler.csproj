@@ -71,7 +71,9 @@
     <Compile Include="Parsing\Function.cs" />
     <Compile Include="Parsing\FunctionArgument.cs" />
     <Compile Include="Parsing\FunctionArgumentDefinition.cs" />
+    <Compile Include="Parsing\HexColorValue.cs" />
     <Compile Include="Parsing\HtmlComment.cs" />
+    <Compile Include="Parsing\IdName.cs" />
     <Compile Include="Parsing\IItemFactory.cs" />
     <Compile Include="Parsing\ImportanceModifier.cs" />
     <Compile Include="Parsing\ImportDirective.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Parsing\MixinDefinition.cs" />
     <Compile Include="Parsing\MixinName.cs" />
     <Compile Include="Parsing\MixinReference.cs" />
+    <Compile Include="Parsing\NamedFunctionArgument.cs" />
     <Compile Include="Parsing\NestedPropertyBlock.cs" />
     <Compile Include="Parsing\ParseItem.cs" />
     <Compile Include="Parsing\ParseItemList.cs" />
