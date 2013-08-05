@@ -14,11 +14,13 @@ namespace SassyStudio.Classification
     class SassClassifier : IClassifier
     {
         readonly IClassificationTypeRegistryService Registry;
+        readonly SassEditorDocument Editor;
 
-        public SassClassifier(IClassificationTypeRegistryService registry, SassEditorDocument editor)
+        public SassClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, IParserFactory parserFactory)
         {
             Registry = registry;
-            editor.TreeChanged += OnTreeChanged;
+            Editor = SassEditorDocument.CreateFrom(buffer, parserFactory);
+            Editor.TreeChanged += OnTreeChanged;
         }
 
         private ISassDocumentTree Tree { get; set; }

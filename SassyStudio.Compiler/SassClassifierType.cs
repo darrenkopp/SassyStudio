@@ -26,6 +26,8 @@ namespace SassyStudio
         Punctuation,
         CurlyBrace,
         Operator,
-        ClassName
+        ClassName,
+        HexColor,
+        IdName
     }
 }

@@ -13,7 +13,7 @@ namespace SassyStudio.Compiler.Parsing
         }
 
         public ParseItemList Values { get; protected set; }
-        public TokenItem Comma { get; set; }
+        public TokenItem Comma { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
