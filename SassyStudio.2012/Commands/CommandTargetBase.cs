@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace SassyStudio.Scss.Commands
+namespace SassyStudio.Commands
 {
     abstract class CommandTargetBase : IOleCommandTarget
     {
@@ -34,6 +34,12 @@ namespace SassyStudio.Scss.Commands
 
         protected abstract bool IsEnabled();
         protected abstract bool Execute(uint commandId, uint execOptions, IntPtr pvaIn, IntPtr pvaOut);
+
+        protected virtual int ExecuteNext(uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        {
+            Guid groupId = CommandGroupId;
+            return _NextCommandTarget.Exec(ref groupId, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+        }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {

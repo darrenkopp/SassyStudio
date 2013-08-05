@@ -60,6 +60,10 @@
     <Compile Include="Editor\TreeChangedEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guids.cs" />
+    <Compile Include="Intellisense\CompletionCommandHandler.cs" />
+    <Compile Include="Intellisense\IntellisenseTextCreationListener.cs" />
+    <Compile Include="Intellisense\SassCompletionSource.cs" />
+    <Compile Include="Intellisense\SassCompletionSourceProvider.cs" />
     <Compile Include="InteropHelper.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Options\ScssOptions.cs">
@@ -75,7 +79,7 @@
     <Compile Include="Scss\Classifications\Evaluators\RegexListClassificationMatchEvaluator.cs" />
     <Compile Include="Scss\Classifications\ScssClassifier.cs" />
     <Compile Include="Scss\Classifications\ScssClassifierProvider.cs" />
-    <Compile Include="Scss\Commands\CommandTargetBase.cs" />
+    <Compile Include="Commands\CommandTargetBase.cs" />
     <Compile Include="Scss\Commands\CommentSelection.cs" />
     <Compile Include="Scss\GenerateCssOnSave.cs" />
     <Compile Include="Scss\ScssContentTypeDefinition.cs" />
@@ -141,6 +145,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Editor, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Language.StandardClassification, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.Data, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
