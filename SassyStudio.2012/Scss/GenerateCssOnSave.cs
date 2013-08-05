@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Microsoft.VisualStudio.Text;
@@ -20,6 +21,7 @@ namespace SassyStudio.Scss
     [TextViewRole(PredefinedTextViewRoles.Document)]
     class GenerateCssOnSave : IWpfTextViewCreationListener
     {
+        static int IsResolverInitialized = 0;
         static readonly Encoding UTF8_ENCODING = new UTF8Encoding(true);
         readonly Lazy<ISassCompiler> _Compiler = new Lazy<ISassCompiler>(() => new SassCompiler());
         readonly Lazy<ScssOptions> _Options = new Lazy<ScssOptions>(() => SassyStudioPackage.Instance.Options.Scss, true);
@@ -84,14 +86,17 @@ namespace SassyStudio.Scss
 
         private static void FixNSassAssemblyResolution()
         {
-            var basePath = new FileInfo(new Uri(typeof(GenerateCssOnSave).Assembly.CodeBase).LocalPath).Directory.FullName;
-            AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
+            if (Interlocked.CompareExchange(ref IsResolverInitialized, 1, 0) == 0)
             {
-                if (e.Name.StartsWith("NSass.Wrapper.proxy", StringComparison.Ordinal))
-                    return Assembly.LoadFrom(Path.Combine(basePath, "NSass.Wrapper.x86.dll"));
+                var basePath = new FileInfo(new Uri(typeof(GenerateCssOnSave).Assembly.CodeBase).LocalPath).Directory.FullName;
+                AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
+                {
+                    if (e.Name.StartsWith("NSass.Wrapper.proxy", StringComparison.Ordinal))
+                        return Assembly.LoadFrom(Path.Combine(basePath, "NSass.Wrapper.x86.dll"));
 
-                return null;
-            };
+                    return null;
+                };
+            }
         }
     }
 }
