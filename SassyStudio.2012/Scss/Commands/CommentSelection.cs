@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VSCommandIdConstants = Microsoft.VisualStudio.VSConstants.VSStd2KCmdID;
+using SassyStudio.Commands;
 
 namespace SassyStudio.Scss.Commands
 {
