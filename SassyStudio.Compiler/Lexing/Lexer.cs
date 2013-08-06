@@ -215,7 +215,7 @@ namespace SassyStudio.Compiler.Lexing
                     tokens.Add(Token.Create(TokenType.CppComment, start, 2));
 
                     if (!IsNewLine(stream.Current))
-                        ConsumeCommentText(stream, tokens, s => IsNewLine(s.Peek(1)));
+                        ConsumeCommentText(stream, tokens, s => IsNewLine(s.Current));
 
                     return true;
                 }
@@ -225,7 +225,7 @@ namespace SassyStudio.Compiler.Lexing
                     tokens.Add(Token.Create(TokenType.OpenCssComment, start, 2));
 
                     start = stream.Position;
-                    ConsumeCommentText(stream, tokens, s => s.Peek(1) == '*' && s.Peek(2) == '/');
+                    ConsumeCommentText(stream, tokens, s => s.Current == '*' && s.Peek(1) == '/');
 
                     if (stream.Current == '*' && stream.Peek(1) == '/')
                     {
@@ -256,6 +256,7 @@ namespace SassyStudio.Compiler.Lexing
 
             if (start != stream.Position)
             {
+                stream.Reverse(1);
                 stream.Advance();
                 tokens.Add(Token.Create(TokenType.CommentText, start, stream.Position - start));
                 return true;

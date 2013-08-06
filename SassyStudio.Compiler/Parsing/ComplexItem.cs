@@ -10,6 +10,7 @@ namespace SassyStudio.Compiler.Parsing
         public ComplexItem()
         {
             Children = new ParseItemList();
+            Children.AutoParent = this;
         }
 
         public ParseItemList Children { get; protected set; }
@@ -23,15 +24,10 @@ namespace SassyStudio.Compiler.Parsing
         public override void Freeze()
         {
             base.Freeze();
+            Children.TrimExcess();
 
-            if (Children.Count > 0)
-            {
-                foreach (var child in Children)
-                    child.Freeze();
-
-                // trim
-                Children.TrimExcess();
-            }
+            for (int i = 0; i < Children.Count; i++)
+                Children[i].Freeze();
         }
     }
 }

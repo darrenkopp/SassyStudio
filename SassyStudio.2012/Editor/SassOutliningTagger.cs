@@ -17,13 +17,10 @@ namespace SassyStudio.Editor
     [ContentType(ScssContentTypeDefinition.ScssContentType)]
     class SassOutliningTaggerProvider : ITaggerProvider
     {
-        [Import]
-        internal IParserFactory ParserFactory { get; set; }
-
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             if (typeof(T) == typeof(IOutliningRegionTag))
-                return buffer.Properties.GetOrCreateSingletonProperty(() => new SassOutliningTagger(buffer, ParserFactory)) as ITagger<T>;
+                return buffer.Properties.GetOrCreateSingletonProperty(() => new SassOutliningTagger(buffer)) as ITagger<T>;
 
             return null;
         }
@@ -32,9 +29,9 @@ namespace SassyStudio.Editor
     class SassOutliningTagger : ITagger<IOutliningRegionTag>
     {
         readonly SassEditorDocument Editor;
-        public SassOutliningTagger(ITextBuffer buffer, IParserFactory parserFactory)
+        public SassOutliningTagger(ITextBuffer buffer)
         {
-            Editor = SassEditorDocument.CreateFrom(buffer, parserFactory);
+            Editor = SassEditorDocument.CreateFrom(buffer);
             Editor.TreeChanged += OnTreeChanged;
         }
 

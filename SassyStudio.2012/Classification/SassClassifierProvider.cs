@@ -19,12 +19,9 @@ namespace SassyStudio.Classification
         [Import, System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal IClassificationTypeRegistryService Registry { get; set; }
 
-        [Import]
-        internal IParserFactory ParserFactory { get; set; }
-
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
-            return buffer.Properties.GetOrCreateSingletonProperty(() => new SassClassifier(buffer, Registry, ParserFactory));
+            return buffer.Properties.GetOrCreateSingletonProperty(() => new SassClassifier(buffer, Registry));
         }
     }
 }

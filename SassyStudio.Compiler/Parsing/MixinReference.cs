@@ -20,13 +20,15 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (AtRule.IsRule(text, stream, "include") && MixinName.IsValidName(stream.Peek(2)))
+            if (AtRule.IsRule(text, stream, "include"))
             {
                 Rule = AtRule.CreateParsed(itemFactory, text, stream);
-                Name = MixinName.CreateParsed(itemFactory, text, stream, SassClassifierType.MixinReference);
+                if (Rule != null)
+                    Children.Add(Rule);
 
-                Children.Add(Rule);
-                Children.Add(Name);
+                Name = MixinName.CreateParsed(itemFactory, text, stream, SassClassifierType.MixinReference);
+                if (Name != null)
+                    Children.Add(Name);
 
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                 {
