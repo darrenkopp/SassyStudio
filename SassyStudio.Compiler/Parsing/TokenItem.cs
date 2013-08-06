@@ -33,7 +33,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (stream.Current.Type != TokenType.EndOfFile && stream.Current.Type != TokenType.EndOfFile)
+            if (stream.Current.Type != TokenType.EndOfFile)
             {
                 var token = stream.Current;
                 _Start = token.Start;

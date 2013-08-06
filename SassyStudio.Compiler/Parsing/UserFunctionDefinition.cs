@@ -22,12 +22,15 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (AtRule.IsRule(text, stream, "function") && stream.Peek(2).Type == TokenType.Function)
+            if (AtRule.IsRule(text, stream, "function"))
             {
                 Rule = AtRule.CreateParsed(itemFactory, text, stream);
-                Children.Add(Rule);
+                if (Rule != null)
+                    Children.Add(Rule);
 
-                Name = Children.AddCurrentAndAdvance(stream, SassClassifierType.UserFunctionDefinition);
+                if (stream.Current.Type == TokenType.Function)
+                    Name = Children.AddCurrentAndAdvance(stream, SassClassifierType.UserFunctionDefinition);
+
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                     Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
 

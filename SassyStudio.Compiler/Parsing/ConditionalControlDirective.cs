@@ -18,8 +18,10 @@ namespace SassyStudio.Compiler.Parsing
         public ICollection<ConditionalControlDirective> ElseStatements { get { return _ElseStatements; } }
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if ((IsConditionalDirective(text, stream) || IsConditionalContinuationDirective(text, stream)) && ParseRule(itemFactory, text, stream))
+            if ((IsConditionalDirective(text, stream) || IsConditionalContinuationDirective(text, stream)))
             {
+                ParseRule(itemFactory, text, stream);
+
                 while (!IsConditionTerminator(stream.Current.Type))
                 {
                     ParseItem item;

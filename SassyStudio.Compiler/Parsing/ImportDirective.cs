@@ -18,7 +18,8 @@ namespace SassyStudio.Compiler.Parsing
             if (AtRule.IsRule(text, stream, "import"))
             {
                 Rule = AtRule.CreateParsed(itemFactory, text, stream);
-                Children.Add(Rule);
+                if (Rule != null)
+                    Children.Add(Rule);
 
                 while (!IsTerminator(stream.Current.Type))
                 {

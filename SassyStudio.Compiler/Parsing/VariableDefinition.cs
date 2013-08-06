@@ -27,10 +27,10 @@ namespace SassyStudio.Compiler.Parsing
             {
                 Name = name;
                 Children.Add(name);
-
-                if (stream.Current.Type == TokenType.Colon)
-                    Colon = Children.AddCurrentAndAdvance(stream);
             }
+
+            if (stream.Current.Type == TokenType.Colon)
+                Colon = Children.AddCurrentAndAdvance(stream);
 
             while (!IsValueTerminator(Mode, stream))
             {
@@ -68,6 +68,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.EndOfFile:
                 case TokenType.Bang:
                 case TokenType.Semicolon:
+                case TokenType.CloseCurlyBrace:
                 case TokenType.OpenCurlyBrace:
                     return true;
             }

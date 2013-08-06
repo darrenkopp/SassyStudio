@@ -10,8 +10,10 @@ namespace SassyStudio.Compiler.Parsing
     {
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (AtRule.IsRule(text, stream, "while") && ParseRule(itemFactory, text, stream))
+            if (AtRule.IsRule(text, stream, "while"))
             {
+                ParseRule(itemFactory, text, stream);
+
                 while (!IsConditionTerminator(stream.Current.Type))
                 {
                     ParseItem item;
