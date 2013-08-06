@@ -16,10 +16,10 @@ namespace SassyStudio.Classification
         readonly IClassificationTypeRegistryService Registry;
         readonly SassEditorDocument Editor;
 
-        public SassClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry, IParserFactory parserFactory)
+        public SassClassifier(ITextBuffer buffer, IClassificationTypeRegistryService registry)
         {
             Registry = registry;
-            Editor = SassEditorDocument.CreateFrom(buffer, parserFactory);
+            Editor = SassEditorDocument.CreateFrom(buffer);
             Editor.TreeChanged += OnTreeChanged;
         }
 
@@ -34,16 +34,19 @@ namespace SassyStudio.Classification
             if (tree == null)
                 return results;
 
-            foreach (var item in Traverse(tree.Items, span.Start.Position, span.End.Position))
+
+            var open = tree.Items.FindItemContainingPosition(span.Start.Position);
+            for (var current = open; current != null; current = current.InOrderSuccessor())
             {
-                var s = new Span(item.Start, item.Length);
+                if (current.Start > span.End.Position)
+                    break;
+
+                var s = new Span(current.Start, current.Length);
                 if (span.IntersectsWith(s))
                 {
-                    var classificationType = ClassifierContextCache.Get(item.ClassifierType).GetClassification(Registry);
+                    var classificationType = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
                     if (classificationType != null)
-                    {
                         results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), classificationType));
-                    }
                 }
             }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition.Hosting;
 using System.Runtime.InteropServices;
 using EnvDTE;
 using EnvDTE80;
@@ -30,10 +31,23 @@ namespace SassyStudio
         {
             base.Initialize();
             Instance = this;
+
+            Composition = InitializeComposition();
         }
 
+        internal CompositionContainer Composition { get; private set; }
         internal OptionsProvider Options { get { return _Options; } }
         internal DTE2 DTE { get { return _DTE.Value; } }
+
+        private CompositionContainer InitializeComposition()
+        {
+            var catalog = new AggregateCatalog(
+                new AssemblyCatalog(typeof(SassyStudioPackage).Assembly),
+                new AssemblyCatalog(typeof(TokenType).Assembly)
+            );
+
+            return new CompositionContainer(catalog);
+        }
 
         internal class OptionsProvider
         {

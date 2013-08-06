@@ -11,6 +11,7 @@ namespace SassyStudio.Classification
     {
         readonly string Name;
         private IClassificationType ClassificationType;
+        bool IsResolved = false;
         public ClassifierContext(SassClassifierType type)
         {
             Name = ResolveName(type);
@@ -18,8 +19,11 @@ namespace SassyStudio.Classification
 
         public IClassificationType GetClassification(IClassificationTypeRegistryService registry)
         {
-            if (ClassificationType == null)
+            if (!IsResolved)
+            {
                 ClassificationType = registry.GetClassificationType(Name);
+                IsResolved = true;
+            }
 
             return ClassificationType;
         }

@@ -7,12 +7,15 @@ namespace SassyStudio.Editor
 {
     class TreeChangedEventArgs : EventArgs
     {
-        private readonly ISassDocumentTree _Tree;
-        public TreeChangedEventArgs(ISassDocumentTree tree)
+        public TreeChangedEventArgs(ISassDocumentTree tree, int changeStart, int changeEnd)
         {
-            _Tree = tree;
+            Tree = tree;
+            ChangeStart = changeStart;
+            ChangeEnd = changeEnd;
         }
 
-        public ISassDocumentTree Tree { get { return _Tree; } }
+        public ISassDocumentTree Tree { get; private set; }
+        public int ChangeStart { get; private set; }
+        public int ChangeEnd { get; private set; }
     }
 }

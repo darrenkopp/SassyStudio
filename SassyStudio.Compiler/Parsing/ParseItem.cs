@@ -17,5 +17,29 @@ namespace SassyStudio.Compiler.Parsing
         public virtual void Freeze()
         {
         }
+
+        public ComplexItem Parent { get; set; }
+
+        public ParseItem InOrderSuccessor()
+        {
+            var container = this as ComplexItem;
+            if (container != null && container.Children.Count > 0)
+                return container.Children.First();
+
+            return NextSibling();
+        }
+
+        public ParseItem NextSibling()
+        {
+            if (Parent == null) return null;
+
+            // get next child after this one
+            var siblingIndex = Parent.Children.IndexOf(this) + 1;
+            if (siblingIndex < Parent.Children.Count)
+                return Parent.Children[siblingIndex];
+
+            // if this is last of child of parent, then get parents next sibling
+            return Parent.NextSibling();
+        }
     }
 }

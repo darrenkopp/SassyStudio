@@ -48,7 +48,6 @@ namespace SassyStudio
                 if (vsBuildAction.Equals(actionProperty.Value) && vsType.Equals(typeProperty.Value))
                     return;
 
-                Logger.Log("ProjectItem properties changing.");
                 actionProperty.Value = vsBuildAction;
                 typeProperty.Value = vsType;
                 item.ContainingProject.Save();

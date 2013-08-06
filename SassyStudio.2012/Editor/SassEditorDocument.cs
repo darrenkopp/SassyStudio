@@ -14,13 +14,15 @@ namespace SassyStudio.Editor
 {
     class SassEditorDocument
     {
+        readonly object locker = new object();
+        static readonly Lazy<IParserFactory> ParserFactory = new Lazy<IParserFactory>(() => SassyStudioPackage.Instance.Composition.GetExportedValue<IParserFactory>(), true);
         readonly ITextBuffer Buffer;
         readonly IParser Parser;
         readonly FileInfo SourceFile;
 
-        public SassEditorDocument(ITextBuffer buffer, IParserFactory parserFactory)
+        public SassEditorDocument(ITextBuffer buffer)
         {
-            Parser = parserFactory.Create();
+            Parser = ParserFactory.Value.Create();
 
             ITextDocument document;
             if (buffer.Properties.TryGetProperty(typeof(ITextDocument), out document))
@@ -29,97 +31,160 @@ namespace SassyStudio.Editor
             Buffer = buffer;
             Buffer.ChangedLowPriority += OnBufferChanged;
 
-            Task.Run(() => Initialize(Buffer.CurrentSnapshot));
+            Process(Buffer.CurrentSnapshot, new SingleTextChange(0, 0, Buffer.CurrentSnapshot.Length));
         }
 
-        public static SassEditorDocument CreateFrom(ITextBuffer buffer, IParserFactory parserFactory)
+        public event EventHandler<TreeChangedEventArgs> TreeChanged;
+
+        public static SassEditorDocument CreateFrom(ITextBuffer buffer)
         {
-            return buffer.Properties.GetOrCreateSingletonProperty(() => new SassEditorDocument(buffer, parserFactory));
+            return buffer.Properties.GetOrCreateSingletonProperty(() => new SassEditorDocument(buffer));
         }
 
         private ISassDocumentTree Tree { get; set; }
 
-        private async Task Initialize(ITextSnapshot snapshot)
+        private async Task Process(ITextSnapshot snapshot, SingleTextChange change)
         {
-            try
-            {
-                var tree = await Parse(snapshot);
+            var previous = Tree;
 
-                ReplaceTree(tree);
-            }
-            catch (Exception ex)
+            var context = new ParsingExecutionContext(new BufferSnapshotChangedCancellationToken(Buffer, snapshot));
+            var items = await Parser.ParseAsync(new SnapshotTextProvider(snapshot), context);
+
+            var current = new SassDocumentTree(snapshot, items);
+            if (!context.IsCancellationRequested)
             {
-                Logger.Log(ex);
+                ReplaceTree(current);
+                RaiseTreeUpdated(previous, current, change);
+                var handler = TreeChanged;
+                if (handler != null)
+                {
+                    var start = Math.Max(0, change.Position - change.DeletedLength);
+                    var end = Math.Min(change.Position + change.InsertedLength, snapshot.Length);
+
+                    handler(this, new TreeChangedEventArgs(current, start, end));
+                }
             }
         }
 
-        public event EventHandler<TreeChangedEventArgs> TreeChanged;
+        private void RaiseTreeUpdated(ISassDocumentTree previous, ISassDocumentTree current, SingleTextChange change)
+        {
+            int start = 0;
+            int end = Math.Min(change.Position + change.InsertedLength, current.SourceText.Length);
+            if (previous != null)
+            {
+                // we need to scan both trees until we find where they start lining up again
+                var offset = change.InsertedLength + (-1 * change.DeletedLength);
+                var original = previous.Items.FindItemContainingPosition(change.Position - change.DeletedLength);
+                var updated = current.Items.FindItemContainingPosition(change.Position + change.InsertedLength);
+
+                if (original != null && updated != null)
+                    start = updated.Start;
+
+                bool lastMatched = false;
+                while (true)
+                {
+                    if (original == null || updated == null)
+                        break;
+
+                    // update our positions
+                    start = Math.Min(start, updated.Start);
+                    end = Math.Max(end, updated.End);
+
+                    if (original.GetType() == updated.GetType())
+                    {
+                        // there are two types of changes (adding characters or removing characters)
+                        // if we added characters then we'll need to adjust end characters
+                        // if we deleted characters then we'll need to offset starting characters OR ending characters
+
+                        // checking for length being extended by adding characters
+                        if (original.Start == updated.Start && (original.End + change.InsertedLength) == updated.End)
+                        {
+                            end = updated.End;
+                            break;
+                        }
+                        // checking for length being shortened by deleting characters
+                        else if (original.Start == updated.Start && (original.End - change.DeletedLength) == updated.End)
+                        {
+                            break;
+                        }
+                        // checking for removal of nodes?
+                        else if (original.Start == (updated.Start - change.DeletedLength) && (original.End - change.DeletedLength) == updated.End)
+                        {
+                            break;
+                        }
+                    }
+
+                    original = original.InOrderSuccessor();
+                    updated = updated.InOrderSuccessor();
+                }
+            }
+
+            // only issue event if tree hasn't changed
+            if (current == Tree)
+                OnTreeChanged(current, start, end);
+        }
 
         private async void OnBufferChanged(object sender, TextContentChangedEventArgs e)
         {
             // ignore stale event
             if (e.After != Buffer.CurrentSnapshot) return;
 
-            // parse the new tree
-            var current = await Parse(e.After);
-            if (e.After == Buffer.CurrentSnapshot)
-                ReplaceTree(current);
+            var change = CreateSingleChange(e.After, e.Changes);
+            await Process(e.After, change);
+        }
+
+        private SingleTextChange CreateSingleChange(ITextSnapshot snapshot, INormalizedTextChangeCollection changes)
+        {
+            if (changes == null || changes.Count == 0)
+                return new SingleTextChange(0, 0, snapshot.Length);
+
+            var start = changes[0];
+            var end = changes[changes.Count - 1];
+
+            return new SingleTextChange(start.OldPosition, end.OldEnd - start.OldPosition, end.NewEnd - start.OldPosition);
         }
 
         private void ReplaceTree(ISassDocumentTree current)
         {
-            var original = Tree;
-            //if (current != null)
-            //    DumpTree(current, current.Items);
-            // TODO: check to see if anything has changed
-
-            Tree = current;
-            OnTreeChanged(original, current);
-        }
-
-        private void DumpTree(ISassDocumentTree tree, ParseItemList items)
-        {
-            var pending = new Stack<ParseItem>();
-            foreach (var sourceItem in items)
+            lock (locker)
             {
-                Logger.Log(string.Format("[{0},{1}] - {2}", sourceItem.Start, sourceItem.End, sourceItem.GetType()));
-                if (sourceItem is Comment)
-                    Logger.Log(tree.SourceText.GetText(sourceItem.Start, sourceItem.Length));
-
-                var complex = sourceItem as ComplexItem;
-                if (complex != null)
-                    DumpTree(tree, complex.Children);
+                Tree = current;
             }
         }
 
-        private async Task<ISassDocumentTree> Parse(ITextSnapshot snapshot)
-        {
-            try
-            {
-                var context = new ParsingExecutionContext(new BufferSnapshotChangedCancellationToken(Buffer, snapshot));
-                var items = await Parser.ParseAsync(new SnapshotTextProvider(snapshot), context);
-                if (!context.IsCancellationRequested)
-                {
-                    Logger.Log(string.Format("Last Token {0:#0.00}", Parser.LastTokenizationDuration.TotalMilliseconds));
-                    Logger.Log(string.Format("Last Parse {0:#0.00}", Parser.LastParsingDuration.TotalMilliseconds));
-                }
-
-                var tree = new SassDocumentTree(snapshot, items);
-                return tree;
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex);
-                return null;
-            }
-        }
-
-        private void OnTreeChanged(ISassDocumentTree original, ISassDocumentTree current)
+        private void OnTreeChanged(ISassDocumentTree current, int start, int end)
         {
             var handler = TreeChanged;
             if (handler != null)
+                handler(this, new TreeChangedEventArgs(current, start, end));
+        }
+
+        struct SingleTextChange
+        {
+            readonly int _Position;
+            readonly int _DeletedLength;
+            readonly int _InsertedLength;
+            public SingleTextChange(int position, int deleted, int inserted)
             {
-                handler(this, new TreeChangedEventArgs(current));
+                _Position = position;
+                _DeletedLength = deleted;
+                _InsertedLength = inserted;
+            }
+
+            public int Position { get { return _Position; } }
+            public int DeletedLength { get { return _DeletedLength; } }
+            public int InsertedLength { get { return _InsertedLength; } }
+        }
+
+        struct TreeChanges
+        {
+            public readonly int Start;
+            public readonly int End;
+
+            public TreeChanges(int start, int end)
+            {
+                Start = start;
+                End = end;
             }
         }
     }
