@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Scss.Taggers
 {
-    [Export(typeof(ITaggerProvider))]
-    [TagType(typeof(IErrorTag))]
-    [ContentType(ScssContentTypeDefinition.ScssContentType)]
+    //[Export(typeof(ITaggerProvider))]
+    //[TagType(typeof(IErrorTag))]
+    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
     class DeprecatedFunctionalityTaggingProvider : ITaggerProvider
     {
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag

@@ -49,7 +49,7 @@ namespace SassyStudio.Compiler.Parsing
 
         static bool IsFunctionCall(ITokenStream stream)
         {
-            return stream.Current.Type == TokenType.Function && stream.Peek(1).Type == TokenType.OpenFunctionBrace;
+            return stream.Current.Type == TokenType.Function || (stream.Current.Type == TokenType.Identifier && stream.Peek(1).Type == TokenType.OpenFunctionBrace);
         }
 
         static bool IsTerminator(TokenType type)

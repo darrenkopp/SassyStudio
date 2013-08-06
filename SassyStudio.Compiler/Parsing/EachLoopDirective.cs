@@ -13,8 +13,9 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (AtRule.IsRule(text, stream, "each") && ParseRule(itemFactory, text, stream))
+            if (AtRule.IsRule(text, stream, "each"))
             {
+                ParseRule(itemFactory, text, stream);
                 while (!IsListTerminator(stream.Current.Type))
                 {
                     var item = itemFactory.CreateSpecific<ListItem>(this, text, stream);

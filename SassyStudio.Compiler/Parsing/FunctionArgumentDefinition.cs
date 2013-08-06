@@ -9,6 +9,8 @@ namespace SassyStudio.Compiler.Parsing
     {
         public VariableDefinition Variable { get; protected set; }
 
+        public TokenItem Comma { get; protected set; }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             var variable = new VariableDefinition(ExpresionMode.Argument);
@@ -17,6 +19,9 @@ namespace SassyStudio.Compiler.Parsing
                 Variable = variable;
                 Children.Add(variable);
             }
+
+            if (stream.Current.Type == TokenType.Comma)
+                Comma = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
 
             return Children.Count > 0;
         }

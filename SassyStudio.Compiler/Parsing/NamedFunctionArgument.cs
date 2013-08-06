@@ -33,8 +33,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public static bool IsNamedArgument(ITextProvider text, ITokenStream stream)
         {
-            return stream.Peek(2).Type == TokenType.Colon
-                && VariableName.IsVariable(text, stream);
+            return VariableName.IsVariable(text, stream) && stream.Peek(2).Type == TokenType.Colon;
         }
     }
 }

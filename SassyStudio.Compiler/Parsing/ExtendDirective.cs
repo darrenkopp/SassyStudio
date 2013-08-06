@@ -17,6 +17,8 @@ namespace SassyStudio.Compiler.Parsing
             if (AtRule.IsRule(text, stream, "extend"))
             {
                 Rule = AtRule.CreateParsed(itemFactory, text, stream);
+                if (Rule != null)
+                    Children.Add(Rule);
 
                 var name = new ClassName();
                 if (name.Parse(itemFactory, text, stream))
