@@ -19,6 +19,7 @@ namespace SassyStudio.Compiler.Parsing
         public ParseItemList Values { get; protected set; }
         public ImportanceModifier Modifier { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
+        public override bool IsValid { get { return Name != null && Name.IsValid; } }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {

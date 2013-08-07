@@ -41,7 +41,7 @@ namespace SassyStudio.Editor
             return buffer.Properties.GetOrCreateSingletonProperty(() => new SassEditorDocument(buffer));
         }
 
-        private ISassDocumentTree Tree { get; set; }
+        public ISassDocumentTree Tree { get; private set; }
 
         private async Task Process(ITextSnapshot snapshot, SingleTextChange change)
         {
@@ -80,7 +80,6 @@ namespace SassyStudio.Editor
                 if (original != null && updated != null)
                     start = updated.Start;
 
-                bool lastMatched = false;
                 while (true)
                 {
                     if (original == null || updated == null)

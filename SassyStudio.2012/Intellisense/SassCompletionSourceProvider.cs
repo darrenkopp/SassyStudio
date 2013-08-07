@@ -22,9 +22,12 @@ namespace SassyStudio.Intellisense
         [Import]
         internal ITextStructureNavigatorSelectorService TextNavigator { get; set; }
 
+        [ImportMany(typeof(ICompletionProvider))]
+        private IEnumerable<ICompletionProvider> CompletionProviders { get; set; }
+
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
-            return new SassCompletionSource(textBuffer, TextNavigator);
+            return new SassCompletionSource(textBuffer, CompletionProviders, TextNavigator);
         }
     }
 }

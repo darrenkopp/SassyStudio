@@ -23,6 +23,7 @@ namespace SassyStudio.Compiler.Parsing
             _Start = token.Start;
             _Length = token.Length;
             _End = token.Start + token.Length;
+            SourceType = token.Type;
         }
 
         public override int Start { get { return _Start; } }
