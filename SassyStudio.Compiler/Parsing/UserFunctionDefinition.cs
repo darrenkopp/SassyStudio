@@ -19,6 +19,7 @@ namespace SassyStudio.Compiler.Parsing
         public TokenItem OpenBrace { get; protected set; }
         public IList<FunctionArgumentDefinition> Arguments { get { return _Arguments; } }
         public TokenItem CloseBrace { get; protected set; }
+        public UserFunctionBody Body { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -34,7 +35,7 @@ namespace SassyStudio.Compiler.Parsing
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                     Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
 
-                while (!IsTerminator(stream.Current.Type))
+                while (!IsArgumentTerminator(stream.Current.Type))
                 {
                     var argument = itemFactory.CreateSpecific<FunctionArgumentDefinition>(this, text, stream);
                     if (argument == null || !argument.Parse(itemFactory, text, stream))
@@ -46,6 +47,13 @@ namespace SassyStudio.Compiler.Parsing
 
                 if (stream.Current.Type == TokenType.CloseFunctionBrace)
                     Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
+
+                var body = new UserFunctionBody();
+                if (body.Parse(itemFactory, text, stream))
+                {
+                    Body = body;
+                    Children.Add(body);
+                }
             }
 
             return Children.Count > 0;
@@ -57,7 +65,18 @@ namespace SassyStudio.Compiler.Parsing
             _Arguments.TrimExcess();
         }
 
-        static bool IsTerminator(TokenType type)
+        public override IEnumerable<VariableDefinition> GetDefinedVariables(int position)
+        {
+            var variables = base.GetDefinedVariables(position);
+
+            // only include defined arguments if position is in the body
+            if (CloseBrace != null && CloseBrace.End < position)
+                variables = variables.Concat(Arguments.Select(x => x.Variable));
+
+            return variables;
+        }
+
+        static bool IsArgumentTerminator(TokenType type)
         {
             switch (type)
             {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public abstract class ComplexItem : ParseItem
+    public abstract class ComplexItem : ParseItem, IVariableScope
     {
         public ComplexItem()
         {
@@ -28,6 +28,12 @@ namespace SassyStudio.Compiler.Parsing
 
             for (int i = 0; i < Children.Count; i++)
                 Children[i].Freeze();
+        }
+
+        public virtual IEnumerable<VariableDefinition> GetDefinedVariables(int position)
+        {
+            foreach (var variable in Children.Where(x => x.Start < position).OfType<VariableDefinition>())
+                yield return variable;
         }
     }
 }

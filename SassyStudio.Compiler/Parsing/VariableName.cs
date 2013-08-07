@@ -16,6 +16,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public TokenItem Prefix { get; protected set; }
         public TokenItem Name { get; protected set; }
+        public override bool IsValid { get { return Prefix != null && Name != null && Name.Length > 0; } }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -26,6 +27,18 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return Children.Count > 0;
+        }
+
+        public string GetName(ITextProvider text)
+        {
+            if (Name == null || Name.Length == 0)
+                return null;
+
+            var builder = new StringBuilder(Name.Length + 1);
+            builder.Append(Prefix.SourceType == TokenType.Dollar ? '$' : '!');
+            Name.WriteTo(builder, text);
+
+            return builder.ToString();
         }
 
         public static bool IsVariable(ITextProvider text, ITokenStream stream)
