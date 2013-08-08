@@ -44,7 +44,6 @@ namespace SassyStudio.Intellisense
                 var span = FindTokenSpanAtPosition(session);
                 var context = CreateContext(span, tree);
 
-                var allCompletions = new LinkedList<Completion>();
                 IEnumerable<Completion> allBuilders = null;
                 foreach (var augmenter in CompletionAugmenters)
                 {
@@ -53,7 +52,7 @@ namespace SassyStudio.Intellisense
                         allBuilders = (allBuilders ?? Enumerable.Empty<Completion>()).Concat(builder);
                 }
 
-                if (allCompletions != null || allBuilders != null)
+                if (allBuilders != null)
                     completionSets.Add(new CompletionSet("sass", "sass", context.TrackingSpan, null, allBuilders));
             }
         }
