@@ -30,9 +30,9 @@ namespace SassyStudio.Compiler.Parsing
                 Children[i].Freeze();
         }
 
-        public virtual IEnumerable<VariableDefinition> GetDefinedVariables(int position)
+        public virtual IEnumerable<VariableName> GetDefinedVariables(int position)
         {
-            foreach (var variable in Children.Where(x => x.Start < position).OfType<VariableDefinition>())
+            foreach (var variable in Children.Where(x => x.Start < position).OfType<VariableDefinition>().Select(x => x.Name))
                 yield return variable;
         }
     }

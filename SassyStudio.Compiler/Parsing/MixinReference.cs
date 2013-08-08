@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class MixinReference : ComplexItem
+    public class MixinReference : ComplexItem
     {
         readonly List<FunctionArgument> _Arguments = new List<FunctionArgument>(0);
 

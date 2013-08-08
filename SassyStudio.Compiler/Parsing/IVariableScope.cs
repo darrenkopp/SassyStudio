@@ -8,6 +8,6 @@ namespace SassyStudio.Compiler.Parsing
 {
     public interface IVariableScope
     {
-        IEnumerable<VariableDefinition> GetDefinedVariables(int position);
+        IEnumerable<VariableName> GetDefinedVariables(int position);
     }
 }

@@ -8,8 +8,8 @@ using SassyStudio.Compiler.Parsing;
 
 namespace SassyStudio.Intellisense
 {
-    public interface ICompletionProvider
+    interface ISassCompletionProvider
     {
-        IEnumerable<Completion> GetCompletions(ITextProvider text, IEnumerable<ComplexItem> containers, int end);
+        IEnumerable<Completion> GetCompletions(SassCompletionContext context);
     }
 }

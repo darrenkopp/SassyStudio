@@ -56,11 +56,10 @@ namespace SassyStudio.Classification
         private void OnTreeChanged(object sender, TreeChangedEventArgs e)
         {
             Tree = e.Tree;
-            // TODO: calculate differences and update span?
 
             var handler = ClassificationChanged;
             if (handler != null)
-                handler(this, new ClassificationChangedEventArgs(new SnapshotSpan(e.Tree.SourceText, new Span(0, e.Tree.SourceText.Length))));
+                handler(this, new ClassificationChangedEventArgs(new SnapshotSpan(e.Tree.SourceText, new Span(e.ChangeStart, e.ChangeEnd - e.ChangeStart))));
         }
 
         private IEnumerable<ParseItem> Traverse(IEnumerable<ParseItem> items, int start, int end)

@@ -92,7 +92,6 @@
     <Compile Include="Parsing\NamedFunctionArgument.cs" />
     <Compile Include="Parsing\NestedPropertyBlock.cs" />
     <Compile Include="Parsing\ParseItem.cs" />
-    <Compile Include="Parsing\ParseItemExtensions.cs" />
     <Compile Include="Parsing\ParseItemList.cs" />
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\PropertyDeclaration.cs" />

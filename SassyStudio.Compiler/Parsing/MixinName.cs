@@ -6,7 +6,7 @@ using SassyStudio.Compiler.Lexing;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class MixinName : ComplexItem
+    public class MixinName : ComplexItem
     {
         public MixinName(SassClassifierType type)
         {
@@ -14,12 +14,22 @@ namespace SassyStudio.Compiler.Parsing
         }
 
         public TokenItem Name { get; protected set; }
+        public override bool IsValid { get { return Name != null && Name.Length > 0; } }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.Identifier || stream.Current.Type == TokenType.Function)
                 Name = Children.AddCurrentAndAdvance(stream, ClassifierType);
 
             return Children.Count > 0;
+        }
+
+        public string GetName(ITextProvider text)
+        {
+            if (IsValid)
+                return text.GetText(Name.Start, Name.Length);
+
+            return null;
         }
 
         public static MixinName CreateParsed(IItemFactory itemFactory, ITextProvider text, ITokenStream stream, SassClassifierType classifierType)

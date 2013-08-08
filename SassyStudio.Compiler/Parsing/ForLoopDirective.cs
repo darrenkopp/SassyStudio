@@ -8,6 +8,7 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class ForLoopDirective : ControlDirective
     {
+        public VariableName Variable { get; protected set; }
         public TokenItem FromKeyword { get; protected set; }
         public TokenItem ToKeyword { get; protected set; }
         public TokenItem ThroughKeyword { get; protected set; }
@@ -17,6 +18,13 @@ namespace SassyStudio.Compiler.Parsing
             if (AtRule.IsRule(text, stream, "for"))
             {
                 ParseRule(itemFactory, text, stream);
+
+                var variable = new VariableName(SassClassifierType.VariableDefinition);
+                if (variable.Parse(itemFactory, text, stream))
+                {
+                    Variable = variable;
+                    Children.Add(Variable);
+                }
 
                 while (!IsForStatementTerminator(stream.Current.Type))
                 {
@@ -50,6 +58,15 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return Children.Count > 0;
+        }
+
+        public override IEnumerable<VariableName> GetDefinedVariables(int position)
+        {
+            var variables = base.GetDefinedVariables(position);
+            if (Body != null && position > Body.Start)
+                variables = variables.Concat(new[] { Variable });
+
+            return variables;
         }
 
         static bool IsForStatementTerminator(TokenType type)
