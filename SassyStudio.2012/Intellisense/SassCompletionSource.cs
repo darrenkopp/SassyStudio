@@ -12,14 +12,15 @@ namespace SassyStudio.Intellisense
 {
     class SassCompletionSource : ICompletionSource
     {
-        private readonly List<ICompletionProvider> CompletionProviders;
+        readonly IEnumerable<ISassCompletionAugmenter> CompletionAugmenters;
         readonly ITextStructureNavigatorSelectorService NavigatorService;
         readonly ITextBuffer Buffer;
         readonly SassEditorDocument Document;
-        public SassCompletionSource(ITextBuffer buffer, IEnumerable<ICompletionProvider> completionProviders, ITextStructureNavigatorSelectorService navigatorService)
+        public SassCompletionSource(ITextBuffer buffer, IEnumerable<ISassCompletionAugmenter> completionAugmenters, ITextStructureNavigatorSelectorService navigatorService)
         {
-            CompletionProviders = completionProviders.ToList();
-            CompletionProviders.TrimExcess();
+            var augmenters = completionAugmenters.ToList();
+            augmenters.TrimExcess();
+            CompletionAugmenters = augmenters;
 
             NavigatorService = navigatorService;
             Buffer = buffer;
@@ -37,30 +38,52 @@ namespace SassyStudio.Intellisense
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets)
         {
-            var point = session.GetTriggerPoint(Buffer);
-            var span = FindTokenSpanAtPosition(point, session);
-            completionSets.Add(new CompletionSet("sass_variables", "Sass Variables", span, null, CreateCompletions(span)));
+            var tree = Tree;
+            if (tree != null)
+            {
+                var span = FindTokenSpanAtPosition(session);
+                var context = CreateContext(span, tree);
+
+                var allCompletions = new LinkedList<Completion>();
+                IEnumerable<Completion> allBuilders = null;
+                foreach (var augmenter in CompletionAugmenters)
+                {
+                    var builder = augmenter.GetBuilder(context);
+                    if (builder != null)
+                        allBuilders = (allBuilders ?? Enumerable.Empty<Completion>()).Concat(builder);
+                }
+
+                if (allCompletions != null || allBuilders != null)
+                    completionSets.Add(new CompletionSet("sass", "sass", context.TrackingSpan, null, allBuilders));
+            }
         }
 
-        private IEnumerable<Completion> CreateCompletions(ITrackingSpan span)
+        private SassCompletionContext CreateContext(ITrackingSpan span, ISassDocumentTree tree)
         {
-            var tree = Tree;
-            if (tree == null)
+            var text = new SnapshotTextProvider(tree.SourceText);
+            var current = tree.Items.FindItemContainingPosition(span.GetStartPoint(tree.SourceText).Position);
+            var path = CreateTraversalPath(current);
+
+            return new SassCompletionContext(tree.SourceText, span, current, path);
+        }
+
+        private IEnumerable<ComplexItem> CreateTraversalPath(ParseItem item)
+        {
+            var path = new LinkedList<ComplexItem>();
+            if (item == null)
+                return path;
+
+            var current = (item as ComplexItem) ?? item.Parent;
+            while (current != null)
             {
-                Logger.Log("No tree");
-                return Enumerable.Empty<Completion>();
+                path.AddLast(current);
+                current = current.Parent;
             }
 
-            var position = span.GetStartPoint(Tree.SourceText).Position;
-
-            Logger.Log(string.Format("Calculating completion from {0}", position));
-            var path = GetTraversalPath(tree, position);
-            var text = new SnapshotTextProvider(tree.SourceText);
-
-            return CompletionProviders.SelectMany(provider => provider.GetCompletions(text, path, position));
+            return path;
         }
 
-        private ITrackingSpan FindTokenSpanAtPosition(ITrackingPoint trackingPoint, ICompletionSession session)
+        private ITrackingSpan FindTokenSpanAtPosition(ICompletionSession session)
         {
             SnapshotPoint currentPoint = (session.TextView.Caret.Position.BufferPosition) - 1;
             var navigator = NavigatorService.GetTextStructureNavigator(Buffer);
@@ -71,23 +94,6 @@ namespace SassyStudio.Intellisense
         public void Dispose()
         {
             Document.TreeChanged -= OnTreeChanged;
-        }
-
-        static IReadOnlyCollection<ComplexItem> GetTraversalPath(ISassDocumentTree tree, int position)
-        {
-            var path = new List<ComplexItem>();
-            var item = tree.Items.FindItemContainingPosition(position);
-            if (item != null)
-            {
-                var current = (item as ComplexItem) ?? item.Parent;
-                while (current != null)
-                {
-                    path.Add(current);
-                    current = current.Parent;
-                }
-            }
-
-            return path;
         }
     }
 }

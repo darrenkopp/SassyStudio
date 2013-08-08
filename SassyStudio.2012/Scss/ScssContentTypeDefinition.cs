@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Utilities;
 
-namespace SassyStudio.Scss
+namespace SassyStudio
 {
     static class ScssContentTypeDefinition
     {
@@ -15,7 +15,7 @@ namespace SassyStudio.Scss
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [Export(typeof(ContentTypeDefinition))]
         [Name(ScssContentType)]
-        [BaseDefinition("code")]
+        [BaseDefinition("code"), BaseDefinition("intellisense")]
         public static ContentTypeDefinition IScssContentType { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

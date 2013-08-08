@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class UserFunctionDefinition : ComplexItem
+    public class UserFunctionDefinition : ComplexItem
     {
         private readonly List<FunctionArgumentDefinition> _Arguments = new List<FunctionArgumentDefinition>(1);
         public UserFunctionDefinition()
@@ -20,6 +20,8 @@ namespace SassyStudio.Compiler.Parsing
         public IList<FunctionArgumentDefinition> Arguments { get { return _Arguments; } }
         public TokenItem CloseBrace { get; protected set; }
         public UserFunctionBody Body { get; protected set; }
+
+        public override bool IsValid { get { return Name != null && Name.Length > 0; } }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -65,13 +67,21 @@ namespace SassyStudio.Compiler.Parsing
             _Arguments.TrimExcess();
         }
 
-        public override IEnumerable<VariableDefinition> GetDefinedVariables(int position)
+        public string GetName(ITextProvider text)
+        {
+            if (IsValid)
+                return text.GetText(Name.Start, Name.Length);
+
+            return null;
+        }
+
+        public override IEnumerable<VariableName> GetDefinedVariables(int position)
         {
             var variables = base.GetDefinedVariables(position);
 
             // only include defined arguments if position is in the body
-            if (CloseBrace != null && CloseBrace.End < position)
-                variables = variables.Concat(Arguments.Select(x => x.Variable));
+            if (Body != null && position > Body.Start)
+                variables = variables.Concat(Arguments.Select(x => x.Variable).Where(x => x.IsValid).Select(x => x.Name));
 
             return variables;
         }

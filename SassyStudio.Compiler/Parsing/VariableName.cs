@@ -31,14 +31,12 @@ namespace SassyStudio.Compiler.Parsing
 
         public string GetName(ITextProvider text)
         {
-            if (Name == null || Name.Length == 0)
-                return null;
+            if (!IsValid) return null;
 
-            var builder = new StringBuilder(Name.Length + 1);
-            builder.Append(Prefix.SourceType == TokenType.Dollar ? '$' : '!');
-            Name.WriteTo(builder, text);
-
-            return builder.ToString();
+            return string.Concat(
+                Prefix.SourceType == TokenType.Dollar ? '$' : '!',
+                text.GetText(Name.Start, Name.Length)
+            );
         }
 
         public static bool IsVariable(ITextProvider text, ITokenStream stream)

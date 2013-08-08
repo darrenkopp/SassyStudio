@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
-using SassyStudio.Scss;
 
 namespace SassyStudio.Intellisense
 {

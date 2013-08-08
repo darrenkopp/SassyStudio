@@ -7,7 +7,7 @@ using SassyStudio.Compiler.Lexing;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class PropertyDeclaration : ComplexItem
+    public class PropertyDeclaration : ComplexItem
     {
         public PropertyDeclaration()
         {

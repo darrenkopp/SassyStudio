@@ -30,6 +30,19 @@ namespace SassyStudio.Compiler.Parsing
             return NextSibling();
         }
 
+        public ParseItem InOrderPredecessor()
+        {
+            var sibling = PreviousSibling();
+            if (sibling != null)
+            {
+                var container = sibling as ComplexItem;
+                if (container != null)
+                    return container.Children[container.Children.Count - 1];
+            }
+
+            return Parent;
+        }
+
         public ParseItem NextSibling()
         {
             if (Parent == null) return null;
@@ -41,6 +54,17 @@ namespace SassyStudio.Compiler.Parsing
 
             // if this is last of child of parent, then get parents next sibling
             return Parent.NextSibling();
+        }
+
+        public ParseItem PreviousSibling()
+        {
+            if (Parent == null) return null;
+
+            var siblingIndex = Parent.Children.IndexOf(this) - 1;
+            if (siblingIndex >= 0)
+                return Parent.Children[siblingIndex];
+
+            return null;
         }
     }
 }

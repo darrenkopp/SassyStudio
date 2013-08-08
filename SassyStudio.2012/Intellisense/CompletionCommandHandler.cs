@@ -38,10 +38,15 @@ namespace SassyStudio.Intellisense
             if (commandId == (uint)VSCommandIdConstants.RETURN || commandId == (uint)VSCommandIdConstants.TAB || char.IsWhiteSpace(typed))
             {
                 if (InActiveCompletionSession())
-                {
+                { 
                     if (CompletionSession.SelectedCompletionSet.SelectionStatus.IsSelected)
                     {
                         CompletionSession.Commit();
+
+                        // pass space on
+                        if (char.IsWhiteSpace(typed))
+                            ExecuteNext(commandId, execOptions, pvaIn, pvaOut);
+
                         return true;
                     }
                     else
@@ -57,9 +62,8 @@ namespace SassyStudio.Intellisense
             {
                 if (!InActiveCompletionSession())
                 {
-                    TriggerCompletion();
-                    //if (TriggerCompletion())
-                    //    CompletionSession.Filter();
+                    if (TriggerCompletion() && CompletionSession != null)
+                        CompletionSession.Filter();
                 }
                 else
                 {
@@ -99,11 +103,14 @@ namespace SassyStudio.Intellisense
 
         private bool IsCompletionCharacter(char typed)
         {
+            if (char.IsLetter(typed))
+                return true;
+
             switch (typed)
             {
                 case '$':
                 case '!':
-                case ':':
+                //case ':':
                 case '@':
                     return true;
             }

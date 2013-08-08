@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class FunctionArgumentDefinition : ComplexItem
+    public class FunctionArgumentDefinition : ComplexItem
     {
         public VariableDefinition Variable { get; protected set; }
 
