@@ -62,7 +62,9 @@
     <Compile Include="Guids.cs" />
     <Compile Include="Intellisense\CompletionAugmenters\CompletionAugmenterBase.cs" />
     <Compile Include="Intellisense\CompletionAugmenters\ConditionalCompletionAugmenter.cs" />
+    <Compile Include="Intellisense\CompletionAugmenters\MixinCompletionAugmenter.cs" />
     <Compile Include="Intellisense\CompletionAugmenters\ValueCompletionAugmenter.cs" />
+    <Compile Include="Intellisense\CompletionAugmenters\VariableModifierCompletionAugmenter.cs" />
     <Compile Include="Intellisense\CompletionAugmenters\WhileLoopCompletionAugmenter.cs" />
     <Compile Include="Intellisense\CompletionCommandHandler.cs" />
     <Compile Include="Intellisense\CompletionAugmenters\ForLoopCompletionAugmenter.cs" />
