@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -15,9 +10,10 @@ namespace SassyStudio.Intellisense
 {
     class CompletionCommandHandler : Commands.CommandTargetBase
     {
-        private readonly ICompletionBroker CompletionBroker;
+        readonly ICompletionBroker CompletionBroker;
+
         public CompletionCommandHandler(IVsTextView adapter, IWpfTextView view, ICompletionBroker completionBroker)
-            : base(adapter, view, typeof(VSCommandIdConstants).GUID, (uint)VSCommandIdConstants.TYPECHAR, (uint)VSCommandIdConstants.TAB, (uint)VSCommandIdConstants.RETURN, (uint)VSCommandIdConstants.BACKSPACE, (uint)VSCommandIdConstants.DELETE)
+            : base(adapter, view, typeof(VSCommandIdConstants).GUID, (uint)VSCommandIdConstants.TYPECHAR, (uint)VSCommandIdConstants.TAB, (uint)VSCommandIdConstants.RETURN, (uint)VSCommandIdConstants.BACKSPACE, (uint)VSCommandIdConstants.DELETE, (uint)VSCommandIdConstants.SHOWMEMBERLIST)
         {
             CompletionBroker = completionBroker;
         }
@@ -31,91 +27,96 @@ namespace SassyStudio.Intellisense
 
         protected override bool Execute(uint commandId, uint execOptions, IntPtr pvaIn, IntPtr pvaOut)
         {
+            var command = (VSCommandIdConstants)commandId;
+
+            // handle ctrl + space
+            if (command == VSCommandIdConstants.SHOWMEMBERLIST)
+            {
+                if (!InActiveCompletionSession())
+                    TriggerCompletion();
+
+                return true;
+            }
+
             char typed = char.MinValue;
-            if (commandId == (uint)VSCommandIdConstants.TYPECHAR)
+            if (command == VSCommandIdConstants.TYPECHAR)
                 typed = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
 
-            if (commandId == (uint)VSCommandIdConstants.RETURN || commandId == (uint)VSCommandIdConstants.TAB || char.IsWhiteSpace(typed))
+            // handle completion characters
+            if (command == VSCommandIdConstants.RETURN || command == VSCommandIdConstants.TAB || char.IsWhiteSpace(typed))
             {
                 if (InActiveCompletionSession())
-                { 
+                {
                     if (CompletionSession.SelectedCompletionSet.SelectionStatus.IsSelected)
                     {
                         CompletionSession.Commit();
 
-                        // pass space on
-                        if (char.IsWhiteSpace(typed))
-                            ExecuteNext(commandId, execOptions, pvaIn, pvaOut);
-
-                        return true;
+                        // pass space character on
+                        if (typed == ' ')
+                            return false;
                     }
                     else
                     {
                         CompletionSession.Dismiss();
                     }
+
+                    // swallow up return / tab keys
+                    return true;
                 }
+
+                // pass on return / tab
+                return false;
             }
 
+            // pass on command to next handler
             var nextResult = ExecuteNext(commandId, execOptions, pvaIn, pvaOut);
-            bool handled = false;
-            if (IsCompletionCharacter(typed))
+            if (command == VSCommandIdConstants.TYPECHAR)
             {
-                if (!InActiveCompletionSession())
-                {
-                    if (TriggerCompletion() && CompletionSession != null)
-                        CompletionSession.Filter();
-                }
-                else
-                {
-                    CompletionSession.Filter();
-                }
+                // attempt to start completion session
+                if (!InActiveCompletionSession() && IsCompletionStartCharacter(typed))
+                    TriggerCompletion();
 
-                handled = true;
+                if (InActiveCompletionSession())
+                    CompletionSession.Filter();
             }
-            else if (commandId == (uint)VSCommandIdConstants.DELETE || commandId == (uint)VSCommandIdConstants.BACKSPACE)
+            else if (command == VSCommandIdConstants.DELETE || command == VSCommandIdConstants.BACKSPACE)
             {
                 if (InActiveCompletionSession())
                     CompletionSession.Filter();
-
-                handled = true;
             }
 
-            if (handled)
-                return true;
+            return nextResult;
+        }
 
-            return nextResult == VSConstants.S_OK;
+        bool ShowCompletion(int start)
+        {
+            DismissSession(CompletionSession);
+
+            var snapshot = TextView.TextSnapshot;
+            var tracking = snapshot.CreateTrackingPoint(start, PointTrackingMode.Positive);
+
+            // create our session
+            var session = CompletionBroker.CreateCompletionSession(TextView, tracking, true);
+            session.Dismissed += OnSessionDismissed;
+            session.Start();
+
+            CompletionSession = session;
+            return !session.IsDismissed;
         }
 
         private bool TriggerCompletion()
         {
-            SnapshotPoint? caretPoint = TextView.Caret.Position.Point.GetPoint(textBuffer => (!textBuffer.ContentType.IsOfType("projection")), PositionAffinity.Predecessor);
-            if (!caretPoint.HasValue)
+            var caretPoint = GetCaretPoint();
+            if (caretPoint == null)
                 return false;
 
-            var caret = caretPoint.Value;
-            var tracking = caret.Snapshot.CreateTrackingPoint(caret.Position, PointTrackingMode.Positive);
-            CompletionSession = CompletionBroker.CreateCompletionSession(TextView, tracking, true);
-            CompletionSession.Dismissed += OnSessionDismissed;
-            CompletionSession.Start();
-
-            return true;
+            return ShowCompletion(caretPoint.Value.Position);
         }
 
-        private bool IsCompletionCharacter(char typed)
+        private void DismissSession(ICompletionSession session)
         {
-            if (char.IsLetter(typed))
-                return true;
-
-            switch (typed)
-            {
-                case '$':
-                case '!':
-                //case ':':
-                case '@':
-                    return true;
-            }
-
-            return char.IsLetterOrDigit(typed);
+            if (session != null && !session.IsDismissed)
+                session.Dismiss();
         }
 
         private bool InActiveCompletionSession()
@@ -125,8 +126,45 @@ namespace SassyStudio.Intellisense
 
         private void OnSessionDismissed(object sender, EventArgs e)
         {
-            CompletionSession.Dismissed -= OnSessionDismissed;
-            CompletionSession = null;
+            var source = sender as ICompletionSession;
+            source.Dismissed -= OnSessionDismissed;
+
+            if (source == CompletionSession)
+                CompletionSession = null;
+        }
+
+        SnapshotPoint? GetCaretPoint()
+        {
+            return TextView.Caret.Position.Point.GetPoint(b => (!b.ContentType.IsOfType("projection")), PositionAffinity.Predecessor);
+        }
+
+        private bool IsCompletionCharacter(char typed)
+        {
+            switch (typed)
+            {
+                case '$':
+                case '!':
+                case ':':
+                case '@':
+                    return true;
+            }
+
+            return char.IsLetterOrDigit(typed);
+        }
+
+        private bool IsCompletionStartCharacter(char c)
+        {
+            switch (c)
+            {
+                case '$':
+                case '!':
+                case ':':
+                case '@':
+                case '-':
+                    return true;
+            }
+
+            return char.IsLetterOrDigit(c);
         }
     }
 }
