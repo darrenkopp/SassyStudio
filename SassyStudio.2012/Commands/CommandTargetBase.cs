@@ -35,10 +35,12 @@ namespace SassyStudio.Commands
         protected abstract bool IsEnabled();
         protected abstract bool Execute(uint commandId, uint execOptions, IntPtr pvaIn, IntPtr pvaOut);
 
-        protected virtual int ExecuteNext(uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        protected virtual bool ExecuteNext(uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
             Guid groupId = CommandGroupId;
-            return _NextCommandTarget.Exec(ref groupId, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            var result = _NextCommandTarget.Exec(ref groupId, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+
+            return result == VSConstants.S_OK;
         }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)

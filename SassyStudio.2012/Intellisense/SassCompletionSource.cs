@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Operations;
@@ -53,7 +51,7 @@ namespace SassyStudio.Intellisense
                 }
 
                 if (allBuilders != null)
-                    completionSets.Add(new CompletionSet("sass", "sass", context.TrackingSpan, null, allBuilders));
+                    completionSets.Add(new CompletionSet("sass", "sass", context.TrackingSpan, allBuilders, null));
             }
         }
 
