@@ -27,6 +27,11 @@ namespace SassyStudio.Intellisense
             return Create(name, name, StandardGlyphGroup.GlyphGroupField, StandardGlyphItem.GlyphItemPublic);
         }
 
+        protected Completion Function(string name, StandardGlyphGroup group = StandardGlyphGroup.GlyphGroupMethod, StandardGlyphItem item = StandardGlyphItem.GlyphItemPublic)
+        {
+            return Create(name, name, group, item);
+        }
+
         protected Completion Create(string display, string insertion, StandardGlyphGroup group, StandardGlyphItem item)
         {
             return new Completion(display, insertion, null, Glyphs.GetGlyph(group, item), null);

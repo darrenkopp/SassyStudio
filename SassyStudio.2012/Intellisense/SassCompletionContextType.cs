@@ -53,6 +53,7 @@ namespace SassyStudio.Intellisense
         MixinDirective,
         MixinDirectiveMixinName,
         MixinDirectiveMixinArgumentDefaultValue,
+        MixinBody,
 
         PropertyDeclaration,
         PropertyName,

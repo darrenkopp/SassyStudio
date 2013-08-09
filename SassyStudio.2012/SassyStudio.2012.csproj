@@ -78,6 +78,7 @@
     <Compile Include="Intellisense\CompletionSetBuilder.cs" />
     <Compile Include="Intellisense\ContextProviders\ConditionalContextProvider.cs" />
     <Compile Include="Intellisense\ContextProviders\MixinContextProvider.cs" />
+    <Compile Include="Intellisense\ContextProviders\UserFunctionContextProvider.cs" />
     <Compile Include="Intellisense\ContextProviders\VariableDefinitionContextProvider.cs" />
     <Compile Include="Intellisense\ICompletionContextProvider.cs" />
     <Compile Include="Intellisense\ICompletionManager.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Intellisense\SassCompletionContextType.cs" />
     <Compile Include="Intellisense\SassCompletionSource.cs" />
     <Compile Include="Intellisense\SassCompletionSourceProvider.cs" />
+    <Compile Include="Intellisense\ValueProviders\FunctionsProvider.cs" />
     <Compile Include="Intellisense\ValueProviders\KeywordsProvider.cs" />
     <Compile Include="Intellisense\ValueProviders\ValueProviderBase.cs" />
     <Compile Include="Intellisense\ValueProviders\VariablesProvider.cs" />

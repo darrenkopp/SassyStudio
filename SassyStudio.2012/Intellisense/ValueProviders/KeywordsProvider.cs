@@ -87,6 +87,9 @@ namespace SassyStudio.Intellisense
                 case SassCompletionContextType.MixinDirective:
                     yield return "@mixin";
                     break;
+                case SassCompletionContextType.MixinBody:
+                    yield return "@content";
+                    break;
                 case SassCompletionContextType.VariableDefaultFlag:
                     yield return "!default";
                     break;
