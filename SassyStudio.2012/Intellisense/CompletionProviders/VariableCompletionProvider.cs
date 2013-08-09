@@ -13,7 +13,7 @@ namespace SassyStudio.Intellisense
     {
     }
 
-    [Export(typeof(IVariableCompletionProvider))]
+    //[Export(typeof(IVariableCompletionProvider))]
     class VariableCompletionProvider : CompletionProviderBase, IVariableCompletionProvider
     {
         protected override IEnumerable<string> GetCompletionItems(SassCompletionContext context)

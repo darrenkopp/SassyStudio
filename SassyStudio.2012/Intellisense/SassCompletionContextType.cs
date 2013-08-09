@@ -32,8 +32,10 @@ namespace SassyStudio.Intellisense
         FunctionDirective,
         FunctionDeclaration,
         FunctionArgumentDeclaration,
+        FunctionArgumentDefaultValue,
         FunctionArgument,
         FunctionArgumentName,
+        FunctionArgumentValue,
         FunctionBody,
 
         IncludeDirective,
@@ -46,10 +48,11 @@ namespace SassyStudio.Intellisense
         ImportDirectiveFile,
 
         StringInterpolation,
+        StringInterpolationValue,
 
         MixinDirective,
         MixinDirectiveMixinName,
-        MixinDirectiveMixinArgumentValue,
+        MixinDirectiveMixinArgumentDefaultValue,
 
         PropertyDeclaration,
         PropertyName,
@@ -58,6 +61,7 @@ namespace SassyStudio.Intellisense
         VariableDeclaration,
         VariableName,
         VariableValue,
+        VariableDefaultFlag,
 
         WhileLoopDirective,
         WhileLoopCondition

@@ -18,7 +18,7 @@ namespace SassyStudio.Intellisense
             CompletionBroker = completionBroker;
         }
 
-        private ICompletionSession CompletionSession { get; set; }
+        private ICompletionSession Session { get; set; }
 
         protected override bool IsEnabled()
         {
@@ -43,29 +43,23 @@ namespace SassyStudio.Intellisense
                 typed = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
 
             // handle completion characters
-            if (command == VSCommandIdConstants.RETURN || command == VSCommandIdConstants.TAB || char.IsWhiteSpace(typed))
+            if (command == VSCommandIdConstants.RETURN || command == VSCommandIdConstants.TAB || IsCompletionTerminatorCharacter(typed))
             {
                 if (InActiveCompletionSession())
                 {
-                    if (CompletionSession.SelectedCompletionSet.SelectionStatus.IsSelected)
+                    if (Session.SelectedCompletionSet.SelectionStatus.IsSelected && ShouldAcceptSelected(command, typed))
                     {
-                        CompletionSession.Commit();
-
-                        // pass space character on
-                        if (typed == ' ')
-                            return false;
+                        Session.Commit();
                     }
                     else
                     {
-                        CompletionSession.Dismiss();
+                        Session.Dismiss();
                     }
 
-                    // swallow up return / tab keys
-                    return true;
+                    // end if we were an auto-complete type command
+                    if (command == VSCommandIdConstants.RETURN || command == VSCommandIdConstants.TAB)
+                        return true;
                 }
-
-                // pass on return / tab
-                return false;
             }
 
             // pass on command to next handler
@@ -77,12 +71,12 @@ namespace SassyStudio.Intellisense
                     TriggerCompletion();
 
                 if (InActiveCompletionSession())
-                    CompletionSession.Filter();
+                    Session.Filter();
             }
             else if (command == VSCommandIdConstants.DELETE || command == VSCommandIdConstants.BACKSPACE)
             {
                 if (InActiveCompletionSession())
-                    CompletionSession.Filter();
+                    Session.Filter();
             }
 
             return nextResult;
@@ -90,7 +84,7 @@ namespace SassyStudio.Intellisense
 
         bool ShowCompletion(int start)
         {
-            DismissSession(CompletionSession);
+            DismissSession(Session);
 
             var snapshot = TextView.TextSnapshot;
             var tracking = snapshot.CreateTrackingPoint(start, PointTrackingMode.Positive);
@@ -100,7 +94,7 @@ namespace SassyStudio.Intellisense
             session.Dismissed += OnSessionDismissed;
             session.Start();
 
-            CompletionSession = session;
+            Session = session;
             return !session.IsDismissed;
         }
 
@@ -121,7 +115,7 @@ namespace SassyStudio.Intellisense
 
         private bool InActiveCompletionSession()
         {
-            return CompletionSession != null && !CompletionSession.IsDismissed;
+            return Session != null && !Session.IsDismissed;
         }
 
         private void OnSessionDismissed(object sender, EventArgs e)
@@ -129,8 +123,8 @@ namespace SassyStudio.Intellisense
             var source = sender as ICompletionSession;
             source.Dismissed -= OnSessionDismissed;
 
-            if (source == CompletionSession)
-                CompletionSession = null;
+            if (source == Session)
+                Session = null;
         }
 
         SnapshotPoint? GetCaretPoint()
@@ -138,18 +132,26 @@ namespace SassyStudio.Intellisense
             return TextView.Caret.Position.Point.GetPoint(b => (!b.ContentType.IsOfType("projection")), PositionAffinity.Predecessor);
         }
 
-        private bool IsCompletionCharacter(char typed)
+        private bool ShouldAcceptSelected(VSCommandIdConstants command, char typed)
+        {
+            return command == VSCommandIdConstants.RETURN
+                || command == VSCommandIdConstants.TAB
+                || typed == ' ';
+        }
+
+        private bool IsCompletionTerminatorCharacter(char typed)
         {
             switch (typed)
             {
-                case '$':
-                case '!':
+                case ' ':
                 case ':':
-                case '@':
+                case ';':
+                case '{':
+                case '(':
                     return true;
+                default:
+                    return false;
             }
-
-            return char.IsLetterOrDigit(typed);
         }
 
         private bool IsCompletionStartCharacter(char c)
@@ -161,6 +163,7 @@ namespace SassyStudio.Intellisense
                 case ':':
                 case '@':
                 case '-':
+                case ' ':
                     return true;
             }
 

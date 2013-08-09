@@ -13,7 +13,7 @@ namespace SassyStudio.Intellisense
     {
     }
 
-    [Export(typeof(IMixinCompletionProvider))]
+    //[Export(typeof(IMixinCompletionProvider))]
     class MixinCompletionProvider : CompletionProviderBase, IMixinCompletionProvider
     {
         protected override StandardGlyphGroup Group { get { return StandardGlyphGroup.GlyphGroupMethod; } }

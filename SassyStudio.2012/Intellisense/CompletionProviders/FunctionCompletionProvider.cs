@@ -14,7 +14,7 @@ namespace SassyStudio.Intellisense
     {
     }
 
-    [Export(typeof(IFunctionCompletionProvider))]
+    //[Export(typeof(IFunctionCompletionProvider))]
     class FunctionCompletionProvider : CompletionProviderBase, IFunctionCompletionProvider
     {
         protected override StandardGlyphGroup Group { get { return StandardGlyphGroup.GlyphGroupMethod; } }

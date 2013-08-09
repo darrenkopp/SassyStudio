@@ -10,8 +10,8 @@ using SassyStudio.Compiler.Parsing;
 
 namespace SassyStudio.Intellisense
 {
-    [Export(typeof(ISassCompletionProvider))]
-    [ContentType(ScssContentTypeDefinition.ScssContentType)]
+    //[Export(typeof(ISassCompletionProvider))]
+    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
     class VariableModifierCompletionAugmenter : CompletionAugmenterBase
     {
         public override IEnumerable<Completion> GetBuilder(SassCompletionContext context)
