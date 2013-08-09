@@ -22,7 +22,7 @@ namespace SassyStudio.Intellisense
 
         public override IEnumerable<Completion> GetBuilder(SassCompletionContext context)
         {
-            if (IsValueContext(context.Current) || IsValueContext(context.Current.Parent))
+            if (IsValueContext(context.Current) || (context.Current != null && IsValueContext(context.Current.Parent)))
             {
                 bool valid = false;
                 var property = context.Current as PropertyDeclaration;
