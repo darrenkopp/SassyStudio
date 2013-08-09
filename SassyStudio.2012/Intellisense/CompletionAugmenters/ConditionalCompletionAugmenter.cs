@@ -10,8 +10,8 @@ using SassyStudio.Compiler.Parsing;
 
 namespace SassyStudio.Intellisense
 {
-    [Export(typeof(ISassCompletionAugmenter))]
-    [ContentType(ScssContentTypeDefinition.ScssContentType)]
+    //[Export(typeof(ISassCompletionAugmenter))]
+    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
     class ConditionalCompletionAugmenter : CompletionAugmenterBase
     {
         readonly Lazy<IEnumerable<Completion>> Keywords;

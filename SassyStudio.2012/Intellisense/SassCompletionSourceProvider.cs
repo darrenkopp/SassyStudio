@@ -17,12 +17,12 @@ namespace SassyStudio.Intellisense
         [Import]
         internal ITextStructureNavigatorSelectorService TextNavigator { get; set; }
 
-        [ImportMany(typeof(ISassCompletionAugmenter))]
-        private IEnumerable<ISassCompletionAugmenter> CompletionAugmenters { get; set; }
+        [Import]
+        private ICompletionManagerFactory ManagerFactory { get; set; }
 
         public ICompletionSource TryCreateCompletionSource(ITextBuffer textBuffer)
         {
-            return new SassCompletionSource(textBuffer, CompletionAugmenters, TextNavigator);
+            return new SassCompletionSource(ManagerFactory.CreateFrom(textBuffer), TextNavigator);
         }
     }
 }
