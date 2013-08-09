@@ -38,6 +38,10 @@ namespace SassyStudio.Intellisense
 
                 yield return SassCompletionContextType.IncludeDirectiveMixinArgumentValue;
             }
+            else if (current is MixinDefinitionBody)
+            {
+                yield return SassCompletionContextType.MixinBody;
+            }
         }
     }
 }

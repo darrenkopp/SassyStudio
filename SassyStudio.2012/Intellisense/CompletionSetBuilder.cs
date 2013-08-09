@@ -39,13 +39,15 @@ namespace SassyStudio.Intellisense
 
         private IEnumerable<Completion> Build(SassCompletionContext context, IEnumerable<SassCompletionContextType> types)
         {
+            var observed = new HashSet<string>();
             foreach (var type in types)
             {
                 IEnumerable<ICompletionValueProvider> providers;
                 if (ProviderRegistry.TryGetValue(type, out providers))
                 {
                     foreach (var value in providers.SelectMany(provider => provider.GetCompletions(type, context)))
-                        yield return value;
+                        if (observed.Add(value.DisplayText))
+                            yield return value;
                 }
             }
         }
