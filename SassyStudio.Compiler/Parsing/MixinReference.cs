@@ -13,8 +13,8 @@ namespace SassyStudio.Compiler.Parsing
         public AtRule Rule { get; protected set; }
         public MixinName Name { get; protected set; }
         public TokenItem OpenBrace { get; protected set; }
-
         public TokenItem CloseBrace { get; protected set; }
+        public MixinContentBlock Content { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
         public IReadOnlyCollection<FunctionArgument> Arguments { get { return _Arguments; } }
 
@@ -49,6 +49,16 @@ namespace SassyStudio.Compiler.Parsing
 
                 if (stream.Current.Type == TokenType.CloseFunctionBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
+
+                if (stream.Current.Type == TokenType.OpenCurlyBrace)
+                {
+                    var content = new MixinContentBlock();
+                    if (content.Parse(itemFactory, text, stream))
+                    {
+                        Content = content;
+                        Children.Add(content);
+                    }
+                }
 
                 if (stream.Current.Type == TokenType.Semicolon)
                     Semicolon = Children.AddCurrentAndAdvance(stream);
