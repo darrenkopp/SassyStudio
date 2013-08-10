@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class ClassName : ComplexItem
+    public class ClassName : ComplexItem
     {
         public ClassName(SassClassifierType classifierType = SassClassifierType.ClassName)
         {

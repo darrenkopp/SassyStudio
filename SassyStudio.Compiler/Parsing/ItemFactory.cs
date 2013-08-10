@@ -155,8 +155,14 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateBang(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
-            if (ImportanceModifier.IsImportanceModifier(text, stream))
+            if (BangModifier.IsValidModifier(text, stream.Current, "default"))
+                return new DefaultModifier();
+
+            if (BangModifier.IsValidModifier(text, stream.Current, "important"))
                 return new ImportanceModifier();
+
+            if (BangModifier.IsValidModifier(text, stream.Current, "optional"))
+                return new OptionalModifier();
 
             if (VariableName.IsVariable(text, stream))
                 return CreateVariableDefinitionOrReference(parent, text, stream);

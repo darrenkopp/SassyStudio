@@ -17,6 +17,10 @@ namespace SassyStudio.Intellisense
             {
                 yield return SassCompletionContextType.MixinDirective;
             }
+            else if (current is RuleBlock)
+            {
+                yield return SassCompletionContextType.IncludeDirective;
+            }
             else if (current is MixinReference)
             {
                 var reference = current as MixinReference;

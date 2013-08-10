@@ -17,7 +17,7 @@ namespace SassyStudio.Compiler.Parsing
         public VariableName Name { get; protected set; }
         public TokenItem Colon { get; protected set; }
         public ParseItemList Values { get; protected set; }
-        public ImportanceModifier Modifier { get; protected set; }
+        public DefaultModifier Modifier { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
         public override bool IsValid { get { return Name != null && Name.IsValid; } }
 
@@ -43,11 +43,14 @@ namespace SassyStudio.Compiler.Parsing
                 }
             }
 
-            if (ImportanceModifier.IsImportanceModifier(text, stream))
+            if (stream.Current.Type == TokenType.Bang)
             {
-                Modifier = new ImportanceModifier();
-                Modifier.Parse(itemFactory, text, stream);
-                Children.Add(Modifier);
+                var modifier = new DefaultModifier();
+                if (modifier.Parse(itemFactory, text, stream))
+                {
+                    Modifier = modifier;
+                    Children.Add(modifier);
+                }
             }
 
             if (stream.Current.Type == TokenType.Semicolon)

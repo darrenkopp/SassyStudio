@@ -16,6 +16,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public PropertyName Name { get; protected set; }
         public TokenItem Colon { get; protected set; }
+        public ImportanceModifier Modifier { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
         public ParseItemList Values { get; protected set; }
 
@@ -49,6 +50,16 @@ namespace SassyStudio.Compiler.Parsing
                     var block = itemFactory.CreateSpecific<NestedPropertyBlock>(this, text, stream);
                     if (block.Parse(itemFactory, text, stream))
                         Children.Add(block);
+                }
+
+                if (stream.Current.Type == TokenType.Bang)
+                {
+                    var modifier = new ImportanceModifier();
+                    if (modifier.Parse(itemFactory, text, stream))
+                    {
+                        Modifier = modifier;
+                        Children.Add(modifier);
+                    }
                 }
 
                 if (stream.Current.Type == TokenType.Semicolon)

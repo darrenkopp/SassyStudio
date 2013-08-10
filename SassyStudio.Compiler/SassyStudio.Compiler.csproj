@@ -41,6 +41,8 @@
     <Compile Include="IParsingContext.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="ITextProvider.cs" />
+    <Compile Include="Parsing\BangModifier.cs" />
+    <Compile Include="Parsing\DefaultModifier.cs" />
     <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
     <Compile Include="Lexing\ILexer.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Parsing\MixinReference.cs" />
     <Compile Include="Parsing\NamedFunctionArgument.cs" />
     <Compile Include="Parsing\NestedPropertyBlock.cs" />
+    <Compile Include="Parsing\OptionalModifier.cs" />
     <Compile Include="Parsing\ParseItem.cs" />
     <Compile Include="Parsing\ParseItemList.cs" />
     <Compile Include="Parsing\Parser.cs" />
