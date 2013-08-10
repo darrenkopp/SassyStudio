@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    class ExtendDirective : ComplexItem
+    public class ExtendDirective : ComplexItem
     {
         public AtRule Rule { get; protected set; }
-        public ClassName ExtensionClass { get; set; }
+        public ClassName ExtensionClass { get; protected set; }
+        public OptionalModifier Modifier { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
@@ -25,6 +26,16 @@ namespace SassyStudio.Compiler.Parsing
                 {
                     ExtensionClass = name;
                     Children.Add(name);
+                }
+
+                if (stream.Current.Type == TokenType.Bang)
+                {
+                    var modifier = new OptionalModifier();
+                    if (modifier.Parse(itemFactory, text, stream))
+                    {
+                        Modifier = modifier;
+                        Children.Add(modifier);
+                    }
                 }
 
                 if (stream.Current.Type == TokenType.Semicolon)

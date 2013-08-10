@@ -77,6 +77,7 @@
     <Compile Include="Intellisense\CompletionProviders\VariableCompletionProvider.cs" />
     <Compile Include="Intellisense\CompletionSetBuilder.cs" />
     <Compile Include="Intellisense\ContextProviders\ConditionalContextProvider.cs" />
+    <Compile Include="Intellisense\ContextProviders\ExtendContextProvider.cs" />
     <Compile Include="Intellisense\ContextProviders\MixinContextProvider.cs" />
     <Compile Include="Intellisense\ContextProviders\UserFunctionContextProvider.cs" />
     <Compile Include="Intellisense\ContextProviders\VariableDefinitionContextProvider.cs" />

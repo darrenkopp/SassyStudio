@@ -44,7 +44,7 @@ namespace SassyStudio.Compiler.Parsing
             if (stream.Current.Type == TokenType.Dollar || stream.Current.Type == TokenType.Bang)
             {
                 var name = stream.Peek(1);
-                if (name.Type == TokenType.Identifier && !ImportanceModifier.IsImportanceModifier(text, stream))
+                if (name.Type == TokenType.Identifier)
                     return true;
             }
 
