@@ -179,6 +179,7 @@ namespace SassyStudio.Compiler.Parsing
                 switch (ruleName)
                 {
                     case "mixin": return new MixinDefinition();
+                    case "content": return new ContentDirective();
                     case "include": return new MixinReference();
                     case "function": return new UserFunctionDefinition();
                     case "import": return new ImportDirective();
