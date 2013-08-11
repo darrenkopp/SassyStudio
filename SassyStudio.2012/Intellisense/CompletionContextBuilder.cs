@@ -21,6 +21,8 @@ namespace SassyStudio.Intellisense
             var position = span.GetStartPoint(tree.SourceText).Position;
 
             var current = tree.Items.FindItemContainingPosition(position);
+            if (current != null && current is TokenItem)
+                current = current.Parent;
             var path = CreateTraversalPath(current);
 
             return new SassCompletionContext(tree.SourceText, span, current, path);
