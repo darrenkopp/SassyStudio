@@ -150,7 +150,7 @@ namespace SassyStudio.Editor
             lock (locker)
             {
                 Tree = current;
-                DumpTree(current.Items, 0);
+                //DumpTree(current.Items, 0);
             }
         }
 
