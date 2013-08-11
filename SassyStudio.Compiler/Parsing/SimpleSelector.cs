@@ -1,46 +1,58 @@
-﻿using System;
+﻿using SassyStudio.Compiler.Parsing.Selectors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class SimpleSelector : ComplexItem
+    public abstract class SimpleSelector : ComplexItem
     {
-        public SimpleSelector()
-        {
-            SelectorParts = new ParseItemList();
-        }
+        public SelectorCombinator Combinator { get; protected set; }
 
-        public ParseItemList SelectorParts { get; protected set; }
-        public TokenItem Comma { get; protected set; }
+        protected abstract bool ParseSelectorToken(IItemFactory itemFactory, ITextProvider text, ITokenStream stream);
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            while (!IsTerminator(stream.Current.Type))
-            {
-                ParseItem part;
-                if (!itemFactory.TryCreateParsedOrDefault(this, text, stream, out part))
-                    break;
-
-                SelectorParts.Add(part);
-                Children.Add(part);
-            }
+            if (ParseSelectorToken(itemFactory, text, stream))
+                ParseCombinator(itemFactory, text, stream);
 
             return Children.Count > 0;
         }
 
-        private bool IsTerminator(TokenType type)
+        protected virtual bool ParseCombinator(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            switch (type)
+            SelectorCombinator combinator = null;
+            switch (stream.Current.Type)
             {
-                case TokenType.EndOfFile:
-                case TokenType.Comma:
-                case TokenType.OpenCurlyBrace:
-                    return true;
-                default:
-                    return false;
+                case TokenType.GreaterThan:
+                    combinator = new ChildCombinator();
+                    break;
+                case TokenType.Plus:
+                    combinator = new AdjacentSiblingCombinator();
+                    break;
+                case TokenType.Tilde:
+                    combinator = new GeneralSiblingCombinator();
+                    break;
             }
+
+            if (combinator != null)
+            {
+                if (combinator.Parse(itemFactory, text, stream))
+                {
+                    Children.Add(combinator);
+                    Combinator = combinator;
+                }
+            }
+            else if (stream.Current.Type != TokenType.OpenCurlyBrace)
+            {
+                // whitespace only combinator means no adding to children or parsing
+                // we just want to know that there was a combinator
+                if (stream.Current.Start >= (stream.Peek(-1).End + 1))
+                    Combinator = new DescendantCombinator();
+            }
+
+            return Combinator != null;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SassyStudio.Compiler.Parsing.Selectors;
 
 namespace SassyStudio.Compiler.Parsing
 {
@@ -14,7 +15,8 @@ namespace SassyStudio.Compiler.Parsing
         {
             return new Dictionary<Type, CreateParseItem>
             {
-                { typeof(FunctionArgument), CreateFunctionArgument }
+                { typeof(FunctionArgument), CreateFunctionArgument },
+                { typeof(SimpleSelector), CreateSimpleSelector },
             };
         }
 
@@ -31,6 +33,31 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (parent is MixinReference && VariableName.IsVariable(text, stream))
                 return new NamedFunctionArgument();
+
+            return null;
+        }
+
+        static ParseItem CreateSimpleSelector(ComplexItem parent, IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
+        {
+            switch (stream.Current.Type)
+            {
+                case TokenType.Asterisk: return new UniversalSelector();
+                case TokenType.Period: return new ClassSelector();
+                case TokenType.Hash: return new IdSelector();
+                case TokenType.Identifier: return new TypeSelector();
+                case TokenType.OpenBrace: return new AttributeSelector();
+                case TokenType.DoubleColon: return new PseudoElementSelector();
+            }
+
+            if (stream.Current.Type == TokenType.Colon)
+            {
+                var next = stream.Peek(1);
+                switch (next.Type)
+                {
+                    case TokenType.Identifier: return new PseudoClassSelector();
+                    case TokenType.Function: return new PseudoFunctionSelector();
+                }
+            }
 
             return null;
         }

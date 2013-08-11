@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using SassyStudio.Compiler.Lexing;
+using SassyStudio.Compiler.Parsing.Selectors;
 
 namespace SassyStudio.Compiler.Parsing
 {
@@ -33,6 +34,25 @@ namespace SassyStudio.Compiler.Parsing
         public T CreateSpecific<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem, new()
         {
             return (T)Create<T>(parent, text, stream);
+        }
+
+        public bool TryCreateParsed<T>(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item) where T : ParseItem
+        {
+            item = null;
+
+            if (ExternalItemFactory != null)
+                item = ExternalItemFactory.CreateItem(this, text, stream, parent, typeof(T));
+
+            if (item == null && TryCreate(parent, text, stream, out item))
+            {
+                if (!(item is T))
+                    item = null;
+            }
+
+            if (item != null)
+                return item.Parse(this, text, stream);
+
+            return false;
         }
 
         public bool TryCreate(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item)
@@ -71,25 +91,80 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Function:
                     item = CreateFunction(parent, text, stream);
                     break;
+                case TokenType.GreaterThan:
+                case TokenType.Plus:
+                case TokenType.Tilde:
+                case TokenType.Colon:
+                case TokenType.DoubleColon:
+                case TokenType.Ampersand:
+                case TokenType.OpenBrace:
                 case TokenType.Hash:
-                    item = CreateHash(parent, text, stream);
-                    break;
-                case TokenType.ParentReference:
-                    item = new TokenItem(SassClassifierType.ParentReference);
-                    break;
-                case TokenType.OpenCurlyBrace:
-                    item = new BlockItem();
-                    break;
                 case TokenType.Period:
-                    item = CreatePeriod(parent, text, stream);
-                    break;
                 case TokenType.Identifier:
                 case TokenType.OpenInterpolation:
-                    item = CreateIdentLikeItem(parent, text, stream);
+                    item = CreateBestFittingItem(parent, text, stream);
                     break;
             }
 
             return item != null;
+        }
+
+        private ParseItem CreateBestFittingItem(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            // handle selectors
+            if (parent is SelectorGroup)
+                return CreateSelectorComponent(parent, text, stream);
+
+            // handle possible property declaration
+            if (parent is RuleBlock && PropertyDeclaration.IsDeclaration(stream))
+                return new PropertyDeclaration();
+
+            if ((parent is Stylesheet || parent is RuleBlock) && IsRuleSet(parent, stream))
+                return new RuleSet();
+
+            return CreateValueItem(parent, text, stream);
+        }
+
+        private ParseItem CreateValueItem(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            switch (stream.Current.Type)
+            {
+                case TokenType.OpenInterpolation: return new StringInterpolation();
+                case TokenType.Hash: return CreateHash(parent, text, stream);
+            }
+
+            // there isn't a more specific representation of token, so just emit normal token item
+            return new TokenItem();
+        }
+
+        private ParseItem CreateSelectorComponent(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            switch (stream.Current.Type)
+            {
+                case TokenType.Asterisk: return new UniversalSelector();
+                case TokenType.Period: return new ClassSelector();
+                case TokenType.Hash: return new IdSelector();
+                case TokenType.Identifier: return new TypeSelector();
+                case TokenType.OpenBrace: return new AttributeSelector();
+                case TokenType.DoubleColon: return new PseudoElementSelector();
+                case TokenType.GreaterThan: return new ChildCombinator();
+                case TokenType.Plus: return new AdjacentSiblingCombinator();
+                case TokenType.Tilde: return new GeneralSiblingCombinator();
+                case TokenType.Ampersand: return new ParentReferenceSelector();
+                case TokenType.OpenInterpolation: return new StringInterpolationSelector();
+            }
+
+            if (stream.Current.Type == TokenType.Colon)
+            {
+                var next = stream.Peek(1);
+                switch (next.Type)
+                {
+                    case TokenType.Identifier: return new PseudoClassSelector();
+                    case TokenType.Function: return new PseudoFunctionSelector();
+                }
+            }
+
+            return null;
         }
 
         public bool TryCreateParsedOrDefault(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item)
@@ -101,48 +176,6 @@ namespace SassyStudio.Compiler.Parsing
                 item = null;
 
             return item != null;
-        }
-
-        private ParseItem CreateIdentLikeItem(ComplexItem parent, ITextProvider text, ITokenStream stream)
-        {
-            if (IsInValueContext(parent))
-                return CreateIdentLikeValue(parent, text, stream);
-
-            // check for list of selectors
-            if (RuleSet.IsRuleSet(stream))
-                return new RuleSet();
-
-            // check for property declaration
-            if (PropertyDeclaration.IsDeclaration(stream))
-                return new PropertyDeclaration();
-
-            if (stream.Current.Type == TokenType.OpenInterpolation)
-                return new StringInterpolation();
-
-            // normal identifier
-            return new TokenItem();
-        }
-
-        private bool IsInValueContext(ComplexItem parent)
-        {
-            if (parent == null)
-                return false;
-
-            return !(
-                   parent is Stylesheet
-                || parent is BlockItem
-            );
-        }
-
-        private ParseItem CreateIdentLikeValue(ComplexItem parent, ITextProvider text, ITokenStream stream)
-        {
-            switch (stream.Current.Type)
-            {
-                case TokenType.OpenInterpolation:
-                    return new StringInterpolation();
-                default:
-                    return new TokenItem();
-            }
         }
 
         private ParseItem CreateFunction(ComplexItem parent, ITextProvider text, ITokenStream stream)
@@ -199,9 +232,11 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateVariableDefinitionOrReference(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
-            if (stream.Peek(1).Type == TokenType.Identifier)
+            var name = stream.Peek(1);
+            if (name.Type == TokenType.Identifier && stream.Current.End == name.Start)
             {
-                if (stream.Peek(2).Type == TokenType.Colon)
+                var assignment = stream.Peek(2);
+                if (assignment.Type == TokenType.Colon || assignment.Type == TokenType.Equal)
                     return new VariableDefinition();
 
                 return new VariableReference();
@@ -221,14 +256,8 @@ namespace SassyStudio.Compiler.Parsing
         private ParseItem CreateHash(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
             var value = stream.Peek(1);
-            if (value.Type == TokenType.Identifier)
-            {
-                if (parent is Selector || parent is SimpleSelector)
-                    return new IdName();
-
-                if ((value.Length == 3 || value.Length == 6) && IsHex(text, value))
-                    return new HexColorValue();
-            }
+            if (value.Type == TokenType.Identifier && (value.Length == 3 || value.Length == 6) && IsHex(text, value))
+                return new HexColorValue();
 
             return new TokenItem();
         }
@@ -244,6 +273,67 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return true;
+        }
+
+        static bool IsRuleSet(ComplexItem parent, ITokenStream stream)
+        {
+            bool validStart = false;
+            switch (stream.Current.Type)
+            {
+                case TokenType.Asterisk:
+                case TokenType.Identifier:
+                case TokenType.OpenBrace:
+                case TokenType.OpenInterpolation:
+                    validStart = true;
+                    break;
+                case TokenType.Period:
+                case TokenType.Hash:
+                    var next = stream.Peek(1);
+                    validStart = next.Type == TokenType.Identifier && next.Start == stream.Current.End;
+                    break;
+                // nested combinators and pseudo selectors
+                case TokenType.Ampersand:
+                case TokenType.GreaterThan:
+                case TokenType.Plus:
+                case TokenType.Tilde:
+                case TokenType.Colon:
+                case TokenType.DoubleColon:
+                    validStart = parent is RuleBlock;
+                    break;
+            }
+
+            if (validStart)
+            {
+                var next = stream.Peek(1);
+                switch (next.Type)
+                {
+                    case TokenType.OpenCurlyBrace:
+                    case TokenType.EndOfFile:
+                    case TokenType.Comma:
+                        return true;
+                    case TokenType.OpenBrace:
+                    case TokenType.GreaterThan:
+                    case TokenType.Plus:
+                    case TokenType.Tilde:
+                        // allow combinators or attribute selector unless they stack
+                        return stream.Current.Type != next.Type;
+                    case TokenType.Colon:
+                    case TokenType.DoubleColon:
+                    case TokenType.Hash:
+                    case TokenType.Period:
+                    case TokenType.Identifier:
+                    case TokenType.OpenInterpolation:
+                        // identifier must be exactly after (#id or .class) or with whitespace (html body)
+                        // psudeo selectors / elements are same basic situation
+                        return next.Start >= stream.Current.End;
+                    case TokenType.Ampersand:
+                    default:
+                        // anything else including whitespace
+                        return next.Start > stream.Current.End;
+                }
+            }
+
+            return false;
         }
     }
 }

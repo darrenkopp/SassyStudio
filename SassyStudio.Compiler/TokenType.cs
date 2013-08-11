@@ -50,7 +50,7 @@ namespace SassyStudio
         UnicodeRange,
         Function,
         Bang,
-        ParentReference,
+        Ampersand,
         OpenInterpolation,
         CloseInterpolation,
         LessThan,
@@ -60,6 +60,8 @@ namespace SassyStudio
         GreaterThanEqual,
         LessThanEqual,
         Equal,
-        DoubleColon
+        DoubleColon,
+        PrefixMatch,
+        Caret
     }
 }

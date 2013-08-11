@@ -57,7 +57,7 @@ namespace SassyStudio.Compiler.Parsing
             while (IsValidNameComponent(stream.Current.Type))
             {
                 valid = true;
-                if (stream.Advance().Start != (lastToken.Start + lastToken.Length))
+                if (stream.Advance().Start != lastToken.End)
                     break;
 
                 lastToken = stream.Current;

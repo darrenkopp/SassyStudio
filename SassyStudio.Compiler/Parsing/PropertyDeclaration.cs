@@ -86,20 +86,23 @@ namespace SassyStudio.Compiler.Parsing
         {
             int start = stream.Position;
             bool valid = false;
-            var last = stream.Current;
-            while (!IsValueTerminator(stream.Advance().Type))
+            if (PropertyName.IsValidName(stream))
             {
-                // have to be sequential tokens for valid property name
-                if (stream.Current.Start != (last.Start + last.Length))
-                    break;
-
-                if (stream.Current.Type == TokenType.Colon)
+                var last = stream.Current;
+                while (!IsValueTerminator(stream.Advance().Type))
                 {
-                    valid = true;
-                    break;
-                }
+                    // have to be sequential tokens for valid property name
+                    if (stream.Current.Start != last.End)
+                        break;
 
-                last = stream.Current;
+                    if (stream.Current.Type == TokenType.Colon)
+                    {
+                        valid = true;
+                        break;
+                    }
+
+                    last = stream.Current;
+                }
             }
 
             stream.SeekTo(start);

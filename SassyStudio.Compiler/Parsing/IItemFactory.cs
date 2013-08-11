@@ -11,6 +11,7 @@ namespace SassyStudio.Compiler.Parsing
         ParseItem Create<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem, new();
         T CreateSpecific<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem, new();
         bool TryCreate(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item);
+        bool TryCreateParsed<T>(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item) where T : ParseItem;
         bool TryCreateParsedOrDefault(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item);
     }
 }

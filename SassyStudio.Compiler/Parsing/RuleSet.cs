@@ -8,21 +8,24 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class RuleSet : ComplexItem
     {
-        readonly List<Selector> _Selectors = new List<Selector>(0);
+        readonly List<SelectorGroup> _Selectors = new List<SelectorGroup>(0);
 
-        public IReadOnlyCollection<Selector> Selectors { get { return _Selectors; } }
+        public IReadOnlyCollection<SelectorGroup> Selectors { get { return _Selectors; } }
         public RuleBlock Block { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             while (!IsSelectorTerminator(stream.Current.Type))
             {
-                var selector = itemFactory.CreateSpecific<Selector>(this, text, stream);
+                var selector = itemFactory.CreateSpecific<SelectorGroup>(this, text, stream);
                 if (!selector.Parse(itemFactory, text, stream))
                     break;
 
                 _Selectors.Add(selector);
                 Children.Add(selector);
+
+                if (stream.Current.Type == TokenType.Comma)
+                    Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
             }
 
             var block = itemFactory.CreateSpecific<RuleBlock>(this, text, stream);
@@ -38,35 +41,6 @@ namespace SassyStudio.Compiler.Parsing
         private bool IsSelectorTerminator(TokenType type)
         {
             return type == TokenType.EndOfFile || type == TokenType.OpenCurlyBrace;
-        }
-
-        public static bool IsRuleSet(ITokenStream stream)
-        {
-            int start = stream.Position;
-            var lastToken = stream.Current;
-            bool isValid = false;
-            while (stream.Current.Type != TokenType.EndOfFile)
-            {
-                var nextToken = stream.Advance();
-
-                // if we have colon that isn't immediately followed by something, can't be a selector part
-                if (lastToken.Type == TokenType.Colon && nextToken.Start != lastToken.End)
-                {
-                    isValid = false;
-                    break;
-                }
-
-                if (stream.Current.Type == TokenType.OpenCurlyBrace)
-                {
-                    isValid = true;
-                    break;
-                }
-
-                lastToken = stream.Current;
-            }
-
-            stream.SeekTo(start);
-            return isValid;
         }
     }
 }
