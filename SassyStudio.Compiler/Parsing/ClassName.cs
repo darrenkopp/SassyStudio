@@ -7,6 +7,11 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class ClassName : ComplexItem
     {
+        public ClassName() // <-- generic constraints can'thandle default values i guess
+            : this(SassClassifierType.ClassName)
+        {
+        }
+
         public ClassName(SassClassifierType classifierType = SassClassifierType.ClassName)
         {
             ClassifierType = classifierType;

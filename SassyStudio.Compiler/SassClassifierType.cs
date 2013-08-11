@@ -28,6 +28,10 @@ namespace SassyStudio
         Operator,
         ClassName,
         HexColor,
-        IdName
+        IdName,
+        ElementName,
+        PseudoElement,
+        PseudoClass,
+        SquareBrace
     }
 }

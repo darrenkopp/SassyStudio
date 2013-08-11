@@ -168,7 +168,7 @@ namespace SassyStudio.Compiler.Lexing
                     }
                     break;
                 case '&':
-                    type = TokenType.ParentReference;
+                    type = TokenType.Ampersand;
                     stream.Advance();
                     break;
                 case '>':
@@ -181,6 +181,15 @@ namespace SassyStudio.Compiler.Lexing
                     {
                         stream.Advance();
                         type = TokenType.DoubleEqual;
+                    }
+                    break;
+                case '^':
+                    type = TokenType.Caret;
+                    stream.Advance();
+                    if (stream.Current == '=')
+                    {
+                        type = TokenType.PrefixMatch;
+                        stream.Advance();
                     }
                     break;
                 default:

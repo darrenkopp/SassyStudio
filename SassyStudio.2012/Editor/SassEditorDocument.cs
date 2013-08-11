@@ -31,7 +31,9 @@ namespace SassyStudio.Editor
             Buffer = buffer;
             Buffer.ChangedLowPriority += OnBufferChanged;
 
-            Process(Buffer.CurrentSnapshot, new SingleTextChange(0, 0, Buffer.CurrentSnapshot.Length));
+            Process(Buffer.CurrentSnapshot, new SingleTextChange(0, 0, Buffer.CurrentSnapshot.Length)).ContinueWith(t =>
+            {
+            });
         }
 
         public event EventHandler<TreeChangedEventArgs> TreeChanged;
@@ -148,6 +150,21 @@ namespace SassyStudio.Editor
             lock (locker)
             {
                 Tree = current;
+                DumpTree(current.Items, 0);
+            }
+        }
+
+        private void DumpTree(ParseItemList items, int depth)
+        {
+            var indent = new string(' ', depth);
+            foreach (var item in items)
+            {
+                if (!(item is TokenItem))
+                    Logger.Log(string.Format("{0} {1}", indent, item.GetType().Name));
+
+                var complex = item as ComplexItem;
+                if (complex != null)
+                    DumpTree(complex.Children, depth + 1);
             }
         }
 
