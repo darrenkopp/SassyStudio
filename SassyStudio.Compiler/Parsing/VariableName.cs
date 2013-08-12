@@ -7,7 +7,7 @@ using SassyStudio.Compiler.Lexing;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class VariableName : ComplexItem
+    public class VariableName : SimplexItem
     {
         public VariableName(SassClassifierType classifierType)
         {
@@ -22,8 +22,8 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (IsVariable(text, stream))
             {
-                Prefix = Children.AddCurrentAndAdvance(stream, ClassifierType);
-                Name = Children.AddCurrentAndAdvance(stream, ClassifierType);
+                Prefix = Children.AddCurrentAndAdvance(stream);
+                Name = Children.AddCurrentAndAdvance(stream);
             }
 
             return Children.Count > 0;

@@ -22,8 +22,6 @@ namespace SassyStudio.Intellisense
         {
             var view = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
             view.Properties.GetOrCreateSingletonProperty(() => new CompletionHandler(CompletionBroker, textViewAdapter, view));
-            //if (view != null)
-            //    view.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(textViewAdapter, view, CompletionBroker));
         }
     }
 }

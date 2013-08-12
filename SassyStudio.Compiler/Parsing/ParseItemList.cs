@@ -12,7 +12,7 @@ namespace SassyStudio.Compiler.Parsing
         {
         }
 
-        public ComplexItem AutoParent { get; set; }
+        public ParseItem AutoParent { get; set; }
 
         public void TrimExcess()
         {
@@ -56,7 +56,7 @@ namespace SassyStudio.Compiler.Parsing
             if (match != null)
             {
                 // if match is container, search children for smaller container
-                var container = match as ComplexItem;
+                var container = match as IParseItemContainer;
                 if (container != null)
                     return container.Children.FindItemContainingPosition(position) ?? match;
 

@@ -35,10 +35,13 @@ namespace SassyStudio.Intellisense
                 return path;
 
             Logger.Log(string.Format("Current Type: {0}", item.GetType().Name));
-            var current = (item as ComplexItem) ?? item.Parent;
+            var current = item.Parent;
             while (current != null)
             {
-                path.AddLast(current);
+                // only consider complex items in path
+                if (current is ComplexItem)
+                    path.AddLast(current as ComplexItem);
+
                 current = current.Parent;
             }
 

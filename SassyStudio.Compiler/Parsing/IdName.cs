@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class IdName : ComplexItem
+    public class IdName : SimplexItem
     {
+        public IdName()
+        {
+            ClassifierType = SassClassifierType.IdName;
+        }
+
         public TokenItem Hash { get; protected set; }
         public TokenItem Name { get; protected set; }
 
@@ -15,8 +20,8 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (stream.Current.Type == TokenType.Hash && stream.Peek(1).Type == TokenType.Identifier)
             {
-                Hash = Children.AddCurrentAndAdvance(stream, SassClassifierType.IdName);
-                Name = Children.AddCurrentAndAdvance(stream, SassClassifierType.IdName);
+                Hash = Children.AddCurrentAndAdvance(stream);
+                Name = Children.AddCurrentAndAdvance(stream);
             }
 
             return Children.Count > 0;

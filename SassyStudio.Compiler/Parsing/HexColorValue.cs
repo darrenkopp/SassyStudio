@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class HexColorValue : ComplexItem
+    public class HexColorValue : SimplexItem
     {
         public TokenItem Hash { get; protected set; }
         public TokenItem Color { get; protected set; }
