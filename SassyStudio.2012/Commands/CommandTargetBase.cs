@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Microsoft.VisualStudio.Shell;
 
 namespace SassyStudio.Commands
 {
@@ -32,6 +33,7 @@ namespace SassyStudio.Commands
             }), DispatcherPriority.ApplicationIdle, null);
         }
 
+        protected virtual bool SupportsAutomation { get { return false; } }
         protected abstract bool IsEnabled();
         protected abstract bool Execute(uint commandId, uint execOptions, IntPtr pvaIn, IntPtr pvaOut);
 
@@ -45,12 +47,15 @@ namespace SassyStudio.Commands
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
         {
-            if (pguidCmdGroup == CommandGroupId && CommandIdSet.Contains(nCmdID))
+            if (SupportsAutomation || !VsShellUtilities.IsInAutomationFunction(SassyStudioPackage.Instance))
             {
-                bool result = Execute(nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                if (pguidCmdGroup == CommandGroupId && CommandIdSet.Contains(nCmdID))
+                {
+                    bool result = Execute(nCmdID, nCmdexecopt, pvaIn, pvaOut);
 
-                if (result)
-                    return VSConstants.S_OK;
+                    if (result)
+                        return VSConstants.S_OK;
+                }
             }
 
             return _NextCommandTarget.Exec(ref pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
