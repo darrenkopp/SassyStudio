@@ -13,7 +13,7 @@ namespace SassyStudio.Intellisense
         readonly ICompletionBroker CompletionBroker;
 
         public CompletionCommandHandler(IVsTextView adapter, IWpfTextView view, ICompletionBroker completionBroker)
-            : base(adapter, view, typeof(VSCommandIdConstants).GUID, (uint)VSCommandIdConstants.TYPECHAR, (uint)VSCommandIdConstants.TAB, (uint)VSCommandIdConstants.RETURN, (uint)VSCommandIdConstants.BACKSPACE, (uint)VSCommandIdConstants.DELETE, (uint)VSCommandIdConstants.SHOWMEMBERLIST)
+            : base(adapter, view, typeof(VSCommandIdConstants).GUID, (uint)VSCommandIdConstants.TYPECHAR, (uint)VSCommandIdConstants.TAB, (uint)VSCommandIdConstants.RETURN, (uint)VSCommandIdConstants.BACKSPACE, (uint)VSCommandIdConstants.DELETE, (uint)VSCommandIdConstants.SHOWMEMBERLIST, (uint)VSCommandIdConstants.COMPLETEWORD, (uint)VSCommandIdConstants.AUTOCOMPLETE)
         {
             CompletionBroker = completionBroker;
         }
