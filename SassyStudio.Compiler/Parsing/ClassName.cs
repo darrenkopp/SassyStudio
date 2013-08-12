@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class ClassName : ComplexItem
+    public class ClassName : SimplexItem
     {
         public ClassName() // <-- generic constraints can'thandle default values i guess
             : this(SassClassifierType.ClassName)

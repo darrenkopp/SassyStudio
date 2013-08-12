@@ -44,6 +44,7 @@
     <Compile Include="Parsing\BangModifier.cs" />
     <Compile Include="Parsing\ContentDirective.cs" />
     <Compile Include="Parsing\DefaultModifier.cs" />
+    <Compile Include="Parsing\IParseItemContainer.cs" />
     <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
     <Compile Include="Lexing\ILexer.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Parsing\Selectors\TypeSelector.cs" />
     <Compile Include="Parsing\Selectors\UniversalSelector.cs" />
     <Compile Include="Parsing\SimpleSelector.cs" />
+    <Compile Include="Parsing\SimplexItem.cs" />
     <Compile Include="Parsing\StringInterpolation.cs" />
     <Compile Include="Parsing\SystemFunctionReference.cs" />
     <Compile Include="Parsing\UserFunctionBody.cs" />

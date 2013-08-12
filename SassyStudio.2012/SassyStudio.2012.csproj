@@ -60,7 +60,6 @@
     <Compile Include="Editor\TreeChangedEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="Intellisense\CompletionCommandHandler.cs" />
     <Compile Include="Intellisense\CompletionContextBuilder.cs" />
     <Compile Include="Intellisense\CompletionHandler.cs" />
     <Compile Include="Intellisense\CompletionManager.cs" />

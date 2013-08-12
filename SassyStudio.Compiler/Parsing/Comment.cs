@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public abstract class Comment : ComplexItem
+    public abstract class Comment : SimplexItem
     {
         public Comment()
         {
