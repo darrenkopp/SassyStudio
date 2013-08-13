@@ -41,9 +41,11 @@
     <Compile Include="IParsingContext.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="ITextProvider.cs" />
+    <Compile Include="Parsing\AtRuleDirective.cs" />
     <Compile Include="Parsing\BangModifier.cs" />
     <Compile Include="Parsing\ContentDirective.cs" />
     <Compile Include="Parsing\DefaultModifier.cs" />
+    <Compile Include="Parsing\FontFaceDirective.cs" />
     <Compile Include="Parsing\IParseItemContainer.cs" />
     <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
@@ -89,6 +91,10 @@
     <Compile Include="Parsing\ItemFactory.cs" />
     <Compile Include="Parsing\ITokenStream.cs" />
     <Compile Include="Parsing\ListItem.cs" />
+    <Compile Include="Parsing\MediaQuery.cs" />
+    <Compile Include="Parsing\MediaQueryBlock.cs" />
+    <Compile Include="Parsing\MediaQueryDirective.cs" />
+    <Compile Include="Parsing\MediaQueryExpression.cs" />
     <Compile Include="Parsing\MixinContentBlock.cs" />
     <Compile Include="Parsing\MixinDefinition.cs" />
     <Compile Include="Parsing\MixinDefinitionBody.cs" />

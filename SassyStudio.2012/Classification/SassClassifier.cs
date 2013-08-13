@@ -34,19 +34,14 @@ namespace SassyStudio.Classification
             if (tree == null)
                 return results;
 
-
-            var open = tree.Items.FindItemContainingPosition(span.Start.Position);
-            for (var current = open; current != null; current = current.InOrderSuccessor())
+            foreach (var item in Traverse(tree.Items, span.Start.Position, span.End.Position))
             {
-                if (current.Start > span.End.Position)
-                    break;
-
-                var s = new Span(current.Start, current.Length);
+                var s = new Span(item.Start, item.Length);
                 if (span.IntersectsWith(s))
                 {
-                    var classificationType = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
-                    if (classificationType != null)
-                        results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), classificationType));
+                    var type = ClassifierContextCache.Get(item.ClassifierType).GetClassification(Registry);
+                    if (type != null)
+                        results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), type));
                 }
             }
 
@@ -62,17 +57,22 @@ namespace SassyStudio.Classification
                 handler(this, new ClassificationChangedEventArgs(new SnapshotSpan(e.Tree.SourceText, new Span(e.ChangeStart, e.ChangeEnd - e.ChangeStart))));
         }
 
-        private IEnumerable<ParseItem> Traverse(IEnumerable<ParseItem> items, int start, int end)
+        private IEnumerable<ParseItem> Traverse(ParseItemList items, int start, int end)
         {
-            foreach (var item in items.Where(x => x.Start <= end && x.End >= start))
+            foreach (var item in items)
             {
-                yield return item;                
-
-                // depth first children
-                var complex = item as ComplexItem;
-                if (complex != null)
-                    foreach (var child in Traverse(complex.Children, start, end))
-                        yield return child;
+                if (item.Start <= end && item.End >= start)
+                {
+                    if (item is ComplexItem)
+                    {
+                        foreach (var child in Traverse((item as ComplexItem).Children, start, end))
+                            yield return child;
+                    }
+                    else
+                    {
+                        yield return item;
+                    }
+                }
             }
         }
     }

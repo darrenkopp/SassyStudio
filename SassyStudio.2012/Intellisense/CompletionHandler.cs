@@ -30,10 +30,6 @@ namespace SassyStudio.Intellisense
             if (command == VSCommand.TYPECHAR)
                 typed = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
 
-            // if we are ignoring command, then don't handle
-            if (Ignore(command, typed))
-                return false;
-
             if (command == VSCommand.CANCEL)
                 return Cancel();
 
@@ -44,7 +40,6 @@ namespace SassyStudio.Intellisense
             // show member list (ie show me completion right where i'm at)
             if (command == VSCommand.SHOWMEMBERLIST)
                 return ShowMemberList();
-
 
             // attempt to complete session
             if (IsCompletionRequested(command, typed))
@@ -57,8 +52,19 @@ namespace SassyStudio.Intellisense
                     return completed;
             }
 
+            // if we are ignoring command, then don't handle
+            if (Ignore(command, typed))
+                return false;
+
             // pass on command to next handler (aka send character to next command handler)
             var result = ExecuteNext(command, options, pvaIn, pvaOut);
+
+            // filter on backspace / delete
+            if (command == VSCommand.BACKSPACE || command == VSCommand.DELETE)
+            {
+                Filter(Session);
+                return result;
+            }
 
             // if a character was typed that starts a session, then show completion session
             if (command == VSCommand.TYPECHAR && IsStartCharacter(typed))
@@ -73,7 +79,7 @@ namespace SassyStudio.Intellisense
         private bool Cancel()
         {
             bool dismissed = Dismiss(Session);
-            
+
             // ignore completion events until we break out of current context
             if (dismissed)
                 IsIgnoring = true;
@@ -84,21 +90,38 @@ namespace SassyStudio.Intellisense
         private bool AutoComplete()
         {
             if (ShowCompletion(adjust: true))
-                return Complete(force: false);
+            {
+                Session.Recalculate();
+                Filter(Session);
+                return Complete(force: true);
+            }
 
             return false;
         }
 
         private bool ShowMemberList()
         {
-            return ShowCompletion(adjust: true);
+            if (ShowCompletion(adjust: true))
+            {
+                Session.Recalculate();
+                Filter(Session);
+                return true;
+            }
+
+            return false;
         }
 
         private void Filter(ICompletionSession session)
         {
             if (IsSessionActive(session))
             {
-                session.Filter();
+                session.SelectedCompletionSet.Filter();
+                session.SelectedCompletionSet.SelectBestMatch();
+                //session.Recalculate();
+
+                // collapse session
+                if (session.SelectedCompletionSet.Completions.Count == 0)
+                    session.Collapse();
 
                 // REVIEW: should we do our own filtering so that it doesn't dismiss session?
                 //session.SelectedCompletionSet.SelectBestMatch();
@@ -128,6 +151,9 @@ namespace SassyStudio.Intellisense
             // session will dismiss automatically if there aren't any valid options
             if (!session.IsDismissed)
             {
+                // reset ignoring
+                IsIgnoring = false;
+
                 Session = session;
                 return true;
             }
@@ -142,10 +168,12 @@ namespace SassyStudio.Intellisense
                 // only commit if something selected or forced to commit
                 if (Session.SelectedCompletionSet.SelectionStatus.IsSelected || force)
                 {
+                    Logger.Log("Committed.");
                     Session.Commit();
                     return true;
                 }
 
+                Logger.Log("dismissed");
                 // we couldn't commit, so dismiss
                 Session.Dismiss();
             }
@@ -166,11 +194,15 @@ namespace SassyStudio.Intellisense
 
         private void OnSessionDismissed(object sender, EventArgs e)
         {
+            Logger.Log("Dismissed event.");
             var session = sender as ICompletionSession;
             session.Dismissed -= OnSessionDismissed;
 
             if (Session == session)
                 Session = null;
+
+            // unflag ignoring
+            IsIgnoring = false;
         }
 
         private bool IsSessionActive(ICompletionSession session)
@@ -221,38 +253,51 @@ namespace SassyStudio.Intellisense
         {
             switch (typed)
             {
-                case '-':
-                    return false;
+                case ' ': return IsSessionActive(Session) && !Session.CompletionSets.Any(set => set.Completions.Any(x => x.DisplayText.Contains(' ')));
                 default:
-                    return !char.IsLetterOrDigit(typed);
+                    return !IsStartCharacter(typed);
             }
         }
 
         private int GetCompletionStart(ITextSnapshot snapshot, ITextSnapshotLine line, int position)
         {
             Logger.Log(string.Format("Scanning for word boundary. Line = '{0}', Position = '{1}'", line.LineNumber, position));
-            int end = position;
-            while (position > line.Start.Position)
+            int start = position--;
+            while (start > line.Start.Position)
             {
                 // stop once we hit whitespace
-                if (char.IsWhiteSpace(snapshot[position--]))
+                if (char.IsWhiteSpace(snapshot[--start]))
                 {
-                    position++;
+                    start++;
                     break;
                 }
             }
 
-            Logger.Log(string.Format("Returning applicable span [{0} - {1}]", position, end));
-            return position;
+            start = Math.Max(start, line.Start.Position);
+
+            Logger.Log(string.Format("Start of completion set to {0}", start));
+            return start;
         }
 
         private bool Ignore(VSCommand command, char typed)
         {
             // if we are ignoring and get a whitespace character, then stop ignoring
-            if (IsIgnoring && char.IsWhiteSpace(typed))
+            if (IsIgnoring && ShouldStopIgnoring(command, typed))
                 IsIgnoring = false;
 
             return IsIgnoring;
+        }
+
+        private bool ShouldStopIgnoring(VSCommand command, char typed)
+        {
+            switch (command)
+            {
+                case VSCommand.RETURN:
+                case VSCommand.TAB:
+                    return true;
+                default:
+                    return IsSessionActive(Session) || char.IsWhiteSpace(typed);
+            }
         }
 
         protected override IEnumerable<VSCommand> SupportedCommands

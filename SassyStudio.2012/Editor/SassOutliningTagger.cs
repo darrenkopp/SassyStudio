@@ -77,15 +77,19 @@ namespace SassyStudio.Editor
 
         IEnumerable<BlockItem> GetBlocks(ParseItemList items, int start, int end)
         {
-            foreach (var complex in items.OfType<ComplexItem>())
+            foreach (var item in items)
             {
-                if (complex.Start <= end && complex.End >= start)
+                if (item.Start <= end && item.End >= start)
                 {
-                    foreach (var child in GetBlocks(complex.Children, start, end))
-                        yield return child;
+                    var container = item as ComplexItem;
+                    if (container != null)
+                    {
+                        if (container is BlockItem)
+                            yield return container as BlockItem;
 
-                    if (complex is BlockItem)
-                        yield return complex as BlockItem;
+                        foreach (var child in GetBlocks(container.Children, start, end))
+                            yield return child;
+                    }
                 }
             }
         }
