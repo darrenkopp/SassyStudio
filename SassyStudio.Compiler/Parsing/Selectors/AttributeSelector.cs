@@ -25,7 +25,7 @@ namespace SassyStudio.Compiler.Parsing.Selectors
                     Operator = Children.AddCurrentAndAdvance(stream);
 
                 if (stream.Current.Type == TokenType.String || stream.Current.Type == TokenType.BadString)
-                    Value = Children.AddCurrentAndAdvance(stream);
+                    Value = Children.AddCurrentAndAdvance(stream, SassClassifierType.String);
 
                 if (stream.Current.Type == TokenType.CloseBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.SquareBrace);

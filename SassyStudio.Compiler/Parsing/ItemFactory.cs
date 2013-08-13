@@ -116,7 +116,7 @@ namespace SassyStudio.Compiler.Parsing
                 return CreateSelectorComponent(parent, text, stream);
 
             // handle possible property declaration
-            if (parent is RuleBlock && PropertyDeclaration.IsDeclaration(stream))
+            if (IsPropertyContainer(parent) && PropertyDeclaration.IsDeclaration(stream))
                 return new PropertyDeclaration();
 
             if ((parent is Stylesheet || parent is RuleBlock) && IsRuleSet(parent, stream))
@@ -336,6 +336,11 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return false;
+        }
+
+        static bool IsPropertyContainer(ComplexItem parent)
+        {
+            return parent is RuleBlock || parent is NestedPropertyBlock;
         }
 
         private static bool IsNestedRuleBlock(ComplexItem parent)
