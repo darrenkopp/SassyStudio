@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class MixinDefinitionBody : BlockItem
+    public class MixinDefinitionBody : RuleBlock
     {
     }
 }

@@ -223,6 +223,8 @@ namespace SassyStudio.Compiler.Parsing
                     case "if":
                     case "else":
                     case "else if": return new ConditionalControlDirective();
+                    case "media": return new MediaQueryDirective();
+                    case "font-face": return new FontFaceDirective();
                     default: return new AtRule();
                 }
             }
@@ -298,7 +300,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Tilde:
                 case TokenType.Colon:
                 case TokenType.DoubleColon:
-                    validStart = parent is RuleBlock;
+                    validStart = IsNestedRuleBlock(parent);
                     break;
             }
 
@@ -331,6 +333,23 @@ namespace SassyStudio.Compiler.Parsing
                         // anything else including whitespace
                         return next.Start > stream.Current.End;
                 }
+            }
+
+            return false;
+        }
+
+        private static bool IsNestedRuleBlock(ComplexItem parent)
+        {
+            while (parent != null)
+            {
+                // if root level stylesheet is parent, then not nested
+                if (parent is Stylesheet && parent.Parent == null)
+                    return false;
+
+                if (parent is RuleBlock)
+                    return true;
+
+                parent = parent.Parent as ComplexItem;
             }
 
             return false;

@@ -23,7 +23,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public ParseItem InOrderSuccessor()
         {
-            var container = this as ComplexItem;
+            var container = this as IParseItemContainer;
             if (container != null && container.Children.Count > 0)
                 return container.Children.First();
 
@@ -35,7 +35,7 @@ namespace SassyStudio.Compiler.Parsing
             var sibling = PreviousSibling();
             if (sibling != null)
             {
-                var container = sibling as ComplexItem;
+                var container = sibling as IParseItemContainer;
                 if (container != null)
                     return container.Children[container.Children.Count - 1];
             }
