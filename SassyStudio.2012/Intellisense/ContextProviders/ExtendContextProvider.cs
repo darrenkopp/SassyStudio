@@ -20,11 +20,11 @@ namespace SassyStudio.Intellisense
             else if (context.Current is ExtendDirective)
             {
                 var directive = context.Current as ExtendDirective;
-                if (directive.ExtensionClass == null)
+                if (directive.Selector == null)
                 {
                     yield return SassCompletionContextType.ExtendDirectiveReference;
                 }
-                else if (directive.ExtensionClass != null && directive.Modifier == null)
+                else if (directive.Selector != null && directive.Modifier == null)
                 {
                     yield return SassCompletionContextType.ExtendDirectiveOptionalFlag;
                 }

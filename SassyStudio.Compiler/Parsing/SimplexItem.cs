@@ -17,7 +17,6 @@ namespace SassyStudio.Compiler.Parsing
             Children.AutoParent = this;
         }
 
-        public ParseItem Item { get { return this; } }
         public ParseItemList Children { get; protected set; }
 
         public override int Start { get { return (Children.Count == 0) ? 0 : Children[0].Start; } }

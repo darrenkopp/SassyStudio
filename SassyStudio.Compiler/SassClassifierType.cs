@@ -32,6 +32,8 @@ namespace SassyStudio
         ElementName,
         PseudoElement,
         PseudoClass,
-        SquareBrace
+        SquareBrace,
+        PlaceholderName,
+        Number
     }
 }
