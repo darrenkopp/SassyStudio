@@ -10,8 +10,10 @@ namespace SassyStudio.Compiler.Parsing
     {
         public VariableName Variable { get; protected set; }
         public TokenItem FromKeyword { get; protected set; }
+        public ParseItem FromValue { get; protected set; }
         public TokenItem ToKeyword { get; protected set; }
         public TokenItem ThroughKeyword { get; protected set; }
+        public ParseItem RangeValue { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -26,38 +28,38 @@ namespace SassyStudio.Compiler.Parsing
                     Children.Add(Variable);
                 }
 
-                while (!IsForStatementTerminator(stream.Current.Type))
+                if (IsKeyword(text, stream, "from"))
                 {
-                    if (stream.Current.Type == TokenType.Identifier)
-                    {
-                        if (text.CompareOrdinal(stream.Current.Start, "to"))
-                        {
-                            ToKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
-                            continue;
-                        }
+                    FromKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
 
-                        if (text.CompareOrdinal(stream.Current.Start, "from"))
-                        {
-                            FromKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
-                            continue;
-                        }
+                    if (stream.Current.Type == TokenType.Number)
+                        FromValue = Children.AddCurrentAndAdvance(stream, SassClassifierType.Number);
+                }
 
-                        if (text.CompareOrdinal(stream.Current.Start, "through"))
-                        {
-                            ThroughKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
-                            continue;
-                        }
-                    }
+                bool isToKeyword = IsKeyword(text, stream, "to");
+                bool isThroughKeyword = !isToKeyword && IsKeyword(text, stream, "through");
 
-                    ParseItem item;
-                    if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out item))
-                        Children.Add(item);
+                if (isToKeyword || isThroughKeyword)
+                {
+                    if (isToKeyword)
+                        ToKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
+
+                    if (isThroughKeyword)
+                        ThroughKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
+
+                    if (stream.Current.Type == TokenType.Number)
+                        RangeValue = Children.AddCurrentAndAdvance(stream, SassClassifierType.Number);
                 }
 
                 ParseBody(itemFactory, text, stream);
             }
 
             return Children.Count > 0;
+        }
+
+        private bool IsKeyword(ITextProvider text, ITokenStream stream, string keyword)
+        {
+            return text.CompareOrdinal(stream.Current.Start, keyword);
         }
 
         public override IEnumerable<VariableName> GetDefinedVariables(int position)

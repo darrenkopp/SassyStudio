@@ -47,6 +47,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Identifier: return new TypeSelector();
                 case TokenType.OpenBrace: return new AttributeSelector();
                 case TokenType.DoubleColon: return new PseudoElementSelector();
+                case TokenType.PercentSign: return new ExtendOnlySelector();
             }
 
             if (stream.Current.Type == TokenType.Colon)

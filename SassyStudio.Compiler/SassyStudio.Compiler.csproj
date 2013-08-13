@@ -116,9 +116,11 @@
     <Compile Include="Parsing\Selectors\ChildCombinator.cs" />
     <Compile Include="Parsing\Selectors\ClassSelector.cs" />
     <Compile Include="Parsing\Selectors\DescendantCombinator.cs" />
+    <Compile Include="Parsing\Selectors\ExtendOnlySelector.cs" />
     <Compile Include="Parsing\Selectors\GeneralSiblingCombinator.cs" />
     <Compile Include="Parsing\Selectors\IdSelector.cs" />
     <Compile Include="Parsing\Selectors\ParentReferenceSelector.cs" />
+    <Compile Include="Parsing\PlaceholderSelectorName.cs" />
     <Compile Include="Parsing\Selectors\PseudoFunctionSelector.cs" />
     <Compile Include="Parsing\Selectors\PseduoFunction.cs" />
     <Compile Include="Parsing\Selectors\PseudoClassSelector.cs" />

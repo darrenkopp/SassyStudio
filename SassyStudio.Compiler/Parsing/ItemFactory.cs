@@ -152,6 +152,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Tilde: return new GeneralSiblingCombinator();
                 case TokenType.Ampersand: return new ParentReferenceSelector();
                 case TokenType.OpenInterpolation: return new StringInterpolationSelector();
+                case TokenType.PercentSign: return new ExtendOnlySelector();
             }
 
             if (stream.Current.Type == TokenType.Colon)

@@ -192,6 +192,10 @@ namespace SassyStudio.Compiler.Lexing
                         stream.Advance();
                     }
                     break;
+                case '%':
+                    type = TokenType.PercentSign;
+                    stream.Advance();
+                    break;
                 default:
                 {
                     if (ConsumeIdentifier(stream))
