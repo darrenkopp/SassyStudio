@@ -22,7 +22,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (PropertyName.IsValidName(stream))
+            if (IsDeclaration(stream))
             {
                 var name = itemFactory.CreateSpecific<PropertyName>(this, text, stream);
                 if (name.Parse(itemFactory, text, stream))
@@ -84,29 +84,50 @@ namespace SassyStudio.Compiler.Parsing
 
         public static bool IsDeclaration(ITokenStream stream)
         {
-            int start = stream.Position;
-            bool valid = false;
-            if (PropertyName.IsValidName(stream))
+            int position = stream.Position;
+
+            bool validPropertyName = false;
+            while (true)
             {
                 var last = stream.Current;
-                while (!IsValueTerminator(stream.Advance().Type))
+                var next = stream.Advance();
+
+                if (next.Start > last.End || IsDeclrationTerminator(last.Type))
+                    break;
+
+                if (next.Type == TokenType.Colon)
                 {
-                    // have to be sequential tokens for valid property name
-                    if (stream.Current.Start != last.End)
-                        break;
-
-                    if (stream.Current.Type == TokenType.Colon)
+                    var value = stream.Peek(1);
+                    switch (value.Type)
                     {
-                        valid = true;
-                        break;
+                        case TokenType.Identifier:
+                        case TokenType.Function:
+                            validPropertyName = value.Start > next.End;
+                            break;
+                        default:
+                            validPropertyName = true;
+                            break;
                     }
-
-                    last = stream.Current;
+                    break;
                 }
             }
 
-            stream.SeekTo(start);
-            return valid;
+            stream.SeekTo(position);
+            return validPropertyName;
+        }
+
+        private static bool IsDeclrationTerminator(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.EndOfFile:
+                case TokenType.Semicolon:
+                case TokenType.Comma:
+                case TokenType.OpenCurlyBrace:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

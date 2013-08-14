@@ -24,15 +24,15 @@ namespace SassyStudio.Intellisense
                 var directive = context.Current as ForLoopDirective;
                 if (directive.Rule != null)
                 {
-                    if (directive.Variable == null || BeforeSuccessor(context.StartPosition, directive.FromKeyword, directive.FromValue, directive.ToKeyword ?? directive.ThroughKeyword, directive.RangeValue, directive.Body))
+                    if (directive.Variable == null || BeforeSuccessor(context.StartPosition, directive.FromKeyword, directive.ToKeyword ?? directive.ThroughKeyword, directive.Body))
                     {
                         yield return SassCompletionContextType.ForLoopVariable;
                     }
-                    else if (directive.FromKeyword == null || BeforeSuccessor(context.StartPosition, directive.FromValue, directive.ToKeyword ?? directive.ThroughKeyword, directive.RangeValue, directive.Body))
+                    else if (directive.FromKeyword == null || BeforeSuccessor(context.StartPosition, directive.ToKeyword ?? directive.ThroughKeyword, directive.Body))
                     {
                         yield return SassCompletionContextType.ForLoopFromKeyword;
                     }
-                    else if ((directive.ThroughKeyword == null || directive.FromKeyword == null) || BeforeSuccessor(context.StartPosition, directive.RangeValue, directive.Body))
+                    else if ((directive.ThroughKeyword == null || directive.FromKeyword == null) || BeforeSuccessor(context.StartPosition, directive.Body))
                     {
                         yield return SassCompletionContextType.ForLoopRangeKeyword;
                     }

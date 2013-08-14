@@ -34,6 +34,7 @@ namespace SassyStudio
         PseudoClass,
         SquareBrace,
         PlaceholderName,
-        Number
+        Number,
+        Parentheses
     }
 }

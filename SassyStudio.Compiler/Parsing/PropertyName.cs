@@ -15,16 +15,13 @@ namespace SassyStudio.Compiler.Parsing
         public ParseItemList Fragments { get; protected set; }
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (IsValidName(stream))
+            while (IsValidNameComponent(stream.Current.Type))
             {
-                while (IsValidNameComponent(stream.Current.Type))
+                ParseItem fragement;
+                if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out fragement))
                 {
-                    ParseItem fragement;
-                    if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out fragement))
-                    {
-                        Fragments.Add(fragement);
-                        Children.Add(fragement);
-                    }
+                    Fragments.Add(fragement);
+                    Children.Add(fragement);
                 }
             }
 

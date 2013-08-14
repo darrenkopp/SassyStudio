@@ -497,8 +497,14 @@ namespace SassyStudio.Compiler.Lexing
 
         private bool IsNonAscii(char c)
         {
-            if (c == '}' || c == '{')
-                return false;
+            switch (c)
+            {
+                case '{':
+                case '}':
+                case '[':
+                case ']':
+                    return false;
+            }
 
             return (int)c >= 80;
         }
