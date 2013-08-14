@@ -92,7 +92,6 @@ namespace SassyStudio.Compiler.Parsing
                     item = CreateFunction(parent, text, stream);
                     break;
                 case TokenType.GreaterThan:
-                case TokenType.Plus:
                 case TokenType.Tilde:
                 case TokenType.Colon:
                 case TokenType.DoubleColon:
@@ -111,6 +110,7 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateBestFittingItem(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
+
             // handle selectors
             if (parent is SelectorGroup)
                 return CreateSelectorComponent(parent, text, stream);
@@ -129,11 +129,12 @@ namespace SassyStudio.Compiler.Parsing
         {
             switch (stream.Current.Type)
             {
-                case TokenType.OpenInterpolation: return new StringInterpolation();
-                case TokenType.Hash: return CreateHash(parent, text, stream);
+                case TokenType.OpenInterpolation:
+                    return new StringInterpolation();
+                case TokenType.Hash:
+                    return CreateHash(parent, text, stream);
             }
 
-            // there isn't a more specific representation of token, so just emit normal token item
             return new TokenItem();
         }
 
@@ -189,13 +190,14 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateBang(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
-            if (BangModifier.IsValidModifier(text, stream.Current, "default"))
+            var modifier = stream.Peek(1);
+            if (BangModifier.IsValidModifier(text, modifier, "default"))
                 return new DefaultModifier();
 
-            if (BangModifier.IsValidModifier(text, stream.Current, "important"))
+            if (BangModifier.IsValidModifier(text, modifier, "important"))
                 return new ImportanceModifier();
 
-            if (BangModifier.IsValidModifier(text, stream.Current, "optional"))
+            if (BangModifier.IsValidModifier(text, modifier, "optional"))
                 return new OptionalModifier();
 
             if (VariableName.IsVariable(text, stream))
@@ -283,10 +285,11 @@ namespace SassyStudio.Compiler.Parsing
             bool validStart = false;
             switch (stream.Current.Type)
             {
+                case TokenType.OpenInterpolation:
+                    return true;
                 case TokenType.Asterisk:
                 case TokenType.Identifier:
                 case TokenType.OpenBrace:
-                case TokenType.OpenInterpolation:
                     validStart = true;
                     break;
                 case TokenType.Period:

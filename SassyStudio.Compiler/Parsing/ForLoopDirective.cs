@@ -8,12 +8,18 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class ForLoopDirective : ControlDirective
     {
+        public ForLoopDirective()
+        {
+            FromExpressionValues = new ParseItemList();
+            RangeExpressionValues = new ParseItemList();
+        }
+
         public VariableName Variable { get; protected set; }
         public TokenItem FromKeyword { get; protected set; }
-        public ParseItem FromValue { get; protected set; }
+        public ParseItemList FromExpressionValues { get; protected set; }
         public TokenItem ToKeyword { get; protected set; }
         public TokenItem ThroughKeyword { get; protected set; }
-        public ParseItem RangeValue { get; protected set; }
+        public ParseItemList RangeExpressionValues { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -32,8 +38,15 @@ namespace SassyStudio.Compiler.Parsing
                 {
                     FromKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
 
-                    if (stream.Current.Type == TokenType.Number)
-                        FromValue = Children.AddCurrentAndAdvance(stream, SassClassifierType.Number);
+                    while (!(IsKeyword(text, stream, "to") || IsKeyword(text, stream, "through")))
+                    {
+                        ParseItem fromValue;
+                        if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out fromValue))
+                        {
+                            FromExpressionValues.Add(fromValue);
+                            Children.Add(fromValue);
+                        }
+                    }
                 }
 
                 bool isToKeyword = IsKeyword(text, stream, "to");
@@ -47,14 +60,41 @@ namespace SassyStudio.Compiler.Parsing
                     if (isThroughKeyword)
                         ThroughKeyword = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
 
-                    if (stream.Current.Type == TokenType.Number)
-                        RangeValue = Children.AddCurrentAndAdvance(stream, SassClassifierType.Number);
+                    while (!IsRangeTerminator(stream.Current.Type))
+                    {
+                        ParseItem rangeValue;
+                        if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out rangeValue))
+                        {
+                            RangeExpressionValues.Add(rangeValue);
+                            Children.Add(rangeValue);
+                        }
+                    }
                 }
 
                 ParseBody(itemFactory, text, stream);
             }
 
             return Children.Count > 0;
+        }
+
+        public override void Freeze()
+        {
+            base.Freeze();
+            FromExpressionValues.TrimExcess();
+            RangeExpressionValues.TrimExcess();
+        }
+
+        private bool IsRangeTerminator(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.EndOfFile:
+                case TokenType.OpenCurlyBrace:
+                case TokenType.CloseCurlyBrace:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private bool IsKeyword(ITextProvider text, ITokenStream stream, string keyword)

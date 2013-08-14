@@ -31,8 +31,9 @@ namespace SassyStudio.Compiler.Parsing
 
         static ParseItem CreateFunctionArgument(ComplexItem parent, IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (parent is MixinReference && VariableName.IsVariable(text, stream))
-                return new NamedFunctionArgument();
+            if (parent is MixinReference || parent is SystemFunctionReference || parent is UserFunctionReference)
+                if (VariableName.IsVariable(text, stream) && stream.Peek(2).Type == TokenType.Colon)
+                    return new NamedFunctionArgument();
 
             return null;
         }
@@ -41,6 +42,7 @@ namespace SassyStudio.Compiler.Parsing
         {
             switch (stream.Current.Type)
             {
+                case TokenType.Ampersand: return new ParentReferenceSelector();
                 case TokenType.Asterisk: return new UniversalSelector();
                 case TokenType.Period: return new ClassSelector();
                 case TokenType.Hash: return new IdSelector();

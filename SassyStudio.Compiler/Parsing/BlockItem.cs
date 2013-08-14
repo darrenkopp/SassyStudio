@@ -19,7 +19,7 @@ namespace SassyStudio.Compiler.Parsing
 
                 ParseBody(itemFactory, text, stream);
 
-                if (stream.Current.Type == TokenType.CloseCurlyBrace)
+                if (OpenCurlyBrace != null && stream.Current.Type == TokenType.CloseCurlyBrace)
                     CloseCurlyBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.CurlyBrace);
             }
 
@@ -42,6 +42,7 @@ namespace SassyStudio.Compiler.Parsing
             {
                 case TokenType.EndOfFile:
                 case TokenType.CloseCurlyBrace:
+                case TokenType.OpenCurlyBrace:
                     return true;
             }
 
