@@ -30,19 +30,32 @@ namespace SassyStudio.Classification
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
             var results = new List<ClassificationSpan>();
-            var tree = Tree;
-            if (tree == null)
-                return results;
-
-            foreach (var item in Traverse(tree.Items, span.Start.Position, span.End.Position))
+            try
             {
-                var s = new Span(item.Start, item.Length);
-                if (span.IntersectsWith(s))
+                var tree = Tree;
+                if (tree == null)
+                    return results;
+
+                var item = tree.Items.FindItemContainingPosition(span.Start);
+                if (item == null)
+                    return results;
+
+                if (!(item is IParseItemContainer))
+                    item = item.Parent ?? item;
+
+                for (var current = item; current != null; current = current.InOrderSuccessor())
                 {
-                    var type = ClassifierContextCache.Get(item.ClassifierType).GetClassification(Registry);
-                    if (type != null)
-                        results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), type));
+                    if (current.Start <= span.End && current.End >= span.Start)
+                    {
+                        var type = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
+                        if (type != null)
+                            results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, new Span(current.Start, current.Length)), type));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to classify");
             }
 
             return results;
