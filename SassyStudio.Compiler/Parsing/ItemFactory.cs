@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using SassyStudio.Compiler.Lexing;
+using SassyStudio.Compiler.Parsing.Rules;
 using SassyStudio.Compiler.Parsing.Selectors;
 
 namespace SassyStudio.Compiler.Parsing
@@ -91,6 +92,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Function:
                     item = CreateFunction(parent, text, stream);
                     break;
+                case TokenType.Asterisk:
                 case TokenType.GreaterThan:
                 case TokenType.Tilde:
                 case TokenType.Colon:
@@ -228,6 +230,9 @@ namespace SassyStudio.Compiler.Parsing
                     case "else if": return new ConditionalControlDirective();
                     case "media": return new MediaQueryDirective();
                     case "font-face": return new FontFaceDirective();
+                    case "page": return new PageDirective();
+                    case "charset": return new CharsetDirective();
+                    case "keyframes": return new KeyframesDirective();
                     default: return new AtRule();
                 }
             }

@@ -45,7 +45,7 @@
     <Compile Include="Parsing\BangModifier.cs" />
     <Compile Include="Parsing\ContentDirective.cs" />
     <Compile Include="Parsing\DefaultModifier.cs" />
-    <Compile Include="Parsing\FontFaceDirective.cs" />
+    <Compile Include="Parsing\Rules\FontFaceDirective.cs" />
     <Compile Include="Parsing\IParseItemContainer.cs" />
     <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
@@ -110,6 +110,10 @@
     <Compile Include="Parsing\PropertyName.cs" />
     <Compile Include="Parsing\RuleBlock.cs" />
     <Compile Include="Parsing\RuleSet.cs" />
+    <Compile Include="Parsing\Rules\CharsetDirective.cs" />
+    <Compile Include="Parsing\Rules\KeyframesDirective.cs" />
+    <Compile Include="Parsing\Rules\PageDirective.cs" />
+    <Compile Include="Parsing\Rules\SimpleAtRuleDirective.cs" />
     <Compile Include="Parsing\SelectorGroup.cs" />
     <Compile Include="Parsing\Selectors\AdjacentSiblingCombinator.cs" />
     <Compile Include="Parsing\Selectors\AttributeSelector.cs" />
