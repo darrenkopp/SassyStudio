@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public abstract class AtRuleDirective : ComplexItem
+    public abstract class SimpleAtRuleDirective : ComplexItem
     {
         public AtRule Rule { get; protected set; }
-        public RuleBlock Body { get; protected set; }
+        public TokenItem Semicolon { get; protected set; }
 
         protected abstract string RuleName { get; }
-
-        protected virtual void ParseDirective(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
-        {
-        }
+        protected abstract void ParseDirective(IItemFactory itemFactory, ITextProvider text, ITokenStream stream);
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -26,12 +24,8 @@ namespace SassyStudio.Compiler.Parsing
 
                 ParseDirective(itemFactory, text, stream);
 
-                var block = itemFactory.CreateSpecific<RuleBlock>(this, text, stream);
-                if (block.Parse(itemFactory, text, stream))
-                {
-                    Body = block;
-                    Children.Add(block);
-                }
+                if (stream.Current.Type == TokenType.Semicolon)
+                    Semicolon = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
             }
 
             return Children.Count > 0;

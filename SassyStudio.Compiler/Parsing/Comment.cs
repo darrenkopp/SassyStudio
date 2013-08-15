@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public abstract class Comment : SimplexItem
+    public abstract class Comment : ComplexItem
     {
         public Comment()
         {
-            ClassifierType = SassClassifierType.Comment;
         }
 
         public TokenItem OpenComment { get; protected set; }
