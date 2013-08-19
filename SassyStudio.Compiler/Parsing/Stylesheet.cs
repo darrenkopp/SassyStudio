@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class Stylesheet : ComplexItem
+    public class Stylesheet : ComplexItem, ISassStylesheet
     {
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {

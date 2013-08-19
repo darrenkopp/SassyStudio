@@ -8,6 +8,7 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class ImportFile : ComplexItem
     {
+        public ISassDocument Document { get; set; }
         public TokenItem Path { get; protected set; }
         public TokenItem Comma { get; protected set; }
 

@@ -39,14 +39,13 @@
   <ItemGroup>
     <Compile Include="IParsingCancellationToken.cs" />
     <Compile Include="IParsingContext.cs" />
-    <Compile Include="IRange.cs" />
-    <Compile Include="ITextProvider.cs" />
     <Compile Include="Parsing\AtRuleDirective.cs" />
     <Compile Include="Parsing\BangModifier.cs" />
     <Compile Include="Parsing\ContentDirective.cs" />
     <Compile Include="Parsing\DefaultModifier.cs" />
+    <Compile Include="Parsing\DocumentParser.cs" />
+    <Compile Include="Parsing\DocumentParserFactory.cs" />
     <Compile Include="Parsing\Rules\FontFaceDirective.cs" />
-    <Compile Include="Parsing\IParseItemContainer.cs" />
     <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
     <Compile Include="Lexing\ILexer.cs" />
@@ -56,14 +55,12 @@
     <Compile Include="Lexing\ITextStream.cs" />
     <Compile Include="Lexing\NormalizingTextStream.cs" />
     <Compile Include="Lexing\TextStreamExtensions.cs" />
-    <Compile Include="Lexing\Token.cs" />
     <Compile Include="Lexing\TokenList.cs" />
     <Compile Include="ParsingExecutionContext.cs" />
     <Compile Include="Parsing\AtRule.cs" />
     <Compile Include="Parsing\BlockItem.cs" />
     <Compile Include="Parsing\ClassName.cs" />
     <Compile Include="Parsing\Comment.cs" />
-    <Compile Include="Parsing\ComplexItem.cs" />
     <Compile Include="Parsing\ConditionalControlDirective.cs" />
     <Compile Include="Parsing\ControlDirective.cs" />
     <Compile Include="Parsing\ControlDirectiveBody.cs" />
@@ -81,7 +78,6 @@
     <Compile Include="Parsing\HexColorValue.cs" />
     <Compile Include="Parsing\HtmlComment.cs" />
     <Compile Include="Parsing\IdName.cs" />
-    <Compile Include="Parsing\IItemFactory.cs" />
     <Compile Include="Parsing\ImportanceModifier.cs" />
     <Compile Include="Parsing\ImportDirective.cs" />
     <Compile Include="Parsing\ImportFile.cs" />
@@ -89,7 +85,6 @@
     <Compile Include="Parsing\IParserFactory.cs" />
     <Compile Include="Parsing\ISassItemFactory.cs" />
     <Compile Include="Parsing\ItemFactory.cs" />
-    <Compile Include="Parsing\ITokenStream.cs" />
     <Compile Include="Parsing\ListItem.cs" />
     <Compile Include="Parsing\MediaQuery.cs" />
     <Compile Include="Parsing\MediaQueryBlock.cs" />
@@ -103,8 +98,6 @@
     <Compile Include="Parsing\NamedFunctionArgument.cs" />
     <Compile Include="Parsing\NestedPropertyBlock.cs" />
     <Compile Include="Parsing\OptionalModifier.cs" />
-    <Compile Include="Parsing\ParseItem.cs" />
-    <Compile Include="Parsing\ParseItemList.cs" />
     <Compile Include="Parsing\Parser.cs" />
     <Compile Include="Parsing\PropertyDeclaration.cs" />
     <Compile Include="Parsing\PropertyName.cs" />
@@ -134,7 +127,6 @@
     <Compile Include="Parsing\Selectors\TypeSelector.cs" />
     <Compile Include="Parsing\Selectors\UniversalSelector.cs" />
     <Compile Include="Parsing\SimpleSelector.cs" />
-    <Compile Include="Parsing\SimplexItem.cs" />
     <Compile Include="Parsing\StringInterpolation.cs" />
     <Compile Include="Parsing\SystemFunctionReference.cs" />
     <Compile Include="Parsing\UserFunctionBody.cs" />
@@ -144,14 +136,16 @@
     <Compile Include="Parsing\VariableName.cs" />
     <Compile Include="Parsing\VariableReference.cs" />
     <Compile Include="Parsing\WhileLoopDirective.cs" />
-    <Compile Include="SassClassifierType.cs" />
     <Compile Include="Parsing\Stylesheet.cs" />
-    <Compile Include="Parsing\TokenItem.cs" />
     <Compile Include="Parsing\TokenStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TokenType.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SassyStudio.Interfaces\SassyStudio.Interfaces.csproj">
+      <Project>{049b1e7c-d2b6-45f2-b1a1-bf2a54181925}</Project>
+      <Name>SassyStudio.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -8,63 +8,76 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using SassyStudio.Compiler.Parsing;
-using SassyStudio.Scss;
 
-namespace SassyStudio.Editor
+namespace SassyStudio.Editor.Outlining
 {
-    //[Export(typeof(ITaggerProvider))]
+    [Export(typeof(ITaggerProvider))]
     [TagType(typeof(IOutliningRegionTag))]
     [ContentType(ScssContentTypeDefinition.ScssContentType)]
-    class SassOutliningTaggerProvider : ITaggerProvider
+    class ScssOutliningTaggerProvider : ITaggerProvider
     {
+        [Import]
+        ISassEditorManager EditorManager { get; set; }
+
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             if (typeof(T) == typeof(IOutliningRegionTag))
-                return buffer.Properties.GetOrCreateSingletonProperty(() => new SassOutliningTagger(buffer)) as ITagger<T>;
+                return buffer.Properties.GetOrCreateSingletonProperty(() => Create(buffer)) as ITagger<T>;
+
+            return null;
+        }
+
+        ScssOutliningTagger Create(ITextBuffer buffer)
+        {
+            var editor = EditorManager.Get(buffer);
+            if (editor != null)
+                return new ScssOutliningTagger(buffer, editor);
 
             return null;
         }
     }
 
-    class SassOutliningTagger : ITagger<IOutliningRegionTag>
+    class ScssOutliningTagger : ITagger<IOutliningRegionTag>
     {
-        readonly SassEditorDocument Editor;
-        public SassOutliningTagger(ITextBuffer buffer)
+        readonly ITextBuffer Buffer;
+        readonly ISassEditor Editor;
+
+        public ScssOutliningTagger(ITextBuffer buffer, ISassEditor editor)
         {
-            Editor = SassEditorDocument.CreateFrom(buffer);
-            Editor.TreeChanged += OnTreeChanged;
+            Buffer = buffer;
+            Editor = editor;
+
+            Editor.DocumentChanged += OnDocumentChanged;
         }
 
-        private ISassDocumentTree Tree { get; set; }
-
-        private void OnTreeChanged(object sender, TreeChangedEventArgs e)
+        void OnDocumentChanged(object sender, DocumentChangedEventArgs e)
         {
-            Tree = e.Tree;
             var handler = TagsChanged;
-            if (Tree != null && handler != null)
-                handler(this, new SnapshotSpanEventArgs(new SnapshotSpan(Tree.SourceText, 0, Tree.SourceText.Length)));
+            if (handler != null)
+                handler(this, new SnapshotSpanEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, new Span(e.ChangeStart, e.ChangeEnd))));
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            var tree = Tree;
-            if (spans.Count == 0 || tree == null) return new List<ITagSpan<IOutliningRegionTag>>(0);
+            var stylesheet = Editor.Document.Stylesheet;
+            var snapshot = Buffer.CurrentSnapshot;
+            if (spans.Count == 0 || stylesheet == null) return new List<ITagSpan<IOutliningRegionTag>>(0);
 
             var results = new SortedList<int, ITagSpan<IOutliningRegionTag>>();
-            foreach (var block in GetBlocks(tree.Items, spans[0].Start, spans[spans.Count - 1].End))
+            foreach (var block in GetBlocks(new ParseItemList { stylesheet as Stylesheet }, spans[0].Start, spans[spans.Count - 1].End))
             {
                 var open = block.OpenCurlyBrace;
                 var close = block.CloseCurlyBrace;
 
                 if (open != null && close != null)
                 {
-                    var startLine = tree.SourceText.GetLineFromPosition(open.Start);
-                    var endLine = tree.SourceText.GetLineFromPosition(close.Start);
+                    var startLine = snapshot.GetLineFromPosition(open.Start);
+                    var endLine = snapshot.GetLineFromPosition(close.Start);
                     if (startLine.LineNumber != endLine.LineNumber)
                     {
-                        var span = new SnapshotSpan(tree.SourceText, new Span(open.End, close.Start - open.End));
+                        var span = new SnapshotSpan(snapshot, new Span(open.End, close.Start - open.End));
                         var tag = new OutliningRegionTag(false, false, "...", "...");
 
                         results.Add(span.Start.Position, new TagSpan<IOutliningRegionTag>(span, tag));

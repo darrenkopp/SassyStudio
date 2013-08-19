@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace SassyStudio.Intellisense
 {
-    [Export(typeof(ICompletionSourceProvider))]
+    //[Export(typeof(ICompletionSourceProvider))]
     [Name("SCSS Completion Source Provider"), Order(Before = "Default")]
     [ContentType(ScssContentTypeDefinition.ScssContentType)]
     [TextViewRole(PredefinedTextViewRoles.Editable)]

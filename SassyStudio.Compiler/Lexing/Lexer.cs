@@ -8,9 +8,43 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Lexing
 {
-    public class Lexer : ILexer
+    class Lexer : ILexer
     {
         public TimeSpan LastTokenizationDuration { get; protected set; }
+
+        public TokenList Tokenize(ITextStream stream, ILexingContext context)
+        {
+            var watch = Stopwatch.StartNew();
+            var tokens = new TokenList();
+            tokens.Add(Token.CreateEmpty(TokenType.StartOfFile, stream.Position));
+
+            while (!context.IsCancellationRequested)
+            {
+                if (stream.Position >= stream.Length)
+                    break;
+
+                if (ConsumeComment(stream, tokens))
+                    continue;
+
+                if (ConsumeWhitespace(stream))
+                    continue;
+
+                if (ConsumeInterpolation(stream, tokens))
+                    continue;
+
+                Token token;
+                if (TryCreateToken(stream, out token))
+                    tokens.Add(token);
+            }
+
+            // close stream with end of file token
+            tokens.Add(Token.CreateEmpty(TokenType.EndOfFile, stream.Length));
+
+            watch.Stop();
+            LastTokenizationDuration = watch.Elapsed;
+            return tokens;
+        }
+
         public Task<TokenList> TokenizeAsync(ITextStream stream, IParsingExecutionContext context)
         {
             return Task.Run(() => Tokenize(stream, context));

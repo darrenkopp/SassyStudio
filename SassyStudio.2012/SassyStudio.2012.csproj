@@ -51,10 +51,19 @@
     <Compile Include="Classification\IClassifierContext.cs" />
     <Compile Include="Classification\SassClassifier.cs" />
     <Compile Include="Classification\SassClassifierProvider.cs" />
+    <Compile Include="Compiler\BackgroundParsingTask.cs" />
+    <Compile Include="Compiler\ForegroundParsingTask.cs" />
     <Compile Include="Editor\BufferSnapshotChangedCancellationToken.cs" />
+    <Compile Include="Editor\Classification\SassClassifier.cs" />
+    <Compile Include="Editor\Classification\SassClassifierProvider.cs" />
+    <Compile Include="Editor\Intellisense\IntellisenseCache.cs" />
+    <Compile Include="Editor\Intellisense\IntellisenseManager.cs" />
     <Compile Include="Editor\ISassDocumentTree.cs" />
+    <Compile Include="Editor\Outlining\ScssOutliningTagger.cs" />
     <Compile Include="Editor\SassDocumentTree.cs" />
+    <Compile Include="Editor\SassEditor.cs" />
     <Compile Include="Editor\SassEditorDocument.cs" />
+    <Compile Include="Editor\SassEditorManager.cs" />
     <Compile Include="Editor\SassOutliningTagger.cs" />
     <Compile Include="Editor\SnapshotTextProvider.cs" />
     <Compile Include="Editor\TreeChangedEventArgs.cs" />
@@ -88,6 +97,7 @@
     <Compile Include="Options\ScssOptions.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OutputWindowLogger.cs" />
     <Compile Include="SassyStudioPackage.cs" />
     <Compile Include="Sass\SassContentTypeDefinition.cs" />
     <Compile Include="Scss\Classifications\ClassificationMatchResult.cs" />
@@ -259,6 +269,12 @@
     <ProjectReference Include="..\SassyStudio.Compiler\SassyStudio.Compiler.csproj">
       <Project>{2bf67266-400e-40a6-8ba6-4f3ba0da389f}</Project>
       <Name>SassyStudio.Compiler</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\SassyStudio.Interfaces\SassyStudio.Interfaces.csproj">
+      <Project>{049b1e7c-d2b6-45f2-b1a1-bf2a54181925}</Project>
+      <Name>SassyStudio.Interfaces</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
