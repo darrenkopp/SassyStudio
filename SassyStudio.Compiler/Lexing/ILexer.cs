@@ -10,6 +10,12 @@ namespace SassyStudio.Compiler.Lexing
     interface ILexer
     {
         TimeSpan LastTokenizationDuration { get; }
+        TokenList Tokenize(ITextStream text, ILexingContext context);
         Task<TokenList> TokenizeAsync(ITextStream stream, IParsingExecutionContext context);
+    }
+
+    interface ILexingContext
+    {
+        bool IsCancellationRequested { get; }
     }
 }

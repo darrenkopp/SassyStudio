@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -24,16 +25,11 @@ namespace SassyStudio.Compiler.Parsing
                 while (!IsTerminator(stream.Current.Type))
                 {
                     var file = itemFactory.CreateSpecific<ImportFile>(this, text, stream) ?? new ImportFile();
-                    if (file.Parse(itemFactory, text, stream))
-                    {
-                        Children.Add(file);
-                        Files.Add(file);
-                    }
-                    else
-                    {
-                        // bad news bears
-                        Children.AddCurrentAndAdvance(stream);
-                    }
+                    if (!file.Parse(itemFactory, text, stream))
+                        break;
+
+                    Children.Add(file);
+                    Files.Add(file);
                 }
 
                 if (stream.Current.Type == TokenType.Semicolon)
@@ -61,6 +57,50 @@ namespace SassyStudio.Compiler.Parsing
 
             if (_Files.Count > 0)
                 _Files.TrimExcess();
+        }
+
+        public void ResolveImports(ITextProvider text, ISassDocument document, IDocumentManager documentManager)
+        {
+            var basePath = document.Source.Directory.FullName;
+            foreach (var file in Files)
+            {
+                try
+                {
+                    var relativePath = text.GetText(file.Path.Start, file.Path.Length);
+                    if (relativePath != null && !relativePath.StartsWith("url"))
+                        relativePath = relativePath.Trim('"');
+
+                    var fullPath = basePath;
+                    var segments = relativePath.Split('/', '\\');
+                    foreach (var segment in segments)
+                        fullPath = Path.Combine(fullPath, segment);
+
+                    var importFile = CheckAllPossiblePaths(fullPath);
+                    if (importFile.Exists && (importFile.Extension.EndsWith("scss") || importFile.Extension.EndsWith("sass")))
+                        file.Document = documentManager.Import(importFile, document);
+                }
+                catch
+                {
+                    // swallow bad paths
+                }
+            }
+        }
+
+        private FileInfo CheckAllPossiblePaths(string path)
+        {
+            if (!path.EndsWith(".scss"))
+                path += ".scss";
+
+            var file = new FileInfo(path);
+            if (file.Exists)
+                return file;
+
+            // check for include only file
+            file = new FileInfo(Path.Combine(file.Directory.FullName, "_" + Path.GetFileName(file.FullName)));
+            if (file.Exists)
+                return file;
+
+            return new FileInfo(path);
         }
     }
 }

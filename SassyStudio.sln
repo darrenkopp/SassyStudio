@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Compiler", "SassyStudio.Compiler\SassyStudio.Compiler.csproj", "{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Interfaces", "SassyStudio.Interfaces\SassyStudio.Interfaces.csproj", "{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
