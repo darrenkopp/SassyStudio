@@ -17,9 +17,15 @@ namespace SassyStudio.Options
             IncludeCssInProject = true;
             IncludeCssInProjectOutput = true;
             IncludeSourceComments = false;
+            ReplaceCssWithException = false;
 
             base.LoadSettingsFromStorage();
         }
+
+        [LocDisplayName("Replace .css with exception")]
+        [Description("When enabled, the contents of the .css file will be replaced with exception information when there is an error generating the document.")]
+        [Category("SCSS")]
+        public bool ReplaceCssWithException { get; set; }
 
         [LocDisplayName("Generate .css on save")]
         [Description("When enabled, a css file with the same name will be generated")]
