@@ -74,7 +74,30 @@ namespace SassyStudio.Scss
             }
             catch (Exception ex)
             {
-                Logger.Log(ex, message: "Failed to generate css file.");
+                if (Options.ReplaceCssWithException)
+                    SaveExceptionToFile(ex, target);
+
+                Logger.Log(ex, "Failed to compile css");
+            }
+        }
+
+        private void SaveExceptionToFile(Exception error, FileInfo target)
+        {
+            try
+            {
+                File.WriteAllText(target.FullName, 
+                    new StringBuilder()
+                        .AppendLine("/*")
+                        .AppendLine(error.Message)
+                        .AppendLine(error.StackTrace)
+                        .AppendLine("*/")
+                    .ToString(),
+                    UTF8_ENCODING
+                );
+            }
+            catch
+            {
+                // ignore
             }
         }
 
