@@ -50,14 +50,19 @@ namespace SassyStudio.Editor.Outlining
             Editor.DocumentChanged += OnDocumentChanged;
         }
 
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
         void OnDocumentChanged(object sender, DocumentChangedEventArgs e)
+        {
+            OnTagsChanged(e.ChangeStart, e.ChangeEnd);
+        }
+
+        void OnTagsChanged(int start, int end)
         {
             var handler = TagsChanged;
             if (handler != null)
-                handler(this, new SnapshotSpanEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, new Span(e.ChangeStart, e.ChangeEnd))));
+                handler(this, new SnapshotSpanEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, new Span(start, end))));
         }
-
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {

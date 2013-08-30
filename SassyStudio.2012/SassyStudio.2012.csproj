@@ -56,6 +56,7 @@
     <Compile Include="Editor\BufferSnapshotChangedCancellationToken.cs" />
     <Compile Include="Editor\Classification\SassClassifier.cs" />
     <Compile Include="Editor\Classification\SassClassifierProvider.cs" />
+    <Compile Include="Editor\Intellisense\CompletionCompiler.cs" />
     <Compile Include="Editor\Intellisense\IntellisenseCache.cs" />
     <Compile Include="Editor\Intellisense\IntellisenseManager.cs" />
     <Compile Include="Editor\ISassDocumentTree.cs" />

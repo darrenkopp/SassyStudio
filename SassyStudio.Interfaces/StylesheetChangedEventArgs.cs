@@ -4,9 +4,13 @@ namespace SassyStudio
 {
     public class StylesheetChangedEventArgs : EventArgs
     {
+        public StylesheetChangedEventArgs(ISassStylesheet previous, ISassStylesheet current)
+        {
+            Previous = previous;
+            Current = current;
+        }
+
         public ISassStylesheet Current { get; set; }
         public ISassStylesheet Previous { get; set; }
-        public int ChangeStart { get; set; }
-        public int ChangeEnd { get; set; }
     }
 }
