@@ -24,6 +24,9 @@ namespace SassyStudio.Editor
             ParsingTask = parsingTask;
 
             Buffer.ChangedLowPriority += OnBufferChanged;
+
+            if (document.Stylesheet == null)
+                document.StylesheetChanged += OnInitialStylesheetChange;
         }
 
         public event EventHandler<DocumentChangedEventArgs> DocumentChanged;
@@ -53,6 +56,13 @@ namespace SassyStudio.Editor
                 if (handler != null)
                     handler(this, ComputeChanges(previous, stylesheet, snapshot, change));
             }
+        }
+
+        void OnDocumentChanged(DocumentChangedEventArgs args)
+        {
+            var handler = DocumentChanged;
+            if (handler != null)
+                handler(this, args);
         }
 
         private SingleTextChange CreateSingleChange(ITextSnapshot snapshot, INormalizedTextChangeCollection changes)
@@ -127,6 +137,17 @@ namespace SassyStudio.Editor
                 ChangeStart = start,
                 ChangeEnd = end
             };
+        }
+
+        private void OnInitialStylesheetChange(object sender, StylesheetChangedEventArgs e)
+        {
+            Document.StylesheetChanged -= OnInitialStylesheetChange;
+            OnDocumentChanged(new DocumentChangedEventArgs
+            {
+                Stylesheet = Document.Stylesheet,
+                ChangeStart = 0,
+                ChangeEnd = Buffer.CurrentSnapshot.Length
+            });
         }
 
         class TextSnapshotParsingRequest : IParsingRequest

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SassyStudio
 {
@@ -10,7 +11,7 @@ namespace SassyStudio
             Source = source;
         }
 
-        public event System.EventHandler<StylesheetChangedEventArgs> StylesheetChanged;
+        public event EventHandler<StylesheetChangedEventArgs> StylesheetChanged;
 
         public FileInfo Source { get; private set; }
         public ISassStylesheet Stylesheet { get; private set; }
@@ -22,8 +23,17 @@ namespace SassyStudio
                 var previous = Stylesheet;
                 Stylesheet = stylesheet;
 
+                OnStylesheetChanged(previous, stylesheet);
+
                 return previous;
             }
+        }
+
+        private void OnStylesheetChanged(ISassStylesheet previous, ISassStylesheet current)
+        {
+            var handler = StylesheetChanged;
+            if (handler != null)
+                handler(this, new StylesheetChangedEventArgs(previous, current));
         }
     }
 }
