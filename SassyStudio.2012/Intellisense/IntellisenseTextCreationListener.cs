@@ -21,8 +21,7 @@ namespace SassyStudio.Intellisense
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             var view = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
-            if (view != null)
-                view.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(textViewAdapter, view, CompletionBroker));
+            view.Properties.GetOrCreateSingletonProperty(() => new CompletionHandler(CompletionBroker, textViewAdapter, view));
         }
     }
 }

@@ -15,7 +15,7 @@ namespace SassyStudio
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [Export(typeof(ContentTypeDefinition))]
         [Name(ScssContentType)]
-        [BaseDefinition("code"), BaseDefinition("intellisense")]
+        [BaseDefinition("text"), BaseDefinition("intellisense")]
         public static ContentTypeDefinition IScssContentType { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

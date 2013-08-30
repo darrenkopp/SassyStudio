@@ -62,6 +62,7 @@ namespace SassyStudio
         Equal,
         DoubleColon,
         PrefixMatch,
-        Caret
+        Caret,
+        PercentSign
     }
 }

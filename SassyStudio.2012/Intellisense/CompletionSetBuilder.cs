@@ -34,6 +34,7 @@ namespace SassyStudio.Intellisense
             if (contextTypes.Count == 0)
                 return null;
 
+            Logger.Log(string.Format("Current Type: {0}", context.Current.GetType().Name));
             return new CompletionSet("sass", "sass", context.TrackingSpan, Build(context, contextTypes), null);
         }
 

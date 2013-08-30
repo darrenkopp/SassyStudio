@@ -1,48 +1,46 @@
-﻿using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.TextManager.Interop;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 
-namespace SassyStudio.Commands
+namespace SassyStudio
 {
-    abstract class CommandTargetBase : IOleCommandTarget
+    abstract class VSCommandTarget<T> : IOleCommandTarget
     {
-        private IOleCommandTarget _NextCommandTarget;
+        readonly IOleCommandTarget _NextCommandTarget;
         protected readonly IWpfTextView TextView;
         protected readonly Guid CommandGroupId;
         protected readonly HashSet<uint> CommandIdSet;
 
-        public CommandTargetBase(IVsTextView adapter, IWpfTextView textView, Guid commandGroup, params uint[] commandIds)
+        protected VSCommandTarget(IVsTextView vsTextView, IWpfTextView textView)
         {
-            CommandGroupId = commandGroup;
-            CommandIdSet = new HashSet<uint>(commandIds);
             TextView = textView;
+            CommandGroupId = typeof(T).GUID;
+            CommandIdSet = new HashSet<uint>(SupportedCommands.Select(x => ConvertFromCommand(x)));
 
-            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
-            {
-                // Add the target later to make sure it makes it in before other command handlers
-                adapter.AddCommandFilter(this, out _NextCommandTarget);
-
-            }), DispatcherPriority.ApplicationIdle, null);
+            _NextCommandTarget = AttachTo(vsTextView, this);            
         }
 
+        protected virtual bool IsEnabled { get { return true; } }
         protected virtual bool SupportsAutomation { get { return false; } }
-        protected abstract bool IsEnabled();
-        protected abstract bool Execute(uint commandId, uint execOptions, IntPtr pvaIn, IntPtr pvaOut);
+        protected abstract IEnumerable<T> SupportedCommands { get; }
+        protected abstract T ConvertFromCommandId(uint id);
+        protected abstract uint ConvertFromCommand(T command);
 
-        protected virtual bool ExecuteNext(uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
+        protected abstract bool Execute(T command, uint options, IntPtr pvaIn, IntPtr pvaOut);
+
+        protected bool ExecuteNext(T command, uint options, IntPtr pvaIn, IntPtr pvaOut)
         {
-            Guid groupId = CommandGroupId;
-            var result = _NextCommandTarget.Exec(ref groupId, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            Guid pguidCmdGroup = CommandGroupId;
 
-            return result == VSConstants.S_OK;
+            return _NextCommandTarget.Exec(ref pguidCmdGroup, ConvertFromCommand(command), options, pvaIn, pvaOut) == VSConstants.S_OK;
         }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut)
@@ -51,7 +49,7 @@ namespace SassyStudio.Commands
             {
                 if (pguidCmdGroup == CommandGroupId && CommandIdSet.Contains(nCmdID))
                 {
-                    bool result = Execute(nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                    bool result = Execute(ConvertFromCommandId(nCmdID), nCmdexecopt, pvaIn, pvaOut);
 
                     if (result)
                         return VSConstants.S_OK;
@@ -69,7 +67,7 @@ namespace SassyStudio.Commands
                 {
                     if (CommandIdSet.Contains(prgCmds[i].cmdID))
                     {
-                        if (IsEnabled())
+                        if (IsEnabled)
                         {
                             prgCmds[i].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
                             return VSConstants.S_OK;
@@ -81,6 +79,13 @@ namespace SassyStudio.Commands
             }
 
             return _NextCommandTarget.QueryStatus(ref pguidCmdGroup, cCmds, prgCmds, pCmdText);
+        }
+
+        static IOleCommandTarget AttachTo(IVsTextView view, IOleCommandTarget command)
+        {
+            IOleCommandTarget next;
+            view.AddCommandFilter(command, out next);
+            return next;
         }
     }
 }

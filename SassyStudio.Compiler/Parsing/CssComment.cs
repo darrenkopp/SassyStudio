@@ -13,13 +13,13 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (stream.Current.Type == TokenType.OpenCssComment)
             {
-                OpenComment = Children.AddCurrentAndAdvance(stream, ClassifierType);
+                OpenComment = Children.AddCurrentAndAdvance(stream, SassClassifierType.Comment);
 
                 if (stream.Current.Type == TokenType.CommentText)
-                    CommentText = Children.AddCurrentAndAdvance(stream, ClassifierType);
+                    CommentText = Children.AddCurrentAndAdvance(stream, SassClassifierType.Comment);
 
                 if (stream.Current.Type == TokenType.CloseCssComment)
-                    CloseComment = Children.AddCurrentAndAdvance(stream, ClassifierType);
+                    CloseComment = Children.AddCurrentAndAdvance(stream, SassClassifierType.Comment);
             }
 
             return Children.Count > 0;

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using SassyStudio.Compiler.Lexing;
+using SassyStudio.Compiler.Parsing.Rules;
 using SassyStudio.Compiler.Parsing.Selectors;
 
 namespace SassyStudio.Compiler.Parsing
@@ -91,8 +92,8 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Function:
                     item = CreateFunction(parent, text, stream);
                     break;
+                case TokenType.Asterisk:
                 case TokenType.GreaterThan:
-                case TokenType.Plus:
                 case TokenType.Tilde:
                 case TokenType.Colon:
                 case TokenType.DoubleColon:
@@ -111,12 +112,13 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateBestFittingItem(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
+
             // handle selectors
             if (parent is SelectorGroup)
                 return CreateSelectorComponent(parent, text, stream);
 
             // handle possible property declaration
-            if (parent is RuleBlock && PropertyDeclaration.IsDeclaration(stream))
+            if (IsPropertyContainer(parent) && PropertyDeclaration.IsDeclaration(stream))
                 return new PropertyDeclaration();
 
             if ((parent is Stylesheet || parent is RuleBlock) && IsRuleSet(parent, stream))
@@ -129,11 +131,12 @@ namespace SassyStudio.Compiler.Parsing
         {
             switch (stream.Current.Type)
             {
-                case TokenType.OpenInterpolation: return new StringInterpolation();
-                case TokenType.Hash: return CreateHash(parent, text, stream);
+                case TokenType.OpenInterpolation:
+                    return new StringInterpolation();
+                case TokenType.Hash:
+                    return CreateHash(parent, text, stream);
             }
 
-            // there isn't a more specific representation of token, so just emit normal token item
             return new TokenItem();
         }
 
@@ -152,6 +155,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Tilde: return new GeneralSiblingCombinator();
                 case TokenType.Ampersand: return new ParentReferenceSelector();
                 case TokenType.OpenInterpolation: return new StringInterpolationSelector();
+                case TokenType.PercentSign: return new ExtendOnlySelector();
             }
 
             if (stream.Current.Type == TokenType.Colon)
@@ -188,13 +192,14 @@ namespace SassyStudio.Compiler.Parsing
 
         private ParseItem CreateBang(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
-            if (BangModifier.IsValidModifier(text, stream.Current, "default"))
+            var modifier = stream.Peek(1);
+            if (BangModifier.IsValidModifier(text, modifier, "default"))
                 return new DefaultModifier();
 
-            if (BangModifier.IsValidModifier(text, stream.Current, "important"))
+            if (BangModifier.IsValidModifier(text, modifier, "important"))
                 return new ImportanceModifier();
 
-            if (BangModifier.IsValidModifier(text, stream.Current, "optional"))
+            if (BangModifier.IsValidModifier(text, modifier, "optional"))
                 return new OptionalModifier();
 
             if (VariableName.IsVariable(text, stream))
@@ -223,6 +228,11 @@ namespace SassyStudio.Compiler.Parsing
                     case "if":
                     case "else":
                     case "else if": return new ConditionalControlDirective();
+                    case "media": return new MediaQueryDirective();
+                    case "font-face": return new FontFaceDirective();
+                    case "page": return new PageDirective();
+                    case "charset": return new CharsetDirective();
+                    case "keyframes": return new KeyframesDirective();
                     default: return new AtRule();
                 }
             }
@@ -280,10 +290,11 @@ namespace SassyStudio.Compiler.Parsing
             bool validStart = false;
             switch (stream.Current.Type)
             {
+                case TokenType.OpenInterpolation:
+                    return true;
                 case TokenType.Asterisk:
                 case TokenType.Identifier:
                 case TokenType.OpenBrace:
-                case TokenType.OpenInterpolation:
                     validStart = true;
                     break;
                 case TokenType.Period:
@@ -298,7 +309,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Tilde:
                 case TokenType.Colon:
                 case TokenType.DoubleColon:
-                    validStart = parent is RuleBlock;
+                    validStart = IsNestedRuleBlock(parent);
                     break;
             }
 
@@ -331,6 +342,28 @@ namespace SassyStudio.Compiler.Parsing
                         // anything else including whitespace
                         return next.Start > stream.Current.End;
                 }
+            }
+
+            return false;
+        }
+
+        static bool IsPropertyContainer(ComplexItem parent)
+        {
+            return parent is RuleBlock || parent is NestedPropertyBlock;
+        }
+
+        private static bool IsNestedRuleBlock(ComplexItem parent)
+        {
+            while (parent != null)
+            {
+                // if root level stylesheet is parent, then not nested
+                if (parent is Stylesheet && parent.Parent == null)
+                    return false;
+
+                if (parent is RuleBlock)
+                    return true;
+
+                parent = parent.Parent as ComplexItem;
             }
 
             return false;

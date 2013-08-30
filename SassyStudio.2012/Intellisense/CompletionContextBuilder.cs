@@ -20,10 +20,28 @@ namespace SassyStudio.Intellisense
             var text = new SnapshotTextProvider(tree.SourceText);
             var position = span.GetStartPoint(tree.SourceText).Position;
 
-            var current = tree.Items.FindItemContainingPosition(position);
+            var current = Find(tree, position);
             var path = CreateTraversalPath(current);
 
             return new SassCompletionContext(tree.SourceText, span, current, path);
+        }
+
+        private ParseItem Find(ISassDocumentTree tree, int position)
+        {
+            if (tree == null)
+                return null;
+
+            var item = tree.Items.FindItemContainingPosition(position);
+            while (item != null)
+            {
+                // if we have a complex item, stop searching
+                if (item is ComplexItem)
+                    break;
+
+                item = item.Parent;
+            }
+
+            return item;
         }
 
         static IEnumerable<ComplexItem> CreateTraversalPath(ParseItem item)
@@ -32,11 +50,13 @@ namespace SassyStudio.Intellisense
             if (item == null)
                 return path;
 
-            Logger.Log(string.Format("Current Type: {0}", item.GetType().Name));
-            var current = (item as ComplexItem) ?? item.Parent;
+            var current = item;
             while (current != null)
             {
-                path.AddLast(current);
+                // only consider complex items in path
+                if (current is ComplexItem)
+                    path.AddLast(current as ComplexItem);
+
                 current = current.Parent;
             }
 

@@ -13,7 +13,7 @@ namespace SassyStudio.Compiler.Parsing
         {
             ConditionStatements = new ParseItemList();
         }
-        
+
         public ParseItemList ConditionStatements { get; protected set; }
         public ICollection<ConditionalControlDirective> ElseStatements { get { return _ElseStatements; } }
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
@@ -30,17 +30,22 @@ namespace SassyStudio.Compiler.Parsing
                         Children.Add(item);
                         ConditionStatements.Add(item);
                     }
+                    else
+                    {
+                        Children.AddCurrentAndAdvance(stream);
+                    }
                 }
 
                 ParseBody(itemFactory, text, stream);
+
                 while (IsConditionalContinuationDirective(text, stream))
                 {
                     var subsequentConditional = itemFactory.CreateSpecific<ConditionalControlDirective>(this, text, stream);
-                    if (subsequentConditional.Parse(itemFactory, text, stream))
-                    {
-                        ElseStatements.Add(subsequentConditional);
-                        Children.Add(subsequentConditional);
-                    }
+                    if (!subsequentConditional.Parse(itemFactory, text, stream))
+                        break;
+
+                    ElseStatements.Add(subsequentConditional);
+                    Children.Add(subsequentConditional);
                 }
             }
 
@@ -60,7 +65,7 @@ namespace SassyStudio.Compiler.Parsing
             {
                 var name = stream.Peek(1);
                 if (name.Type == TokenType.Identifier)
-                    return text.StartsWithOrdinal(name.Start, "if");
+                    return text.CompareOrdinal(name.Start, "if");
             }
 
             return false;
@@ -86,7 +91,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.OpenCurlyBrace:
                     return true;
 
-                default: 
+                default:
                     return false;
             }
         }

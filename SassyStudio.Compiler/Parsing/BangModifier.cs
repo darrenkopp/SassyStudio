@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public abstract class BangModifier : ComplexItem
+    public abstract class BangModifier : SimplexItem
     {
         public BangModifier()
         {

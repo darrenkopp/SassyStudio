@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public abstract class ComplexItem : ParseItem, IParseItemContainer, IVariableScope
+    /// <summary>
+    /// Represents a collection of tokens that represent a single item
+    /// </summary>
+    public abstract class SimplexItem : ParseItem, IParseItemContainer
     {
-        public ComplexItem()
+        public SimplexItem()
         {
             Children = new ParseItemList();
             Children.AutoParent = this;
@@ -29,12 +33,5 @@ namespace SassyStudio.Compiler.Parsing
             for (int i = 0; i < Children.Count; i++)
                 Children[i].Freeze();
         }
-
-        public virtual IEnumerable<VariableName> GetDefinedVariables(int position)
-        {
-            foreach (var variable in Children.Where(x => x.Start < position).OfType<VariableDefinition>().Select(x => x.Name))
-                yield return variable;
-        }
-
     }
 }

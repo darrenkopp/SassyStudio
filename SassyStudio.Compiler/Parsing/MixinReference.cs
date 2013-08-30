@@ -31,27 +31,34 @@ namespace SassyStudio.Compiler.Parsing
                     Children.Add(Name);
 
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
+                {
                     OpenBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
 
-                while (!IsTerminator(stream.Current.Type))
-                {
-                    var argument = itemFactory.CreateSpecific<FunctionArgument>(this, text, stream);
-                    if (argument != null && argument.Parse(itemFactory, text, stream))
+                    while (!IsTerminator(stream.Current.Type))
                     {
-                        _Arguments.Add(argument);
-                        Children.Add(argument);
-                    }
-                    else
-                    {
-                        Children.AddCurrentAndAdvance(stream);
+                        var argument = itemFactory.CreateSpecific<FunctionArgument>(this, text, stream);
+                        if (argument != null && argument.Parse(itemFactory, text, stream))
+                        {
+                            _Arguments.Add(argument);
+                            Children.Add(argument);
+                        }
+                        else
+                        {
+                            Children.AddCurrentAndAdvance(stream);
+                        }
                     }
                 }
 
                 if (stream.Current.Type == TokenType.CloseFunctionBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
 
-                if (stream.Current.Type == TokenType.OpenCurlyBrace)
+                if (stream.Current.Type == TokenType.Semicolon)
                 {
+                    Semicolon = Children.AddCurrentAndAdvance(stream);
+                }
+                else if (stream.Current.Type == TokenType.OpenCurlyBrace)
+                {
+
                     var content = new MixinContentBlock();
                     if (content.Parse(itemFactory, text, stream))
                     {
@@ -59,9 +66,6 @@ namespace SassyStudio.Compiler.Parsing
                         Children.Add(content);
                     }
                 }
-
-                if (stream.Current.Type == TokenType.Semicolon)
-                    Semicolon = Children.AddCurrentAndAdvance(stream);
             }
 
             return Children.Count > 0;

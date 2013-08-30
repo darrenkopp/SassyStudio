@@ -51,6 +51,7 @@ namespace SassyStudio.Editor
 
             var context = new ParsingExecutionContext(new BufferSnapshotChangedCancellationToken(Buffer, snapshot));
             var items = await Parser.ParseAsync(new SnapshotTextProvider(snapshot), context);
+            Logger.Log(string.Format("PERF: Tokenized: {0:0.00}ms, Parsed: {1:0.00}ms", Parser.LastTokenizationDuration.TotalMilliseconds, Parser.LastParsingDuration.TotalMilliseconds));
 
             var current = new SassDocumentTree(snapshot, items);
             if (!context.IsCancellationRequested)
@@ -150,17 +151,35 @@ namespace SassyStudio.Editor
             lock (locker)
             {
                 Tree = current;
-                //DumpTree(current.Items, 0);
+                DumpTree(current.Items, 0);
             }
         }
 
         private void DumpTree(ParseItemList items, int depth)
         {
-            var indent = new string(' ', depth);
+            //var indent = new string(' ', depth);
+            var indent = "";
+            for (int i = 0; i < depth; i++)
+            {
+                indent += "|  ";
+            }
+
+            //indent += "| ";
             foreach (var item in items)
             {
-                if (!(item is TokenItem))
-                    Logger.Log(string.Format("{0} {1}", indent, item.GetType().Name));
+                //if (item is BlockItem)
+                //{
+                //    var block = item as BlockItem;
+                //    if (block.CloseCurlyBrace == null)
+                //    {
+                //        Logger.Log(string.Format("{0} of {1} on line {2}", block.GetType().Name, block.Parent.GetType().Name, Tree.SourceText.GetLineFromPosition(block.OpenCurlyBrace.Start).LineNumber));
+                //    }
+                //}
+
+                //string content = string.Empty;
+                //if (item is TokenItem || item is SimplexItem)
+                //    content = Tree.SourceText.GetText(item.Start, Math.Min(item.Length, 25));
+                //Logger.Log(string.Format("{0} {1} - {2}", indent, item.GetType().Name, content));
 
                 var complex = item as ComplexItem;
                 if (complex != null)

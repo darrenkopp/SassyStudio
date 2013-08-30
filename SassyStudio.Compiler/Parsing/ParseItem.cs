@@ -19,11 +19,11 @@ namespace SassyStudio.Compiler.Parsing
         {
         }
 
-        public ComplexItem Parent { get; set; }
+        public ParseItem Parent { get; set; }
 
         public ParseItem InOrderSuccessor()
         {
-            var container = this as ComplexItem;
+            var container = this as IParseItemContainer;
             if (container != null && container.Children.Count > 0)
                 return container.Children.First();
 
@@ -35,7 +35,7 @@ namespace SassyStudio.Compiler.Parsing
             var sibling = PreviousSibling();
             if (sibling != null)
             {
-                var container = sibling as ComplexItem;
+                var container = sibling as IParseItemContainer;
                 if (container != null)
                     return container.Children[container.Children.Count - 1];
             }
@@ -48,9 +48,13 @@ namespace SassyStudio.Compiler.Parsing
             if (Parent == null) return null;
 
             // get next child after this one
-            var siblingIndex = Parent.Children.IndexOf(this) + 1;
-            if (siblingIndex < Parent.Children.Count)
-                return Parent.Children[siblingIndex];
+            var parent = Parent as IParseItemContainer;
+            if (parent != null)
+            {
+                var siblingIndex = parent.Children.IndexOf(this) + 1;
+                if (siblingIndex < parent.Children.Count)
+                    return parent.Children[siblingIndex];
+            }
 
             // if this is last of child of parent, then get parents next sibling
             return Parent.NextSibling();
@@ -60,9 +64,13 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (Parent == null) return null;
 
-            var siblingIndex = Parent.Children.IndexOf(this) - 1;
-            if (siblingIndex >= 0)
-                return Parent.Children[siblingIndex];
+            var parent = Parent as IParseItemContainer;
+            if (parent != null)
+            {
+                var siblingIndex = parent.Children.IndexOf(this) - 1;
+                if (siblingIndex >= 0)
+                    return parent.Children[siblingIndex];
+            }
 
             return null;
         }

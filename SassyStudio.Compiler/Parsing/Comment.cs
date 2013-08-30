@@ -10,7 +10,6 @@ namespace SassyStudio.Compiler.Parsing
     {
         public Comment()
         {
-            ClassifierType = SassClassifierType.Comment;
         }
 
         public TokenItem OpenComment { get; protected set; }

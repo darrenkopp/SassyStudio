@@ -19,17 +19,19 @@ namespace SassyStudio.Compiler.Parsing
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.OpenInterpolation)
+            {
                 OpenInterpolation = Children.AddCurrentAndAdvance(stream, SassClassifierType.Interpolation);
 
-            while (!IsTerminator(stream.Current.Type))
-            {
-                ParseItem item;
-                if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out item))
-                    Children.Add(item);
-            }
+                while (!IsTerminator(stream.Current.Type))
+                {
+                    ParseItem item;
+                    if (itemFactory.TryCreateParsedOrDefault(this, text, stream, out item))
+                        Children.Add(item);
+                }
 
-            if (stream.Current.Type == TokenType.CloseInterpolation)
-                CloseInterpolation = Children.AddCurrentAndAdvance(stream, SassClassifierType.Interpolation);
+                if (stream.Current.Type == TokenType.CloseInterpolation)
+                    CloseInterpolation = Children.AddCurrentAndAdvance(stream, SassClassifierType.Interpolation);
+            }
 
             return Children.Count > 0;
         }

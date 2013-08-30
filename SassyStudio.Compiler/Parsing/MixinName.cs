@@ -6,7 +6,7 @@ using SassyStudio.Compiler.Lexing;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class MixinName : ComplexItem
+    public class MixinName : SimplexItem
     {
         public MixinName(SassClassifierType type)
         {

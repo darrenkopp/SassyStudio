@@ -9,7 +9,7 @@ namespace SassyStudio.Compiler.Parsing
     public class ExtendDirective : ComplexItem
     {
         public AtRule Rule { get; protected set; }
-        public ClassName ExtensionClass { get; protected set; }
+        public SelectorGroup Selector { get; protected set; }
         public OptionalModifier Modifier { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
 
@@ -21,11 +21,11 @@ namespace SassyStudio.Compiler.Parsing
                 if (Rule != null)
                     Children.Add(Rule);
 
-                var name = new ClassName();
-                if (name.Parse(itemFactory, text, stream))
+                var selector = itemFactory.CreateSpecific<SelectorGroup>(this, text, stream);
+                if (selector.Parse(itemFactory, text, stream))
                 {
-                    ExtensionClass = name;
-                    Children.Add(name);
+                    Selector = selector;
+                    Children.Add(selector);
                 }
 
                 if (stream.Current.Type == TokenType.Bang)

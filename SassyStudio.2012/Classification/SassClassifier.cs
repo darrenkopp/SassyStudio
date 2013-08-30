@@ -30,24 +30,32 @@ namespace SassyStudio.Classification
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)
         {
             var results = new List<ClassificationSpan>();
-            var tree = Tree;
-            if (tree == null)
-                return results;
-
-
-            var open = tree.Items.FindItemContainingPosition(span.Start.Position);
-            for (var current = open; current != null; current = current.InOrderSuccessor())
+            try
             {
-                if (current.Start > span.End.Position)
-                    break;
+                var tree = Tree;
+                if (tree == null)
+                    return results;
 
-                var s = new Span(current.Start, current.Length);
-                if (span.IntersectsWith(s))
+                var item = tree.Items.FindItemContainingPosition(span.Start);
+                if (item == null)
+                    return results;
+
+                if (!(item is IParseItemContainer))
+                    item = item.Parent ?? item;
+
+                for (var current = item; current != null; current = current.InOrderSuccessor())
                 {
-                    var classificationType = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
-                    if (classificationType != null)
-                        results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, s), classificationType));
+                    if (current.Start <= span.End && current.End >= span.Start)
+                    {
+                        var type = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
+                        if (type != null)
+                            results.Add(new ClassificationSpan(new SnapshotSpan(tree.SourceText, new Span(current.Start, current.Length)), type));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to classify");
             }
 
             return results;
@@ -62,17 +70,22 @@ namespace SassyStudio.Classification
                 handler(this, new ClassificationChangedEventArgs(new SnapshotSpan(e.Tree.SourceText, new Span(e.ChangeStart, e.ChangeEnd - e.ChangeStart))));
         }
 
-        private IEnumerable<ParseItem> Traverse(IEnumerable<ParseItem> items, int start, int end)
+        private IEnumerable<ParseItem> Traverse(ParseItemList items, int start, int end)
         {
-            foreach (var item in items.Where(x => x.Start <= end && x.End >= start))
+            foreach (var item in items)
             {
-                yield return item;                
-
-                // depth first children
-                var complex = item as ComplexItem;
-                if (complex != null)
-                    foreach (var child in Traverse(complex.Children, start, end))
-                        yield return child;
+                if (item.Start <= end && item.End >= start)
+                {
+                    if (item is ComplexItem)
+                    {
+                        foreach (var child in Traverse((item as ComplexItem).Children, start, end))
+                            yield return child;
+                    }
+                    else
+                    {
+                        yield return item;
+                    }
+                }
             }
         }
     }

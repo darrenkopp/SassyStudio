@@ -22,12 +22,15 @@ namespace SassyStudio.Compiler.Parsing
 
         public virtual bool ParseBody(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            var body = new ControlDirectiveBody();
-            if (body.Parse(itemFactory, text, stream))
+            if (stream.Current.Type == TokenType.OpenCurlyBrace)
             {
-                Body = body;
-                Children.Add(Body);
-                return true;
+                var body = new ControlDirectiveBody();
+                if (body.Parse(itemFactory, text, stream))
+                {
+                    Body = body;
+                    Children.Add(Body);
+                    return true;
+                }
             }
 
             return false;
