@@ -6,18 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using SassyStudio.Compiler.Parsing;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionContextProvider))]
     class UserFunctionContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(SassCompletionContext context)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            if (context.Current is Stylesheet)
+            if (current is Stylesheet)
             {
                 yield return SassCompletionContextType.FunctionDirective;
             }
-            else if (context.Current is UserFunctionBody)
+            else if (current is UserFunctionBody)
             {
                 yield return SassCompletionContextType.FunctionBody;
             }

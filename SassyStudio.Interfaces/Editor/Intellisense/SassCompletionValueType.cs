@@ -9,6 +9,7 @@ namespace SassyStudio.Editor.Intellisense
     public enum SassCompletionValueType
     {
         Default = 0,
+        Keyword,
         SystemFunction,
         UserFunction,
         Mixin,

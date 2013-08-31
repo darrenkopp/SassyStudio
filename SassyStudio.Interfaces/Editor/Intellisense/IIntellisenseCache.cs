@@ -6,8 +6,8 @@ namespace SassyStudio.Editor.Intellisense
     {
         void Update(ISassStylesheet stylesheet, ITextProvider text = null);
 
-        IEnumerable<ICompletionValue> GetVariables(int position = 0);
-        IEnumerable<ICompletionValue> GetFunctions(int position = 0);
-        IEnumerable<ICompletionValue> GetMixins(int position = 0); 
+        IEnumerable<ICompletionValue> GetVariables(int position = int.MaxValue);
+        IEnumerable<ICompletionValue> GetFunctions(int position = int.MaxValue);
+        IEnumerable<ICompletionValue> GetMixins(int position = int.MaxValue); 
     }
 }

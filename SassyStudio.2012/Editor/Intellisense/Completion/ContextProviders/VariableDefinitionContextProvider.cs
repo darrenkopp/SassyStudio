@@ -6,20 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using SassyStudio.Compiler.Parsing;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionContextProvider))]
     class VariableDefinitionContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(SassCompletionContext context)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            if (IsDefinitionScope(context.Current))
+            if (IsDefinitionScope(current))
             {
                 yield return SassCompletionContextType.VariableName;
             }
-            else if (context.Current is VariableDefinition && IsDefinitionScope(context.Current.Parent))
+            else if (current is VariableDefinition && IsDefinitionScope(current.Parent))
             {
-                var definition = context.Current as VariableDefinition;
+                var definition = current as VariableDefinition;
                 if (definition.Name == null)
                 {
                     yield return SassCompletionContextType.VariableName;

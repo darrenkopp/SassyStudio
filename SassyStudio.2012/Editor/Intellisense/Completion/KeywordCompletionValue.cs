@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Editor.Intellisense
 {
-    class SystemFunctionCompletionValue : ICompletionValue
+    class KeywordCompletionValue : ICompletionValue
     {
-        public SystemFunctionCompletionValue(string name)
+        public KeywordCompletionValue(string name)
         {
-            CompletionText = DisplayText = name;
+            DisplayText = name;
+            CompletionText = name;
         }
 
-        public SassCompletionValueType Type { get { return SassCompletionValueType.SystemFunction; } }
+        public SassCompletionValueType Type { get { return SassCompletionValueType.Keyword; } }
 
         public string DisplayText { get; private set; }
 

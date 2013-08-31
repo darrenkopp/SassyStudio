@@ -9,9 +9,21 @@ namespace SassyStudio.Editor.Intellisense
 {
     class StylesheetContainer : CompletionContainerBase
     {
+        readonly IIntellisenseManager IntellisenseManager;
+        public StylesheetContainer(IIntellisenseManager manager)
+        {
+            IntellisenseManager = manager;
+        }
+
         public override void Add(ParseItem item, ITextProvider text)
         {
-            if (item is MixinDefinition)
+            if (item is ImportDirective)
+            {
+                var directive = item as ImportDirective;
+                foreach (var file in directive.Files)
+                    Containers.AddLast(new ImportContainer(IntellisenseManager.Get(file.Document)));
+            }
+            else if (item is MixinDefinition)
             {
                 var definition = item as MixinDefinition;
                 Parse(new MixinContainer(definition), definition.Children, text);

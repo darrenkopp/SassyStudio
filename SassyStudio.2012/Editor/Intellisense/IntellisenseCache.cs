@@ -11,7 +11,6 @@ namespace SassyStudio.Editor.Intellisense
     {
         delegate IIntellisenseContainer ContainerFactory(ComplexItem item);
         static readonly IDictionary<Type, ContainerFactory> ContainerFactoryMappings;
-        static readonly IEnumerable<ICompletionValue> SystemFunctions; 
         static IntellisenseCache()
         {
             ContainerFactoryMappings = new Dictionary<Type, ContainerFactory>
@@ -19,12 +18,6 @@ namespace SassyStudio.Editor.Intellisense
                 { typeof(MixinDefinition), item => new MixinContainer(item as MixinDefinition) },
                 { typeof(UserFunctionDefinition), item => new FunctionContainer(item as UserFunctionDefinition) }
             };
-
-            SystemFunctions = Scss.ScssWellKnownFunctionNames.Names.Select(name => new SystemFunctionCompletionValue
-            {
-                CompletionText = name,
-                DisplayText = name
-            }).ToArray();
         }
 
         readonly ISassDocument Document;
@@ -39,7 +32,7 @@ namespace SassyStudio.Editor.Intellisense
 
         public void Update(ISassStylesheet stylesheet, ITextProvider text)
         {
-            var container = new StylesheetContainer();
+            var container = new StylesheetContainer(IntellisenseManager);
             foreach (var item in stylesheet.Children)
                 container.Add(item, text);
 
@@ -53,7 +46,7 @@ namespace SassyStudio.Editor.Intellisense
 
         public IEnumerable<ICompletionValue> GetFunctions(int position)
         {
-            return SystemFunctions.Concat(Container.GetFunctions(position));
+            return Container.GetFunctions(position);
         }
 
         public IEnumerable<ICompletionValue> GetMixins(int position)

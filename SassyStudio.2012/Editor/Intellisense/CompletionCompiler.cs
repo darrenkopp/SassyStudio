@@ -28,6 +28,7 @@ namespace SassyStudio.Editor.Intellisense
             IconMappings = new Dictionary<SassCompletionValueType, ImageSource>
             {
                 { SassCompletionValueType.Default, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupUnknown, StandardGlyphItem.TotalGlyphItems) },
+                { SassCompletionValueType.Keyword, Glyphs.GetGlyph(StandardGlyphGroup.GlyphKeyword, StandardGlyphItem.TotalGlyphItems) },
                 { SassCompletionValueType.SystemFunction, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupMethod, StandardGlyphItem.GlyphItemPublic) },
                 { SassCompletionValueType.UserFunction, Glyphs.GetGlyph(StandardGlyphGroup.GlyphExtensionMethod, StandardGlyphItem.GlyphItemInternal) },
                 { SassCompletionValueType.Mixin, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupInterface, StandardGlyphItem.GlyphItemInternal) },
@@ -41,7 +42,7 @@ namespace SassyStudio.Editor.Intellisense
                 moniker: "SASS",
                 displayName: "SASS",
                 applicableTo: span,
-                completions: Transform(values),
+                completions: new LinkedList<Completion>(Transform(values)),
                 completionBuilders: null
             );
         }

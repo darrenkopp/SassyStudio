@@ -30,7 +30,7 @@ namespace SassyStudio.Editor.Intellisense
 
         public virtual IEnumerable<ICompletionValue> GetVariables(int position)
         {
-            return Variables.Where(x => x.End < position)
+            return Variables
                 .Concat(Containers.SelectMany(x => x.GetVariables(position)));
         }
 

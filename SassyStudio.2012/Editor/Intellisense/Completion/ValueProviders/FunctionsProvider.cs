@@ -6,13 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.Intellisense;
 using SassyStudio.Compiler.Parsing;
+using SassyStudio.Scss;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionValueProvider))]
-    class FunctionsProvider : ValueProviderBase
+    class FunctionsProvider : ICompletionValueProvider
     {
-        public override IEnumerable<SassCompletionContextType> SupportedContexts
+        static readonly IEnumerable<ICompletionValue> SystemFunctions = ScssWellKnownFunctionNames.Names.Select(name => new SystemFunctionCompletionValue(name)).ToArray();
+
+        public IEnumerable<SassCompletionContextType> SupportedContexts
         {
             get
             {
@@ -27,13 +30,9 @@ namespace SassyStudio.Intellisense
             }
         }
 
-        public override IEnumerable<Completion> GetCompletions(SassCompletionContextType type, SassCompletionContext context)
+        public IEnumerable<ICompletionValue> GetCompletions(SassCompletionContextType type, ICompletionContext context)
         {
-            foreach (var builtInFunction in Scss.ScssWellKnownFunctionNames.Names)
-                yield return Function(builtInFunction);
-
-            foreach (var userFunction in context.TraversalPath.SelectMany(x => x.Children.OfType<UserFunctionDefinition>()))
-                yield return Function(userFunction.GetName(context.Text), item: StandardGlyphItem.GlyphItemInternal);
+            return SystemFunctions.Concat(context.Cache.GetFunctions(context.Position));
         }
     }
 }

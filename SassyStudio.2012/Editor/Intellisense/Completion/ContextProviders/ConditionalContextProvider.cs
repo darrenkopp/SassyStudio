@@ -2,21 +2,21 @@
 using System.ComponentModel.Composition;
 using SassyStudio.Compiler.Parsing;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionContextProvider))]
     class ConditionalContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(SassCompletionContext context)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            if (context.Current is Stylesheet || context.Current is BlockItem)
+            if (current is Stylesheet || current is BlockItem)
             {
                 yield return SassCompletionContextType.ConditionalDirective;
             }
-            else if (context.Current is ConditionalControlDirective)
+            else if (current is ConditionalControlDirective)
             {
-                var directive = context.Current as ConditionalControlDirective;
-                if (directive.Rule != null && directive.Rule.Name != null && AllowsExpresion(context.Text, directive.Rule.Name))
+                var directive = current as ConditionalControlDirective;
+                if (directive.Rule != null && directive.Rule.Name != null /*&& AllowsExpresion(context.Text, directive.Rule.Name)*/)
                     yield return SassCompletionContextType.ConditionalDirectiveExpression;
             }
         }

@@ -3,12 +3,12 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using Microsoft.VisualStudio.Language.Intellisense;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionValueProvider))]
-    class KeywordsProvider : ValueProviderBase
+    class KeywordsProvider : ICompletionValueProvider
     {
-        public override IEnumerable<SassCompletionContextType> SupportedContexts
+        public IEnumerable<SassCompletionContextType> SupportedContexts
         {
             get
             {
@@ -31,9 +31,9 @@ namespace SassyStudio.Intellisense
             }
         }
 
-        public override IEnumerable<Completion> GetCompletions(SassCompletionContextType type, SassCompletionContext context)
+        public IEnumerable<ICompletionValue> GetCompletions(SassCompletionContextType type, ICompletionContext context)
         {
-            return GetKeywords(type).Select(name => Keyword(name));
+            return GetKeywords(type).Select(name => new KeywordCompletionValue(name));
         }
 
         IEnumerable<string> GetKeywords(SassCompletionContextType type)
