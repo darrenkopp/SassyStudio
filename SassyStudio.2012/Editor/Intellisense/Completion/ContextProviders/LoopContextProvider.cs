@@ -6,42 +6,42 @@ using System.Text;
 using System.Threading.Tasks;
 using SassyStudio.Compiler.Parsing;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionContextProvider))]
     class LoopContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(SassCompletionContext context)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            if (context.Current is EachLoopDirective)
+            if (current is EachLoopDirective)
             {
-                var directive = context.Current as EachLoopDirective;
-                if (directive.Rule != null && BeforeSuccessor(context.StartPosition, directive.Body))
+                var directive = current as EachLoopDirective;
+                if (directive.Rule != null && BeforeSuccessor(position, directive.Body))
                     yield return SassCompletionContextType.EachDirectiveListValue;
             }
-            else if (context.Current is ForLoopDirective)
+            else if (current is ForLoopDirective)
             {
-                var directive = context.Current as ForLoopDirective;
+                var directive = current as ForLoopDirective;
                 if (directive.Rule != null)
                 {
-                    if (directive.Variable == null || BeforeSuccessor(context.StartPosition, directive.FromKeyword, directive.ToKeyword ?? directive.ThroughKeyword, directive.Body))
+                    if (directive.Variable == null || BeforeSuccessor(position, directive.FromKeyword, directive.ToKeyword ?? directive.ThroughKeyword, directive.Body))
                     {
                         yield return SassCompletionContextType.ForLoopVariable;
                     }
-                    else if (directive.FromKeyword == null || BeforeSuccessor(context.StartPosition, directive.ToKeyword ?? directive.ThroughKeyword, directive.Body))
+                    else if (directive.FromKeyword == null || BeforeSuccessor(position, directive.ToKeyword ?? directive.ThroughKeyword, directive.Body))
                     {
                         yield return SassCompletionContextType.ForLoopFromKeyword;
                     }
-                    else if ((directive.ThroughKeyword == null || directive.FromKeyword == null) || BeforeSuccessor(context.StartPosition, directive.Body))
+                    else if ((directive.ThroughKeyword == null || directive.FromKeyword == null) || BeforeSuccessor(position, directive.Body))
                     {
                         yield return SassCompletionContextType.ForLoopRangeKeyword;
                     }
                 }
             }
-            else if (context.Current is WhileLoopDirective)
+            else if (current is WhileLoopDirective)
             {
-                var directive = context.Current as WhileLoopDirective;
-                if (directive.Rule != null && BeforeSuccessor(context.StartPosition, directive.Body))
+                var directive = current as WhileLoopDirective;
+                if (directive.Rule != null && BeforeSuccessor(position, directive.Body))
                     yield return SassCompletionContextType.WhileLoopCondition;
             }
             else

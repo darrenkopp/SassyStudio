@@ -4,12 +4,12 @@ using System.Linq;
 using Microsoft.VisualStudio.Language.Intellisense;
 using SassyStudio.Compiler.Parsing;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionValueProvider))]
-    class VariablesProvider : ValueProviderBase
+    class VariablesProvider : ICompletionValueProvider
     {
-        public override IEnumerable<SassCompletionContextType> SupportedContexts
+        public IEnumerable<SassCompletionContextType> SupportedContexts
         {
             get
             {
@@ -32,7 +32,7 @@ namespace SassyStudio.Intellisense
             }
         }
 
-        public override IEnumerable<Completion> GetCompletions(SassCompletionContextType type, SassCompletionContext context)
+        public IEnumerable<ICompletionValue> GetCompletions(SassCompletionContextType type, ICompletionContext context)
         {
             switch (type)
             {
@@ -45,40 +45,41 @@ namespace SassyStudio.Intellisense
                 case SassCompletionContextType.VariableName:
                 case SassCompletionContextType.VariableValue:
                 case SassCompletionContextType.WhileLoopCondition:
-                    return GetVisibleVariables(context);
+                    return context.Cache.GetVariables(context.Position);
                 case SassCompletionContextType.FunctionArgumentDefaultValue:
                 case SassCompletionContextType.IncludeDirectiveMixinArgument:
                 case SassCompletionContextType.IncludeDirectiveMixinArgumentName:
                 case SassCompletionContextType.IncludeDirectiveMixinArgumentValue:
                 case SassCompletionContextType.MixinDirectiveMixinArgumentDefaultValue:
-                    return GetArgumentVariables(type, context);
-            }
-
-            return Enumerable.Empty<Completion>();
-        }
-
-        private IEnumerable<Completion> GetVisibleVariables(SassCompletionContext context)
-        {
-            return context.TraversalPath.OfType<IVariableScope>()
-                .SelectMany(x => x.GetDefinedVariables(context.StartPosition))
-                .Select(x => Variable(x.GetName(context.Text)));
-        }
-
-        private IEnumerable<Completion> GetArgumentVariables(SassCompletionContextType type, SassCompletionContext context)
-        {
-            // TODO: resolve named variables of mixin / function (if any)
-
-            switch (type)
-            {
-                case SassCompletionContextType.FunctionArgumentValue:
-                case SassCompletionContextType.IncludeDirectiveMixinArgument:
-                case SassCompletionContextType.IncludeDirectiveMixinArgumentName:
-                case SassCompletionContextType.IncludeDirectiveMixinArgumentValue:
-                case SassCompletionContextType.MixinDirectiveMixinArgumentDefaultValue:
+                    // TODO: named arguments    
                     break;
             }
 
-            yield break;
+            return Enumerable.Empty<ICompletionValue>();
         }
+
+        //private IEnumerable<Completion> GetVisibleVariables(SassCompletionContext context)
+        //{
+        //    return context.TraversalPath.OfType<IVariableScope>()
+        //        .SelectMany(x => x.GetDefinedVariables(context.StartPosition))
+        //        .Select(x => Variable(x.GetName(context.Text)));
+        //}
+
+        //private IEnumerable<Completion> GetArgumentVariables(SassCompletionContextType type, SassCompletionContext context)
+        //{
+        //    // TODO: resolve named variables of mixin / function (if any)
+
+        //    switch (type)
+        //    {
+        //        case SassCompletionContextType.FunctionArgumentValue:
+        //        case SassCompletionContextType.IncludeDirectiveMixinArgument:
+        //        case SassCompletionContextType.IncludeDirectiveMixinArgumentName:
+        //        case SassCompletionContextType.IncludeDirectiveMixinArgumentValue:
+        //        case SassCompletionContextType.MixinDirectiveMixinArgumentDefaultValue:
+        //            break;
+        //    }
+
+        //    yield break;
+        //}
     }
 }

@@ -6,20 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionContextProvider))]
     class ExtendContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(SassCompletionContext context)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            if (context.Current is RuleBlock)
+            if (current is RuleBlock)
             {
                 yield return SassCompletionContextType.ExtendDirective;
             }
-            else if (context.Current is ExtendDirective)
+            else if (current is ExtendDirective)
             {
-                var directive = context.Current as ExtendDirective;
+                var directive = current as ExtendDirective;
                 if (directive.Selector == null)
                 {
                     yield return SassCompletionContextType.ExtendDirectiveReference;

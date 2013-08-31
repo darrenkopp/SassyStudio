@@ -2,14 +2,13 @@
 using System.ComponentModel.Composition;
 using SassyStudio.Compiler.Parsing;
 
-namespace SassyStudio.Intellisense
+namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionContextProvider))]
     class MixinContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(SassCompletionContext context)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            var current = context.Current;
             if (current == null)
                 yield break;
 

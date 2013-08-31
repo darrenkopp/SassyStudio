@@ -1,6 +1,6 @@
 ﻿namespace SassyStudio.Editor.Intellisense
 {
-    public interface ICompletionValue : IRange
+    public interface ICompletionValue
     {
         string DisplayText { get; }
         string CompletionText { get; }
