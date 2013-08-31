@@ -32,11 +32,6 @@ namespace SassyStudio.Editor
         public event EventHandler<DocumentChangedEventArgs> DocumentChanged;
         public ISassDocument Document { get { return _Document; } }
 
-        public ICompletionContext CreateCompletionContext(int position)
-        {
-            throw new NotImplementedException();
-        }
-
         void OnBufferChanged(object sender, TextContentChangedEventArgs e)
         {
             // buffer is stale, ignore because we will get another

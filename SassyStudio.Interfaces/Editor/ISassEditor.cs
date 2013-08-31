@@ -12,7 +12,5 @@ namespace SassyStudio.Editor
         event EventHandler<DocumentChangedEventArgs> DocumentChanged;
 
         ISassDocument Document { get; }
-
-        ICompletionContext CreateCompletionContext(int position);
     }
 }

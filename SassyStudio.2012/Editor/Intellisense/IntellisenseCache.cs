@@ -9,15 +9,17 @@ namespace SassyStudio.Editor.Intellisense
     class IntellisenseCache : IIntellisenseCache
     {
         readonly ISassDocument Document;
+        readonly IIntellisenseManager IntellisenseManager;
 
-        public IntellisenseCache(ISassDocument document, IEnumerable<ICompletionContextProvider> contextProviders, IDictionary<SassCompletionContextType, IEnumerable<ICompletionValueProvider>> valueProviders)
+        public IntellisenseCache(ISassDocument document, IIntellisenseManager intellisenseManager)
         {
             Document = document;
+            IntellisenseManager = intellisenseManager;
         }
 
         public void Update(ISassStylesheet stylesheet, ITextProvider text)
         {
-
+            
         }
     }
 }

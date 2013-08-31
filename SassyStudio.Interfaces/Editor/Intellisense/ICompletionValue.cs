@@ -4,5 +4,6 @@
     {
         string DisplayText { get; }
         string CompletionText { get; }
+        SassCompletionValueType Type { get; }
     }
 }

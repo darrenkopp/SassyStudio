@@ -12,16 +12,16 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(IIntellisenseManager))]
     class IntellisenseManager : IIntellisenseManager
     {
-        readonly IEnumerable<ICompletionContextProvider> ContextProviders;
-        readonly IDictionary<SassCompletionContextType, IEnumerable<ICompletionValueProvider>> ValueProviders;
+        readonly IEnumerable<ICompletionContextProvider> _ContextProviders;
+        readonly IDictionary<SassCompletionContextType, IEnumerable<ICompletionValueProvider>> _ValueProviders;
         readonly ConcurrentDictionary<ISassDocument, IIntellisenseCache> Caches = new ConcurrentDictionary<ISassDocument, IIntellisenseCache>();
         readonly CancellationToken ShutdownToken;
 
         [ImportingConstructor]
         public IntellisenseManager([ImportMany]IEnumerable<ICompletionContextProvider> contextProviders, [ImportMany]IEnumerable<ICompletionValueProvider> valueProviders)
         {
-            ContextProviders = contextProviders;
-            ValueProviders = valueProviders
+            _ContextProviders = contextProviders.ToArray();
+            _ValueProviders = valueProviders
                 .SelectMany(x => x.SupportedContexts, (p, t) => new { Provider = p, Type = t })
                 .GroupBy(x => x.Type)
                 .ToDictionary(x => x.Key, x => (IEnumerable<ICompletionValueProvider>)x.Select(p => p.Provider).ToArray());
@@ -29,48 +29,63 @@ namespace SassyStudio.Editor.Intellisense
             ShutdownToken = SassyStudioPackage.Instance.ShutdownToken;
         }
 
-        public IEnumerable<SassCompletionContextType> GetCompletionContextTypes(ICompletionContext context)
-        {
-            return ContextProviders.SelectMany(x => x.GetContext(context));
-        }
-
-        public IEnumerable<ICompletionValueProvider> GetCompletions(SassCompletionContextType contextType)
-        {
-            IEnumerable<ICompletionValueProvider> providers;
-            if (ValueProviders.TryGetValue(contextType, out providers))
-                return providers;
-
-            return Enumerable.Empty<ICompletionValueProvider>();
-        }
-
         public IIntellisenseCache Get(ISassDocument document)
         {
             return Caches.GetOrAdd(document, key => CreateCache(key));
         }
 
+        public IEnumerable<ICompletionContextProvider> ContextProviders { get { return _ContextProviders; } }
+
+        public IEnumerable<ICompletionValueProvider> ValueProvidersFor(SassCompletionContextType type)
+        {
+            IEnumerable<ICompletionValueProvider> providers;
+            if (_ValueProviders.TryGetValue(type, out providers))
+                return providers;
+
+            return Enumerable.Empty<ICompletionValueProvider>();
+        }
+
         IIntellisenseCache CreateCache(ISassDocument document)
         {
-            var cache = new IntellisenseCache(document, ContextProviders, ValueProviders);
-            document.StylesheetChanged += OnStylesheetChanged;
+            var cache = new IntellisenseCache(document, this);
 
-            // start initial cache update
             if (document.Stylesheet != null)
-                UpdateCache(cache, document);
+            {
+                Task.Run(() => UpdateCache(cache, document));
+            }
+            else
+            {
+                // wait until we have a stylesheet to generate the cache
+                document.StylesheetChanged += OnStylesheetChanged;
+            }
 
             return cache;
         }
 
         private void OnStylesheetChanged(object sender, StylesheetChangedEventArgs e)
         {
+            // unsubscribe from future notifications
             var document = sender as ISassDocument;
+            document.StylesheetChanged -= OnStylesheetChanged;
+
+            // update the cache
             IIntellisenseCache cache;
             if (Caches.TryGetValue(document, out cache))
-                UpdateCache(cache, document);
+                Task.Run(() => UpdateCache(cache, document));
         }
 
         private void UpdateCache(IIntellisenseCache cache, ISassDocument document)
         {
-            Task.Run(() => cache.Update(document.Stylesheet), ShutdownToken);
+            try
+            {
+                var manager = new FileTextManager(document.Source);
+                using (var scope = manager.Open())
+                    cache.Update(document.Stylesheet, scope.Text);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to update intellisense cache.");
+            }
         }
     }
 }
