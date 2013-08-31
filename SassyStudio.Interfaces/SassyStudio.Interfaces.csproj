@@ -59,6 +59,7 @@
     <Compile Include="Editor\Intellisense\IIntellisenseCache.cs" />
     <Compile Include="Editor\Intellisense\IIntellisenseManager.cs" />
     <Compile Include="Editor\Intellisense\SassCompletionContextType.cs" />
+    <Compile Include="Editor\Intellisense\SassCompletionValueType.cs" />
     <Compile Include="Editor\ISassEditor.cs" />
     <Compile Include="FileTextManager.cs" />
     <Compile Include="IBackgroundParsingTask.cs" />

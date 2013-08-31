@@ -9,7 +9,7 @@ namespace SassyStudio.Editor.Intellisense
     public interface IIntellisenseManager
     {
         IIntellisenseCache Get(ISassDocument document);
-        IEnumerable<SassCompletionContextType> GetCompletionContextTypes(ICompletionContext context);
-        IEnumerable<ICompletionValueProvider> GetCompletions(SassCompletionContextType contextType); 
+        IEnumerable<ICompletionContextProvider> ContextProviders { get; }
+        IEnumerable<ICompletionValueProvider> ValueProvidersFor(SassCompletionContextType type);
     }
 }

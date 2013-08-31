@@ -28,7 +28,7 @@ namespace SassyStudio.Editor.Classification
         {
             var handler = ClassificationChanged;
             if (handler != null)
-                handler(this, new ClassificationChangedEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, e.ChangeStart, e.ChangeEnd)));
+                handler(this, new ClassificationChangedEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, e.ChangeStart, e.ChangeEnd - e.ChangeStart)));
         }
 
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span)

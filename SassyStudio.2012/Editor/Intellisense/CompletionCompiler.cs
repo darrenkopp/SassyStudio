@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+using System.Windows.Media;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using SassyStudio.Compiler.Parsing;
@@ -9,82 +11,53 @@ namespace SassyStudio.Editor.Intellisense
 {
     interface ICompletionCompiler
     {
-        CompletionSet Compile(ISassDocument document, int position, ITrackingSpan span);
+        CompletionSet Compile(ITrackingSpan span, IEnumerable<ICompletionValue> values);
     }
 
+    [Export(typeof(ICompletionCompiler))]
     class CompletionCompiler : ICompletionCompiler
     {
-        readonly IIntellisenseManager Manager;
+        readonly IDictionary<SassCompletionValueType, ImageSource> IconMappings;
         readonly IGlyphService Glyphs;
 
         [ImportingConstructor]
-        public CompletionCompiler(IIntellisenseManager manager, IGlyphService glyphs)
+        public CompletionCompiler(IGlyphService glyphs)
         {
-            Manager = manager;
             Glyphs = glyphs;
-        }
 
-        public CompletionSet Compile(ISassDocument document, int position, ITrackingSpan span)
-        {
-            var cache = Manager.Get(document);
-            var context = CreateContext(document, position);
-
-            return Compile(cache, context, span);
-        }
-
-        private CompletionSet Compile(IIntellisenseCache cache, ICompletionContext context, ITrackingSpan span)
-        {
-            var types = Manager.GetCompletionContextTypes(context);
-            var set = new CompletionSet("SCSS", "SCSS", span, GetCompletions(context, types), null);
-            
-            return set;
-        }
-
-        private IEnumerable<Completion> GetCompletions(ICompletionContext context, IEnumerable<SassCompletionContextType> types)
-        {
-            var results = (
-                from type in types
-                from provider in Manager.GetCompletions(type)
-                from value in provider.GetCompletions(type, context)
-                select new Completion(
-                    displayText: value.DisplayText, 
-                    insertionText: value.CompletionText, 
-                    description: null, 
-                    iconSource: Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupField, StandardGlyphItem.GlyphItemPublic), 
-                    iconAutomationText: null
-                )
-            );
-
-            return results;
-        }
-
-        ICompletionContext CreateContext(ISassDocument document, int position)
-        {
-            var stylesheet = document.Stylesheet;
-            if (stylesheet == null) return null;
-
-            var item = stylesheet.Children.FindItemContainingPosition(position);
-            while (item != null)
+            IconMappings = new Dictionary<SassCompletionValueType, ImageSource>
             {
-                // if we have a complex item, stop searching
-                if (item is ComplexItem)
-                    break;
-
-                item = item.Parent;
-            }
-
-            return new CompletionContext
-            {
-                Current = item ?? stylesheet as Stylesheet,
-                Position = position
+                { SassCompletionValueType.Default, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupUnknown, StandardGlyphItem.TotalGlyphItems) },
+                { SassCompletionValueType.SystemFunction, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupMethod, StandardGlyphItem.GlyphItemPublic) },
+                { SassCompletionValueType.UserFunction, Glyphs.GetGlyph(StandardGlyphGroup.GlyphExtensionMethod, StandardGlyphItem.GlyphItemInternal) },
+                { SassCompletionValueType.Mixin, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupInterface, StandardGlyphItem.GlyphItemInternal) },
+                { SassCompletionValueType.Variable, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemInternal) }
             };
         }
 
-        class CompletionContext : ICompletionContext
+        public CompletionSet Compile(ITrackingSpan span, IEnumerable<ICompletionValue> values)
         {
-            public ParseItem Current { get; internal set; }
+            return new CompletionSet(
+                moniker: "SASS",
+                displayName: "SASS",
+                applicableTo: span,
+                completions: Transform(values),
+                completionBuilders: null
+            );
+        }
 
-            public int Position { get; internal set; }
+        private IEnumerable<Completion> Transform(IEnumerable<ICompletionValue> values)
+        {
+            var observed = new HashSet<string>();
+
+            foreach (var value in values.Where(x => observed.Add(x.DisplayText)))
+                yield return new Completion(
+                    displayText: value.DisplayText,
+                    insertionText: value.CompletionText,
+                    description: null,
+                    iconSource: IconMappings[value.Type],
+                    iconAutomationText: null
+                );
         }
     }
 }

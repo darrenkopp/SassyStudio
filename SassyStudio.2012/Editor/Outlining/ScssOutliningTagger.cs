@@ -61,7 +61,7 @@ namespace SassyStudio.Editor.Outlining
         {
             var handler = TagsChanged;
             if (handler != null)
-                handler(this, new SnapshotSpanEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, new Span(start, end))));
+                handler(this, new SnapshotSpanEventArgs(new SnapshotSpan(Buffer.CurrentSnapshot, new Span(start, end - start))));
         }
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
