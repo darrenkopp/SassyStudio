@@ -12,7 +12,6 @@ namespace SassyStudio
         static readonly Lazy<IVsOutputWindowPane> _Pane = new Lazy<IVsOutputWindowPane>(() => SassyStudioPackage.Instance.GetOutputPane(new Guid("f1574ced-8144-4889-b7fd-485703faac9c"), "Sassy Studio"));
         private static IVsOutputWindowPane Pane { get { return _Pane.Value; } }
 
-
         public static void Log(string message, bool activatePane = false)
         {
             if (string.IsNullOrEmpty(message))
@@ -35,22 +34,29 @@ namespace SassyStudio
 
         public static void Log(Exception ex, string message = null, bool activatePane = true)
         {
-            var builder = new StringBuilder();
-            if (!string.IsNullOrEmpty(message))
-                builder.AppendLine(message);
-
-            if (ex != null)
+            try
             {
-                builder
-                    .Append("[").Append(ex.GetType().Name).Append("]")
-                    .AppendLine(ex.Message);
+                var builder = new StringBuilder();
+                if (!string.IsNullOrEmpty(message))
+                    builder.AppendLine(message);
 
-                if (!string.IsNullOrEmpty(ex.StackTrace))
-                    builder.AppendLine(ex.StackTrace);
+                if (ex != null)
+                {
+                    builder
+                        .Append("[").Append(ex.GetType().Name).Append("]")
+                        .AppendLine(ex.Message);
+
+                    if (!string.IsNullOrEmpty(ex.StackTrace))
+                        builder.AppendLine(ex.StackTrace);
+                }
+
+                if (builder.Length > 0)
+                    Log(builder.ToString(), activatePane);
             }
-
-            if (builder.Length > 0)
-                Log(builder.ToString(), activatePane);
+            catch
+            {
+                // woopsie, error'd while logging our error. ERRORPOCALYPSE
+            }
         }
     }
 }

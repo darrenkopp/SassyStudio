@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using SassyStudio.Scss.Classifications;
 
-namespace SassyStudio.Classification
+namespace SassyStudio.Editor.Classification
 {
     class ClassifierContext : IClassifierContext
     {

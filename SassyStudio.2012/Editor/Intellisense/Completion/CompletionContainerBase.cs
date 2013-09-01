@@ -11,6 +11,9 @@ namespace SassyStudio.Editor.Intellisense
     {
         protected readonly LinkedList<IIntellisenseContainer> Containers = new LinkedList<IIntellisenseContainer>();
         protected readonly LinkedList<ICompletionValue> Variables = new LinkedList<ICompletionValue>();
+        protected readonly SortedList<int, ICompletionValue> _Variables = new SortedList<int, ICompletionValue>(0);
+        protected readonly SortedList<int, ICompletionValue> _Functions = new SortedList<int, ICompletionValue>(0);
+        protected readonly SortedList<int, ICompletionValue> _Mixins = new SortedList<int, ICompletionValue>(0);
 
         protected virtual void Parse(IIntellisenseContainer container, ParseItemList items, ITextProvider text)
         {
@@ -26,6 +29,11 @@ namespace SassyStudio.Editor.Intellisense
             {
                 AddVariable(item as VariableDefinition, text);
             }
+            else if (item is BlockItem)
+            {
+                var block = item as BlockItem;
+                Parse(new BlockScopeContainer(block), block.Children, text);
+            }
         }
 
         public virtual IEnumerable<ICompletionValue> GetVariables(int position)
@@ -36,12 +44,16 @@ namespace SassyStudio.Editor.Intellisense
 
         public virtual IEnumerable<ICompletionValue> GetFunctions(int position)
         {
-            yield break;
+            return _Functions
+                .Where(x => x.Key < position).Select(x => x.Value)
+                .Concat(Containers.SelectMany(x => x.GetFunctions(position)));
         }
 
         public virtual IEnumerable<ICompletionValue> GetMixins(int position)
         {
-            yield break;
+            return _Mixins
+                .Where(x => x.Key < position).Select(x => x.Value)
+                .Concat(Containers.SelectMany(x => x.GetMixins(position)));
         }
 
         protected void AddVariable(VariableDefinition variable, ITextProvider text)

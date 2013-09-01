@@ -20,8 +20,9 @@ namespace SassyStudio.Compiler.Parsing
                     {
                         Children.Add(item);
                     }
-                    else
+                    else if (stream.Position == position)
                     {
+                        // add current token if and only if we didn't move position at all
                         Children.AddCurrentAndAdvance(stream);
                     }
                 }

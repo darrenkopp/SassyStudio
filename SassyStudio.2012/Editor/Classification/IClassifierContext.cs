@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.Text.Classification;
 
-namespace SassyStudio.Classification
+namespace SassyStudio.Editor.Classification
 {
     interface IClassifierContext
     {

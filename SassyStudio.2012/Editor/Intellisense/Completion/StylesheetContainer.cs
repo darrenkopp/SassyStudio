@@ -17,24 +17,25 @@ namespace SassyStudio.Editor.Intellisense
 
         public override void Add(ParseItem item, ITextProvider text)
         {
-            if (item is ImportDirective)
+            if (item is SassImportDirective)
             {
-                var directive = item as ImportDirective;
-                foreach (var file in directive.Files)
+                var directive = item as SassImportDirective;
+                foreach (var file in directive.Files.Where(x => x.IsValid))
                     Containers.AddLast(new ImportContainer(IntellisenseManager.Get(file.Document)));
             }
             else if (item is MixinDefinition)
             {
                 var definition = item as MixinDefinition;
                 Parse(new MixinContainer(definition), definition.Children, text);
+
+                // TODO: add mixin name to this container
             }
             else if (item is UserFunctionDefinition)
             {
                 var definition = item as UserFunctionDefinition;
                 Parse(new FunctionContainer(definition), definition.Children, text);
-            }
-            else if (item is BlockItem)
-            {
+
+                // TODO: add function name to this container
             }
             else
             {

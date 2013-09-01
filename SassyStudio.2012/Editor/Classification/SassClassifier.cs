@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
-using SassyStudio.Classification;
 using SassyStudio.Compiler.Parsing;
 
 namespace SassyStudio.Editor.Classification
@@ -52,6 +51,9 @@ namespace SassyStudio.Editor.Classification
                     {
                         if (current.Start <= span.End && current.End >= span.Start)
                         {
+                            if (current.Start > span.End)
+                                break;
+
                             var type = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
                             if (type != null)
                                 results.Add(new ClassificationSpan(new SnapshotSpan(snapshot, new Span(current.Start, current.Length)), type));
