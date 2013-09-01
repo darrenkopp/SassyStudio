@@ -36,6 +36,8 @@ namespace SassyStudio
             Instance = this;
 
             Composition = InitializeComposition();
+            OutputLogger.MessageReceived += (s, e) => Logger.Log(e.Message);
+            OutputLogger.ExceptionReceived += (s, e) => Logger.Log(e.Error, e.Message);
         }
 
         protected override void Dispose(bool disposing)

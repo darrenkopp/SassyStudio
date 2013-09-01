@@ -46,11 +46,15 @@
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Classification\ClassifierContext.cs" />
-    <Compile Include="Classification\ClassifierContextCache.cs" />
-    <Compile Include="Classification\IClassifierContext.cs" />
-    <Compile Include="Classification\SassClassifier.cs" />
-    <Compile Include="Classification\SassClassifierProvider.cs" />
+    <Compile Include="Editor\Classification\ClassifierContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Editor\Classification\ClassifierContextCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Editor\Classification\IClassifierContext.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Compiler\BackgroundParsingTask.cs" />
     <Compile Include="Compiler\ForegroundParsingTask.cs" />
     <Compile Include="Editor\BufferSnapshotChangedCancellationToken.cs" />
@@ -59,6 +63,7 @@
     <Compile Include="Editor\DocumentListener.cs" />
     <Compile Include="Editor\Intellisense\CompletionCommandHandler.cs" />
     <Compile Include="Editor\Intellisense\CompletionCompiler.cs" />
+    <Compile Include="Editor\Intellisense\Completion\BlockScopeContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\CompletionContainerBase.cs" />
     <Compile Include="Editor\Intellisense\Completion\FunctionContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\ImportContainer.cs" />
@@ -72,36 +77,20 @@
     <Compile Include="Editor\Intellisense\IntellisenseCache.cs" />
     <Compile Include="Editor\Intellisense\IntellisenseManager.cs" />
     <Compile Include="Editor\Intellisense\SassCompletionSource.cs" />
-    <Compile Include="Editor\ISassDocumentTree.cs" />
     <Compile Include="Editor\Outlining\ScssOutliningTagger.cs" />
-    <Compile Include="Editor\SassDocumentTree.cs" />
-    <Compile Include="Editor\SassEditor.cs" />
-    <Compile Include="Editor\SassEditorDocument.cs" />
+    <Compile Include="Editor\SassEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Editor\SassEditorManager.cs" />
-    <Compile Include="Editor\SassOutliningTagger.cs" />
     <Compile Include="Editor\SnapshotTextProvider.cs" />
-    <Compile Include="Editor\TreeChangedEventArgs.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="Intellisense\CompletionContextBuilder.cs" />
-    <Compile Include="Intellisense\CompletionHandler.cs" />
-    <Compile Include="Intellisense\CompletionManager.cs" />
-    <Compile Include="Intellisense\CompletionManagerFactory.cs" />
-    <Compile Include="Intellisense\CompletionSetBuilder.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\ConditionalContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\ExtendContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\LoopContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\MixinContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\UserFunctionContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\VariableDefinitionContextProvider.cs" />
-    <Compile Include="Intellisense\ICompletionContextProvider.cs" />
-    <Compile Include="Intellisense\ICompletionManager.cs" />
-    <Compile Include="Intellisense\ICompletionValueProvider.cs" />
-    <Compile Include="Intellisense\IntellisenseTextCreationListener.cs" />
-    <Compile Include="Intellisense\SassCompletionContext.cs" />
-    <Compile Include="Intellisense\SassCompletionContextType.cs" />
-    <Compile Include="Intellisense\SassCompletionSource.cs" />
-    <Compile Include="Intellisense\SassCompletionSourceProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\FunctionsProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\KeywordsProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\VariablesProvider.cs" />
@@ -293,6 +282,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Classification\" />
     <Folder Include="Intellisense\ContextProviders\" />
     <Folder Include="Intellisense\ValueProviders\" />
   </ItemGroup>

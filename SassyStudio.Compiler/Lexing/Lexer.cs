@@ -623,9 +623,11 @@ namespace SassyStudio.Compiler.Lexing
                     var open = stream.Current;
                     while (stream.Advance())
                     {
+                        var current = stream.Current;
                         // check for valid escapes
-                        if (stream.Current == '\\')
+                        if (current == '\\')
                         {
+                            // check to see if we are escaping the new line (and thus, continuing the string)
                             stream.Advance();
                             if (IsNewLine(stream.Current))
                             {
@@ -634,13 +636,13 @@ namespace SassyStudio.Compiler.Lexing
                             }
 
                             // if escaping open quote, consume and advance
-                            if (stream.Current == open)
+                            if (current == open)
                             {
                                 stream.Advance();
                                 continue;
                             }
 
-                            if (IsValidEscape('\\', stream.Current))
+                            if (IsValidEscape('\\', current))
                             {
                                 stream.Advance();
                                 continue;
@@ -648,7 +650,7 @@ namespace SassyStudio.Compiler.Lexing
                         }
 
                         // unescaped new line is bad news bears
-                        if (IsNewLine(stream.Current))
+                        if (IsNewLine(current))
                         {
                             // go back to right before the new line
                             //stream.Reverse(1);

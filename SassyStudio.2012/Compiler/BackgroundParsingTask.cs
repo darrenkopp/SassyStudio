@@ -50,15 +50,16 @@ namespace SassyStudio.Compiler
                         {
                             Logger.Log(string.Format("Background Parse: {0}", source.FullName));
 
+                            ISassStylesheet stylesheet = null;
                             var textManager = new FileTextManager(source);
                             using (var scope = textManager.Open())
                             {
                                 var parser = ParserFactory.Create();
-                                var stylesheet = parser.Parse(new FileParsingRequest(scope.Text, request.Document));
-
-                                if (stylesheet != null)
-                                    request.Document.Update(stylesheet);
+                                stylesheet = parser.Parse(new FileParsingRequest(scope.Text, request.Document));
                             }
+
+                            if (stylesheet != null)
+                                request.Document.Update(stylesheet);
 
                             Logger.Log(string.Format("Background Parse Complete: {0}", source.FullName));
                         }

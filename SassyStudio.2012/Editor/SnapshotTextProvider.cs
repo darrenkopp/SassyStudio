@@ -23,8 +23,10 @@ namespace SassyStudio.Editor
         public string GetText(int start, int length)
         {
             length = Math.Min(length, Length - start);
+            if (length > 0)
+                return Snapshot.GetText(start, length);
 
-            return Snapshot.GetText(start, length);
+            return string.Empty;
         }
 
         public bool CompareOrdinal(int start, string value)

@@ -29,7 +29,7 @@ namespace SassyStudio.Compiler.Parsing
             {
                 stylesheet.Freeze();
 
-                foreach (var import in stylesheet.Children.OfType<ImportDirective>())
+                foreach (var import in stylesheet.Children.OfType<SassImportDirective>())
                     import.ResolveImports(request.Text, request.Document, DocumentManager);
 
                 return stylesheet;

@@ -37,6 +37,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parsing\CssImportDirective.cs" />
     <Compile Include="IParsingCancellationToken.cs" />
     <Compile Include="IParsingContext.cs" />
     <Compile Include="Parsing\AtRuleDirective.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Parsing\Rules\KeyframesDirective.cs" />
     <Compile Include="Parsing\Rules\PageDirective.cs" />
     <Compile Include="Parsing\Rules\SimpleAtRuleDirective.cs" />
+    <Compile Include="Parsing\SassImportDirective.cs" />
     <Compile Include="Parsing\SelectorGroup.cs" />
     <Compile Include="Parsing\Selectors\AdjacentSiblingCombinator.cs" />
     <Compile Include="Parsing\Selectors\AttributeSelector.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="Parsing\SimpleSelector.cs" />
     <Compile Include="Parsing\StringInterpolation.cs" />
     <Compile Include="Parsing\SystemFunctionReference.cs" />
+    <Compile Include="Parsing\UrlItem.cs" />
     <Compile Include="Parsing\UserFunctionBody.cs" />
     <Compile Include="Parsing\UserFunctionDefinition.cs" />
     <Compile Include="Parsing\UserFunctionReference.cs" />

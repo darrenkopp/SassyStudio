@@ -24,12 +24,12 @@ namespace SassyStudio.Compiler.Lexing
         {
             Position++;
 
-            if (Position >= 0 && Position < (Text.Length - 1))
-            {
-                // if we are on \r and next is \n, skip the \r and jump to \n
-                if (Text[Position] == '\r' && Text[Position + 1] == '\n')
-                    Position++;
-            }
+            //if (Position >= 0 && Position < (Text.Length - 1))
+            //{
+            //    // if we are on \r and next is \n, skip the \r and jump to \n
+            //    if (Text[Position] == '\r' && Text[Position + 1] == '\n')
+            //        Position++;
+            //}
 
             UpdateCharacter();
         }
@@ -38,12 +38,12 @@ namespace SassyStudio.Compiler.Lexing
         {
             Position--;
 
-            if (Position >= 0 && Position < (Text.Length - 1))
-            {
-                // if we are on \r and next is \n, skip it
-                if (Text[Position] == '\r' && Text[Position + 1] == '\n')
-                    Position--;
-            }
+            //if (Position >= 0 && Position < (Text.Length - 1))
+            //{
+            //    // if we are on \r and next is \n, skip it
+            //    if (Text[Position] == '\r' && Text[Position + 1] == '\n')
+            //        Position--;
+            //}
 
             UpdateCharacter();
         }
