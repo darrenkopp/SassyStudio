@@ -14,12 +14,14 @@ namespace SassyStudio.Editor
     class SassEditor : ISassEditor
     {
         readonly ITextBuffer Buffer;
+        readonly IIntellisenseCache Cache;
         readonly IForegroundParsingTask ParsingTask;
         readonly ISassDocument _Document;
 
-        public SassEditor(ITextBuffer buffer, ISassDocument document, IForegroundParsingTask parsingTask)
+        public SassEditor(ITextBuffer buffer, ISassDocument document, IIntellisenseCache cache, IForegroundParsingTask parsingTask)
         {
             Buffer = buffer;
+            Cache = cache;
             _Document = document;
             ParsingTask = parsingTask;
 
@@ -46,10 +48,13 @@ namespace SassyStudio.Editor
             if (stylesheet != null)
             {
                 var previous = Document.Update(stylesheet);
+                var args = ComputeChanges(previous, stylesheet, snapshot, change);
 
-                var handler = DocumentChanged;
-                if (handler != null)
-                    handler(this, ComputeChanges(previous, stylesheet, snapshot, change));
+                OnDocumentChanged(args);
+
+                // update intellisense cache
+                if (Buffer.CurrentSnapshot == snapshot)
+                    Task.Run(() => Cache.Update(stylesheet, new SnapshotTextProvider(snapshot)));
             }
         }
 
@@ -78,52 +83,50 @@ namespace SassyStudio.Editor
 
             int start = 0;
             int end = Math.Min(change.Position + change.InsertedLength, snapshot.Length);
-            if (previous != null)
+
+            // we need to scan both trees until we find where they start lining up again
+            var offset = change.InsertedLength + (-1 * change.DeletedLength);
+            var original = previous.Children.FindItemContainingPosition(change.Position - change.DeletedLength) ?? previous as Stylesheet;
+            var updated = current.Children.FindItemContainingPosition(change.Position + change.InsertedLength) ?? current as Stylesheet;
+
+            if (original != null && updated != null)
+                start = updated.Start;
+
+            while (true)
             {
-                // we need to scan both trees until we find where they start lining up again
-                var offset = change.InsertedLength + (-1 * change.DeletedLength);
-                var original = previous.Children.FindItemContainingPosition(change.Position - change.DeletedLength) ?? previous as Stylesheet;
-                var updated = current.Children.FindItemContainingPosition(change.Position + change.InsertedLength) ?? current as Stylesheet;
+                if (original == null || updated == null)
+                    break;
 
-                if (original != null && updated != null)
-                    start = updated.Start;
+                // update our positions
+                start = Math.Min(start, updated.Start);
+                end = Math.Max(end, updated.End);
 
-                while (true)
+                if (original.GetType() == updated.GetType())
                 {
-                    if (original == null || updated == null)
-                        break;
+                    // there are two types of changes (adding characters or removing characters)
+                    // if we added characters then we'll need to adjust end characters
+                    // if we deleted characters then we'll need to offset starting characters OR ending characters
 
-                    // update our positions
-                    start = Math.Min(start, updated.Start);
-                    end = Math.Max(end, updated.End);
-
-                    if (original.GetType() == updated.GetType())
+                    // checking for length being extended by adding characters
+                    if (original.Start == updated.Start && (original.End + change.InsertedLength) == updated.End)
                     {
-                        // there are two types of changes (adding characters or removing characters)
-                        // if we added characters then we'll need to adjust end characters
-                        // if we deleted characters then we'll need to offset starting characters OR ending characters
-
-                        // checking for length being extended by adding characters
-                        if (original.Start == updated.Start && (original.End + change.InsertedLength) == updated.End)
-                        {
-                            end = updated.End;
-                            break;
-                        }
-                        // checking for length being shortened by deleting characters
-                        else if (original.Start == updated.Start && (original.End - change.DeletedLength) == updated.End)
-                        {
-                            break;
-                        }
-                        // checking for removal of nodes?
-                        else if (original.Start == (updated.Start - change.DeletedLength) && (original.End - change.DeletedLength) == updated.End)
-                        {
-                            break;
-                        }
+                        end = updated.End;
+                        break;
                     }
-
-                    original = original.InOrderSuccessor();
-                    updated = updated.InOrderSuccessor();
+                    // checking for length being shortened by deleting characters
+                    else if (original.Start == updated.Start && (original.End - change.DeletedLength) == updated.End)
+                    {
+                        break;
+                    }
+                    // checking for removal of nodes?
+                    else if (original.Start == (updated.Start - change.DeletedLength) && (original.End - change.DeletedLength) == updated.End)
+                    {
+                        break;
+                    }
                 }
+
+                original = original.InOrderSuccessor();
+                updated = updated.InOrderSuccessor();
             }
 
             return new DocumentChangedEventArgs

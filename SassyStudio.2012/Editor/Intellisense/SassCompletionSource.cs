@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -37,9 +35,15 @@ namespace SassyStudio.Editor.Intellisense
             if (stylesheet == null)
                 return;
 
+            // signal to cache that we are in an intellisense session and thus we do not want
+            // to update the cache until we are done
+
             var span = FindTokenSpanAtPosition(session); 
             var position = span.GetSpan(session.TextView.TextSnapshot).Start.Position;
             var context = CreateCompletionContext(stylesheet, position);
+            if (IsInvalidCompletionContext(context))
+                return;
+
             var types = CalculateApplicableContexts(context);
 
             var values = (
@@ -49,7 +53,21 @@ namespace SassyStudio.Editor.Intellisense
                 select value
             );
 
-            completionSets.Add(Compiler.Compile(span, values));
+            var set = Compiler.Compile(span, values);
+            if (set.Completions.Count > 0)
+                completionSets.Add(set);
+        }
+
+        private bool IsInvalidCompletionContext(ICompletionContext context)
+        {
+            if (context.Current == null || context.Current is Comment)
+                return true;
+
+            var token = context.Current as TokenItem;
+            if (token != null && (token.SourceType == TokenType.String || token.SourceType == TokenType.BadString))
+                return true;
+
+            return false;
         }
 
         private IEnumerable<SassCompletionContextType> CalculateApplicableContexts(ICompletionContext context)

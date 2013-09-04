@@ -13,6 +13,8 @@ namespace SassyStudio.Editor.Intellisense
         public BlockScopeContainer(BlockItem item)
         {
             Item = item;
+            Start = item.Start;
+            End = item.End;
         }
     }
 }

@@ -24,10 +24,22 @@ namespace SassyStudio.Editor
         [Import]
         internal ICompletionBroker CompletionBroker { get; set; }
 
+        [Import]
+        IIntellisenseManager IntellisenseManager { get; set; }
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             var textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
+            textView.Closed += OnClosed;
+
+            // register command handler for completion
             textView.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(CompletionBroker, textViewAdapter, textView));
+        }
+
+        void OnClosed(object sender, EventArgs e)
+        {
+            var view = sender as IWpfTextView;
+            view.Closed -= OnClosed;
         }
     }
 }

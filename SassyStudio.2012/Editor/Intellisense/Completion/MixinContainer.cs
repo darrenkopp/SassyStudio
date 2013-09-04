@@ -14,6 +14,8 @@ namespace SassyStudio.Editor.Intellisense
         public MixinContainer(MixinDefinition definition)
         {
             Definition = definition;
+            Start = Math.Max(definition.Start, ((definition.Body != null && definition.Body.OpenCurlyBrace != null) ? definition.Body.OpenCurlyBrace.Start : 0));
+            End = definition.End;
         }
     }
 }

@@ -10,14 +10,24 @@ namespace SassyStudio.Editor.Intellisense
     class ImportContainer : IIntellisenseContainer
     {
         readonly IIntellisenseCache Cache;
-        public ImportContainer(IIntellisenseCache cache)
+        public ImportContainer(SassImportDirective directive, IIntellisenseCache cache)
         {
             Cache = cache;
+            Start = directive.Start;
+            End = directive.End;
         }
+
+        public int Start { get; private set; }
+        public int End { get; private set; }
 
         public void Add(ParseItem item, ITextProvider text)
         {
             throw new NotSupportedException("you can't add items to this type of container.");
+        }
+
+        public bool IsApplicableTo(int position)
+        {
+            return position > End;
         }
 
         public IEnumerable<ICompletionValue> GetVariables(int position)

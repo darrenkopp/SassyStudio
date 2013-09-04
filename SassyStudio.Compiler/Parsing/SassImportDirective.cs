@@ -48,22 +48,16 @@ namespace SassyStudio.Compiler.Parsing
 
         public void ResolveImports(ITextProvider text, ISassDocument document, IDocumentManager documentManager)
         {
-            var basePath = document.Source.Directory.FullName;
             foreach (var file in Files)
             {
                 try
                 {
-                    var relativePath = text.GetText(file.Path.Start, file.Path.Length);
-                    if (relativePath != null && !relativePath.StartsWith("url"))
-                        relativePath = relativePath.Trim('"');
+                    var path = file.ResolvePath(document.Source.Directory, text);
+                    if (string.IsNullOrEmpty(path))
+                        continue;
 
-                    var fullPath = basePath;
-                    var segments = relativePath.Split('/', '\\');
-                    foreach (var segment in segments)
-                        fullPath = Path.Combine(fullPath, segment);
-
-                    var importFile = CheckAllPossiblePaths(fullPath);
-                    if (importFile.Exists && (importFile.Extension.EndsWith("scss") || importFile.Extension.EndsWith("sass")))
+                    var importFile = new FileInfo(path);
+                    if (importFile.Exists)
                         file.Document = documentManager.Import(importFile, document);
                 }
                 catch (Exception ex)
