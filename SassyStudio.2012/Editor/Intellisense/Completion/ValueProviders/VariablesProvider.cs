@@ -57,29 +57,5 @@ namespace SassyStudio.Editor.Intellisense
 
             return Enumerable.Empty<ICompletionValue>();
         }
-
-        //private IEnumerable<Completion> GetVisibleVariables(SassCompletionContext context)
-        //{
-        //    return context.TraversalPath.OfType<IVariableScope>()
-        //        .SelectMany(x => x.GetDefinedVariables(context.StartPosition))
-        //        .Select(x => Variable(x.GetName(context.Text)));
-        //}
-
-        //private IEnumerable<Completion> GetArgumentVariables(SassCompletionContextType type, SassCompletionContext context)
-        //{
-        //    // TODO: resolve named variables of mixin / function (if any)
-
-        //    switch (type)
-        //    {
-        //        case SassCompletionContextType.FunctionArgumentValue:
-        //        case SassCompletionContextType.IncludeDirectiveMixinArgument:
-        //        case SassCompletionContextType.IncludeDirectiveMixinArgumentName:
-        //        case SassCompletionContextType.IncludeDirectiveMixinArgumentValue:
-        //        case SassCompletionContextType.MixinDirectiveMixinArgumentDefaultValue:
-        //            break;
-        //    }
-
-        //    yield break;
-        //}
     }
 }

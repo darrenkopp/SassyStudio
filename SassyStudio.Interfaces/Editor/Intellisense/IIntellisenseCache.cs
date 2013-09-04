@@ -8,6 +8,6 @@ namespace SassyStudio.Editor.Intellisense
 
         IEnumerable<ICompletionValue> GetVariables(int position = int.MaxValue);
         IEnumerable<ICompletionValue> GetFunctions(int position = int.MaxValue);
-        IEnumerable<ICompletionValue> GetMixins(int position = int.MaxValue); 
+        IEnumerable<ICompletionValue> GetMixins(int position = int.MaxValue);
     }
 }

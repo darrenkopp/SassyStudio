@@ -21,7 +21,7 @@ namespace SassyStudio.Editor.Intellisense
             {
                 var directive = item as SassImportDirective;
                 foreach (var file in directive.Files.Where(x => x.IsValid))
-                    Containers.AddLast(new ImportContainer(IntellisenseManager.Get(file.Document)));
+                    Containers.Add(new ImportContainer(directive, IntellisenseManager.Get(file.Document)));
             }
             else if (item is MixinDefinition)
             {

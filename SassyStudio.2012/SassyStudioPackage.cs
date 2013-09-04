@@ -45,7 +45,7 @@ namespace SassyStudio
             try
             {
                 using (CancellationTokens)
-                    CancellationTokens.Dispose();
+                    CancellationTokens.Cancel();
             }
             finally
             {
