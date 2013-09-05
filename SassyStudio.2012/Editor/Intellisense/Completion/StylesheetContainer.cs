@@ -26,16 +26,24 @@ namespace SassyStudio.Editor.Intellisense
             else if (item is MixinDefinition)
             {
                 var definition = item as MixinDefinition;
-                Parse(new MixinContainer(definition), definition.Children, text);
+                if (definition.Name != null && definition.Name.Name != null)
+                {
+                    Parse(new MixinContainer(definition), definition.Children, text);
 
-                // TODO: add mixin name to this container
+                    var name = text.GetText(definition.Name.Name.Start, definition.Name.Name.Length);
+                    _Mixins.Add(definition.Name.Name.Start, new MixinCompletionValue(name));
+                }
             }
             else if (item is UserFunctionDefinition)
             {
                 var definition = item as UserFunctionDefinition;
-                Parse(new FunctionContainer(definition), definition.Children, text);
+                if (definition.Name != null)
+                {
+                    Parse(new FunctionContainer(definition), definition.Children, text);
 
-                // TODO: add function name to this container
+                    var name = text.GetText(definition.Name.Start, definition.Name.Length);
+                    _Functions.Add(definition.Name.Start, new UserFunctionCompletionValue(name));
+                }
             }
             else
             {
