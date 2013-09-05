@@ -59,15 +59,13 @@ namespace SassyStudio.Editor.Intellisense
 
         public virtual IEnumerable<ICompletionValue> GetFunctions(int position)
         {
-            return _Functions
-                .Where(x => x.Key < position).Select(x => x.Value)
+            return _Functions.Where(x => position > x.Key).Select(x => x.Value)
                 .Concat(TraverseContainers(position, x => x.GetFunctions(position)));
         }
 
         public virtual IEnumerable<ICompletionValue> GetMixins(int position)
         {
-            return _Mixins
-                .Where(x => x.Key < position).Select(x => x.Value)
+            return _Mixins.Where(x => position > x.Key).Select(x => x.Value)
                 .Concat(TraverseContainers(position, x => x.GetMixins(position)));
         }
 

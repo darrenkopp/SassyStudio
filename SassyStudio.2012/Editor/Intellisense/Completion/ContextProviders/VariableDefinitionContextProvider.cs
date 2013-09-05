@@ -28,7 +28,7 @@ namespace SassyStudio.Editor.Intellisense
                 {
                     yield return SassCompletionContextType.VariableValue;
 
-                    if (definition.Values.Where(x => x.IsValid).Any())
+                    if (definition.Values.Any(x => x.IsValid))
                         yield return SassCompletionContextType.VariableDefaultFlag;
                 }
             }

@@ -23,11 +23,11 @@ namespace SassyStudio.Editor.Intellisense
             else if (current is MixinReference)
             {
                 var reference = current as MixinReference;
-                if (reference != null && reference.Name == null)
+                if (reference.Name == null)
                 {
                     yield return SassCompletionContextType.IncludeDirectiveMixinName;
                 }
-                else if (reference != null && reference.OpenBrace != null)
+                else if (reference.OpenBrace != null)
                 {
                     yield return SassCompletionContextType.IncludeDirectiveMixinArgument;
                 }

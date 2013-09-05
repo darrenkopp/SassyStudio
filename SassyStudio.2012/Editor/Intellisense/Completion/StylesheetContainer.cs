@@ -31,7 +31,7 @@ namespace SassyStudio.Editor.Intellisense
                     Parse(new MixinContainer(definition), definition.Children, text);
 
                     var name = text.GetText(definition.Name.Name.Start, definition.Name.Name.Length);
-                    _Mixins.Add(definition.Name.Name.Start, new MixinCompletionValue(name));
+                    _Mixins.Add(definition.End, new MixinCompletionValue(name));
                 }
             }
             else if (item is UserFunctionDefinition)
@@ -42,7 +42,7 @@ namespace SassyStudio.Editor.Intellisense
                     Parse(new FunctionContainer(definition), definition.Children, text);
 
                     var name = text.GetText(definition.Name.Start, definition.Name.Length);
-                    _Functions.Add(definition.Name.Start, new UserFunctionCompletionValue(name));
+                    _Functions.Add(definition.End, new UserFunctionCompletionValue(name));
                 }
             }
             else
