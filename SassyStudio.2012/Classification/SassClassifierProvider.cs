@@ -12,8 +12,8 @@ using SassyStudio.Editor;
 
 namespace SassyStudio.Classification
 {
-    [Export(typeof(IClassifierProvider))]
-    [ContentType("SCSS")]
+    //[Export(typeof(IClassifierProvider))]
+    //[ContentType("SCSS")]
     class SassClassifierProvider : IClassifierProvider
     {
         [Import, System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

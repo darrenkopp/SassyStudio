@@ -75,16 +75,16 @@ namespace SassyStudio.Compiler.Parsing
             return null;
         }
 
-        public override IEnumerable<VariableName> GetDefinedVariables(int position)
-        {
-            var variables = base.GetDefinedVariables(position);
+        //public override IEnumerable<VariableName> GetDefinedVariables(int position)
+        //{
+        //    var variables = base.GetDefinedVariables(position);
 
-            // only include defined arguments if position is in the body
-            if (Body != null && position > Body.Start)
-                variables = variables.Concat(Arguments.Select(x => x.Variable).Where(x => x.IsValid).Select(x => x.Name));
+        //    // only include defined arguments if position is in the body
+        //    if (Body != null && position > Body.Start)
+        //        variables = variables.Concat(Arguments.Select(x => x.Variable).Where(x => x.IsValid).Select(x => x.Name));
 
-            return variables;
-        }
+        //    return variables;
+        //}
 
         static bool IsArgumentTerminator(TokenType type)
         {

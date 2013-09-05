@@ -102,14 +102,14 @@ namespace SassyStudio.Compiler.Parsing
             return text.CompareOrdinal(stream.Current.Start, keyword);
         }
 
-        public override IEnumerable<VariableName> GetDefinedVariables(int position)
-        {
-            var variables = base.GetDefinedVariables(position);
-            if (Body != null && position > Body.Start)
-                variables = variables.Concat(new[] { Variable });
+        //public override IEnumerable<VariableName> GetDefinedVariables(int position)
+        //{
+        //    var variables = base.GetDefinedVariables(position);
+        //    if (Body != null && position > Body.Start)
+        //        variables = variables.Concat(new[] { Variable });
 
-            return variables;
-        }
+        //    return variables;
+        //}
 
         static bool IsForStatementTerminator(TokenType type)
         {

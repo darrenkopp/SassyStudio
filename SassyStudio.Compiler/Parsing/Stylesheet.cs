@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class Stylesheet : ComplexItem
+    public class Stylesheet : ComplexItem, ISassStylesheet
     {
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -20,8 +20,9 @@ namespace SassyStudio.Compiler.Parsing
                     {
                         Children.Add(item);
                     }
-                    else
+                    else if (stream.Position == position)
                     {
+                        // add current token if and only if we didn't move position at all
                         Children.AddCurrentAndAdvance(stream);
                     }
                 }

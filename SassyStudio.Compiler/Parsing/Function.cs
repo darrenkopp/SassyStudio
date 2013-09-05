@@ -11,40 +11,57 @@ namespace SassyStudio.Compiler.Parsing
         static readonly ICollection<string> WellKnownFunctions = new HashSet<string>(BuiltInFunctionNames);
 
         readonly SassClassifierType FunctionClassifierType;
+        readonly List<FunctionArgument> _Arguments = new List<FunctionArgument>(0);
         public Function(SassClassifierType classifierType = SassClassifierType.SystemFunction)
         {
             FunctionClassifierType = classifierType;
-            Arguments = new List<FunctionArgument>();
         }
 
         public TokenItem Name { get; protected set; }
         public TokenItem OpenBrace { get; protected set; }
-        public IList<FunctionArgument> Arguments { get; protected set; }
+        public IList<FunctionArgument> Arguments { get { return _Arguments; } }
         public TokenItem CloseBrace { get; protected set; }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (IsFunctionCall(stream))
+            if (IsFunctionCall(stream) && IsFunctionNameValid(text, stream))
             {
                 Name = Children.AddCurrentAndAdvance(stream, FunctionClassifierType);
 
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                     OpenBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
 
-                while (!IsTerminator(stream.Current.Type))
-                {
-                    var argument = itemFactory.CreateSpecific<FunctionArgument>(this, text, stream);
-                    if (argument == null || !argument.Parse(itemFactory, text, stream))
-                        break;
-
-                    Arguments.Add(argument);
-                    Children.Add(argument);
-                }
+                ParseArguments(itemFactory, text, stream);
 
                 if (stream.Current.Type == TokenType.CloseFunctionBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
             }
 
             return Children.Count > 0;
+        }
+
+        protected virtual void ParseArguments(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
+        {
+            while (!IsTerminator(stream.Current.Type))
+            {
+                var argument = itemFactory.CreateSpecific<FunctionArgument>(this, text, stream);
+                if (argument == null || !argument.Parse(itemFactory, text, stream))
+                    break;
+
+                Arguments.Add(argument);
+                Children.Add(argument);
+            }
+        }
+
+        public override void Freeze()
+        {
+            _Arguments.TrimExcess();
+            base.Freeze();
+        }
+
+        protected virtual bool IsFunctionNameValid(ITextProvider text, ITokenStream stream)
+        {
+            return true;
         }
 
         static bool IsFunctionCall(ITokenStream stream)
@@ -69,7 +86,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public static bool IsWellKnownFunction(ITextProvider text, ITokenStream stream)
         {
-            if (stream.Current.Type == TokenType.Function)
+            if (stream.Current.Type == TokenType.Function || stream.Current.Type == TokenType.Identifier)
             {
                 var functionName = text.GetText(stream.Current.Start, stream.Current.Length);
                 return WellKnownFunctions.Contains(functionName);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.InteropServices;
+using System.Threading;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -16,6 +17,7 @@ namespace SassyStudio
     [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "SCSS", 101, 102, true, new string[] { "CSS", "SCSS" })]
     public sealed class SassyStudioPackage : Package
     {
+        readonly CancellationTokenSource CancellationTokens = new CancellationTokenSource();
         readonly Lazy<ScssOptions> _ScssOptions;
         readonly OptionsProvider _Options;
         readonly Lazy<DTE2> _DTE;
@@ -27,12 +29,28 @@ namespace SassyStudio
         }
 
         internal static SassyStudioPackage Instance { get; private set; }
+        public CancellationToken ShutdownToken { get { return CancellationTokens.Token; } }
         protected override void Initialize()
         {
             base.Initialize();
             Instance = this;
 
             Composition = InitializeComposition();
+            OutputLogger.MessageReceived += (s, e) => Logger.Log(e.Message);
+            OutputLogger.ExceptionReceived += (s, e) => Logger.Log(e.Error, e.Message);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            try
+            {
+                using (CancellationTokens)
+                    CancellationTokens.Cancel();
+            }
+            finally
+            {
+                base.Dispose(disposing);
+            }
         }
 
         internal CompositionContainer Composition { get; private set; }
@@ -43,7 +61,8 @@ namespace SassyStudio
         {
             var catalog = new AggregateCatalog(
                 new AssemblyCatalog(typeof(SassyStudioPackage).Assembly),
-                new AssemblyCatalog(typeof(TokenType).Assembly)
+                new AssemblyCatalog(typeof(TokenType).Assembly),
+                new AssemblyCatalog(typeof(ISassDocument).Assembly)
             );
 
             return new CompositionContainer(catalog);

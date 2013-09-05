@@ -220,7 +220,7 @@ namespace SassyStudio.Compiler.Parsing
                     case "content": return new ContentDirective();
                     case "include": return new MixinReference();
                     case "function": return new UserFunctionDefinition();
-                    case "import": return new ImportDirective();
+                    case "import": return CreateImport(parent, text, stream);
                     case "extend": return new ExtendDirective();
                     case "for": return new ForLoopDirective();
                     case "while": return new WhileLoopDirective();
@@ -238,6 +238,35 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return new TokenItem();
+        }
+
+        private ParseItem CreateImport(ComplexItem parent, ITextProvider text, ITokenStream stream)
+        {
+            var filename = stream.Peek(2);
+
+            // if doing @import url() then we use standard css import
+            if (UrlItem.IsUrl(text, filename))
+                return new CssImportDirective();
+
+            if ((filename.Type == TokenType.String || filename.Type == TokenType.BadString))
+            {
+                // check to see if import starts with http(s)://
+                var preamble = text.GetText(filename.Start, 9).Trim('"', '\'');
+                if (preamble.StartsWith("//") || preamble.StartsWith("http://") || preamble.StartsWith("https://"))
+                    return new CssImportDirective();
+
+                // check for media query
+                var next = stream.Peek(3);
+                if (next.Type == TokenType.Identifier)
+                    return new CssImportDirective();
+
+                // check if we are importing actual css file
+                if (text.GetText(filename.Start, filename.Length).Trim('"', '\'').EndsWith(".css"))
+                    return new CssImportDirective();
+            }
+
+            // since we didn't detect that it's a css import, use the sass import
+            return new SassImportDirective();
         }
 
         private ParseItem CreateVariableDefinitionOrReference(ComplexItem parent, ITextProvider text, ITokenStream stream)
