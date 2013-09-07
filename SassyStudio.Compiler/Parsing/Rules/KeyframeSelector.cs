@@ -20,8 +20,8 @@ namespace SassyStudio.Compiler.Parsing.Rules
             }
             else if (stream.Current.Type == TokenType.Number && stream.Peek(1).Type == TokenType.PercentSign)
             {
-                ParseItem begin;
-                if (itemFactory.TryCreateParsed<PercentageUnit>(this, text, stream, out begin))
+                ParseItem begin = itemFactory.Create<PercentageUnit>(this, text, stream);
+                if (begin.Parse(itemFactory, text, stream))
                 {
                     AnimationBegin = begin;
                     Children.Add(begin);
@@ -29,8 +29,8 @@ namespace SassyStudio.Compiler.Parsing.Rules
                     if (stream.Current.Type == TokenType.Comma)
                         Comma = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
 
-                    ParseItem end;
-                    if (itemFactory.TryCreateParsed<PercentageUnit>(this, text, stream, out end))
+                    ParseItem end = itemFactory.Create<PercentageUnit>(this, text, stream);
+                    if (end.Parse(itemFactory, text, stream))
                     {
                         AnimationEnd = end;
                         Children.Add(end);

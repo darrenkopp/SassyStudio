@@ -25,6 +25,8 @@ namespace SassyStudio.Editor.Intellisense
                 yield return SassCompletionContextType.FunctionDirective;
                 yield return SassCompletionContextType.ImportDirective;
                 yield return SassCompletionContextType.IncludeDirective;
+                yield return SassCompletionContextType.KeyframesDirective;
+                yield return SassCompletionContextType.KeyframesNamedRange;
                 yield return SassCompletionContextType.MixinDirective;
                 yield return SassCompletionContextType.VariableDefaultFlag;
                 yield return SassCompletionContextType.WhileLoopDirective;
@@ -83,6 +85,13 @@ namespace SassyStudio.Editor.Intellisense
                     break;
                 case SassCompletionContextType.IncludeDirective:
                     yield return "@include";
+                    break;
+                case SassCompletionContextType.KeyframesDirective:
+                    yield return "@keyframes";
+                    break;
+                case SassCompletionContextType.KeyframesNamedRange:
+                    yield return "from";
+                    yield return "to";
                     break;
                 case SassCompletionContextType.MixinDirective:
                     yield return "@mixin";

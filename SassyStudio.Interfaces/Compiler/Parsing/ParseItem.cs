@@ -13,6 +13,7 @@ namespace SassyStudio.Compiler.Parsing
         public abstract int End { get; }
         public abstract int Length { get; }
         public virtual bool IsValid { get { return true; } }
+        public virtual bool IsUnclosed { get { return false; } }
 
         public abstract bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream);
         public virtual void Freeze()

@@ -47,6 +47,9 @@ namespace SassyStudio.Editor.Intellisense
         ImportDirective,
         ImportDirectiveFile,
 
+        KeyframesDirective,
+        KeyframesNamedRange,
+
         StringInterpolation,
         StringInterpolationValue,
 

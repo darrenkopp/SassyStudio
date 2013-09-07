@@ -56,7 +56,11 @@ namespace SassyStudio.Editor.Classification
 
                             var type = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
                             if (type != null)
-                                results.Add(new ClassificationSpan(new SnapshotSpan(snapshot, new Span(current.Start, current.Length)), type));
+                            {
+                                var start = Math.Max(0, current.Start);
+                                var length = Math.Min(snapshot.Length - start, current.Length);
+                                results.Add(new ClassificationSpan(new SnapshotSpan(snapshot, new Span(start, length)), type));
+                            }
                         }
                     }
                 }

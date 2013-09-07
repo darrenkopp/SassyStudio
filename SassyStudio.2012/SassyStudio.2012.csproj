@@ -66,6 +66,7 @@
     <Compile Include="Editor\Intellisense\Completion\BlockScopeContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\CompletionContainerBase.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\ImportingContextProvider.cs" />
+    <Compile Include="Editor\Intellisense\Completion\ContextProviders\KeyframesContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\PropertyContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\FunctionContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\ImportContainer.cs" />
