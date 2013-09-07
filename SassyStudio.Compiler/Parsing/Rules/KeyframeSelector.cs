@@ -14,11 +14,28 @@ namespace SassyStudio.Compiler.Parsing.Rules
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            AnimationBegin = ParseUnit(itemFactory, text, stream);
-            if (stream.Current.Type == TokenType.Comma)
+            if (stream.Current.Type == TokenType.Identifier && IsValidNamedRange(text.GetText(stream.Current.Start, stream.Current.Length)))
             {
-                Comma = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
-                AnimationEnd = ParseUnit(itemFactory, text, stream);
+                AnimationBegin = Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
+            }
+            else if (stream.Current.Type == TokenType.Number && stream.Peek(1).Type == TokenType.PercentSign)
+            {
+                ParseItem begin;
+                if (itemFactory.TryCreateParsed<PercentageUnit>(this, text, stream, out begin))
+                {
+                    AnimationBegin = begin;
+                    Children.Add(begin);
+
+                    if (stream.Current.Type == TokenType.Comma)
+                        Comma = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
+
+                    ParseItem end;
+                    if (itemFactory.TryCreateParsed<PercentageUnit>(this, text, stream, out end))
+                    {
+                        AnimationEnd = end;
+                        Children.Add(end);
+                    }
+                }
             }
 
             if (AnimationBegin != null)
@@ -32,21 +49,6 @@ namespace SassyStudio.Compiler.Parsing.Rules
             }
 
             return Children.Count > 0;
-        }
-
-        protected ParseItem ParseUnit(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
-        {
-            if (stream.Current.Type == TokenType.Number && stream.Peek(1).Type == TokenType.PercentSign)
-            {
-                var unit = new PercentageUnit();
-                if (unit.Parse(itemFactory, text, stream))
-                    return unit;
-            } else if (stream.Current.Type == TokenType.Identifier && IsValidNamedRange(text.GetText(stream.Current.Start, stream.Current.Length)))
-            {
-                return Children.AddCurrentAndAdvance(stream, SassClassifierType.Keyword);
-            }
-
-            return null;
         }
 
         private bool IsValidNamedRange(string name)
