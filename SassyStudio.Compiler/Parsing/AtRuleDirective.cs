@@ -16,6 +16,16 @@ namespace SassyStudio.Compiler.Parsing
         {
         }
 
+        protected virtual void ParseBlock(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
+        {
+            var block = itemFactory.CreateSpecific<RuleBlock>(this, text, stream);
+            if (block.Parse(itemFactory, text, stream))
+            {
+                Body = block;
+                Children.Add(block);
+            }
+        }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (AtRule.IsRule(text, stream, RuleName))
@@ -25,13 +35,7 @@ namespace SassyStudio.Compiler.Parsing
                     Children.Add(Rule);
 
                 ParseDirective(itemFactory, text, stream);
-
-                var block = itemFactory.CreateSpecific<RuleBlock>(this, text, stream);
-                if (block.Parse(itemFactory, text, stream))
-                {
-                    Body = block;
-                    Children.Add(block);
-                }
+                ParseBlock(itemFactory, text, stream);
             }
 
             return Children.Count > 0;

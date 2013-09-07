@@ -46,6 +46,7 @@
     <Compile Include="Parsing\DefaultModifier.cs" />
     <Compile Include="Parsing\DocumentParser.cs" />
     <Compile Include="Parsing\DocumentParserFactory.cs" />
+    <Compile Include="Parsing\PercentageUnit.cs" />
     <Compile Include="Parsing\Rules\FontFaceDirective.cs" />
     <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
@@ -105,7 +106,9 @@
     <Compile Include="Parsing\RuleBlock.cs" />
     <Compile Include="Parsing\RuleSet.cs" />
     <Compile Include="Parsing\Rules\CharsetDirective.cs" />
+    <Compile Include="Parsing\Rules\KeyframeRuleBlock.cs" />
     <Compile Include="Parsing\Rules\KeyframesDirective.cs" />
+    <Compile Include="Parsing\Rules\KeyframeSelector.cs" />
     <Compile Include="Parsing\Rules\PageDirective.cs" />
     <Compile Include="Parsing\Rules\SimpleAtRuleDirective.cs" />
     <Compile Include="Parsing\SassImportDirective.cs" />
