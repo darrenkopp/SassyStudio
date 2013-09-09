@@ -46,5 +46,10 @@ namespace SassyStudio.Options
         [Description("When enabled, comments will be added to the .css file specifying the file and line number where the values originated from.")]
         [Category("SCSS")]
         public bool IncludeSourceComments { get; set; }
+
+        [LocDisplayName("Experimental Intellisense")]
+        [Description("When enabled, statement completion will be enabled for variables, functions, mixins and keywords.")]
+        [Category("Intellisense")]
+        public bool EnableExperimentalIntellisense { get; set; }
     }
 }

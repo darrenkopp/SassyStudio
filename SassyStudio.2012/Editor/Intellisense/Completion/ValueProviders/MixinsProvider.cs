@@ -14,7 +14,6 @@ namespace SassyStudio.Editor.Intellisense
         {
             get
             {
-                yield return SassCompletionContextType.IncludeDirective;
                 yield return SassCompletionContextType.IncludeDirectiveMixinName;
             }
         }
@@ -23,7 +22,6 @@ namespace SassyStudio.Editor.Intellisense
         {
             switch (type)
             {
-                case SassCompletionContextType.IncludeDirective:
                 case SassCompletionContextType.IncludeDirectiveMixinName:
                     return context.Cache.GetMixins(context.Position);
             }

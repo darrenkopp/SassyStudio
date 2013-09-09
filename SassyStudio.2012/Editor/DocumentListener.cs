@@ -32,8 +32,10 @@ namespace SassyStudio.Editor
             var textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
             textView.Closed += OnClosed;
 
-            // register command handler for completion
-            textView.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(CompletionBroker, textViewAdapter, textView));
+            textView.Properties.GetOrCreateSingletonProperty(() => new CommentSelectionCommandHandler(textViewAdapter, textView));
+
+            if (SassyStudioPackage.Instance.Options.Scss.EnableExperimentalIntellisense)
+                textView.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(CompletionBroker, textViewAdapter, textView));
         }
 
         void OnClosed(object sender, EventArgs e)

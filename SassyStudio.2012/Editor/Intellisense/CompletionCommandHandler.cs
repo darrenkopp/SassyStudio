@@ -168,12 +168,10 @@ namespace SassyStudio.Editor.Intellisense
                 // only commit if something selected or forced to commit
                 if (Session.SelectedCompletionSet.SelectionStatus.IsSelected || force)
                 {
-                    Logger.Log("Committed.");
                     Session.Commit();
                     return true;
                 }
 
-                Logger.Log("dismissed");
                 // we couldn't commit, so dismiss
                 Session.Dismiss();
             }
@@ -194,7 +192,6 @@ namespace SassyStudio.Editor.Intellisense
 
         private void OnSessionDismissed(object sender, EventArgs e)
         {
-            Logger.Log("Dismissed event.");
             var session = sender as ICompletionSession;
             session.Dismissed -= OnSessionDismissed;
 
@@ -261,8 +258,7 @@ namespace SassyStudio.Editor.Intellisense
 
         private int GetCompletionStart(ITextSnapshot snapshot, ITextSnapshotLine line, int position)
         {
-            Logger.Log(string.Format("Scanning for word boundary. Line = '{0}', Position = '{1}'", line.LineNumber, position));
-            int start = position--;
+            int start = position;
             while (start > line.Start.Position)
             {
                 // stop once we hit whitespace
@@ -273,10 +269,7 @@ namespace SassyStudio.Editor.Intellisense
                 }
             }
 
-            start = Math.Max(start, line.Start.Position);
-
-            Logger.Log(string.Format("Start of completion set to {0}", start));
-            return start;
+            return Math.Max(start, line.Start.Position);
         }
 
         private bool Ignore(VSCommand command, char typed)

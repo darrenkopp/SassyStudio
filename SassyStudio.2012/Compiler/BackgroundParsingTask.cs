@@ -48,8 +48,6 @@ namespace SassyStudio.Compiler
                         source.Refresh();
                         if (source.Exists)
                         {
-                            Logger.Log(string.Format("Background Parse: {0}", source.FullName));
-
                             ISassStylesheet stylesheet = null;
                             var textManager = new FileTextManager(source);
                             using (var scope = textManager.Open())
@@ -60,8 +58,6 @@ namespace SassyStudio.Compiler
 
                             if (stylesheet != null)
                                 request.Document.Update(stylesheet);
-
-                            Logger.Log(string.Format("Background Parse Complete: {0}", source.FullName));
                         }
                     }
                     catch (Exception ex)

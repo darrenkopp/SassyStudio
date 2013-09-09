@@ -16,6 +16,10 @@ namespace SassyStudio.Editor.Intellisense
             {
                 yield return SassCompletionContextType.MixinDirective;
             }
+            else if (current is MixinDefinitionBody)
+            {
+                yield return SassCompletionContextType.MixinBody;
+            }
             else if (current is RuleBlock)
             {
                 yield return SassCompletionContextType.IncludeDirective;
@@ -40,10 +44,6 @@ namespace SassyStudio.Editor.Intellisense
                     yield return SassCompletionContextType.IncludeDirectiveMixinArgumentName;
 
                 yield return SassCompletionContextType.IncludeDirectiveMixinArgumentValue;
-            }
-            else if (current is MixinDefinitionBody)
-            {
-                yield return SassCompletionContextType.MixinBody;
             }
         }
     }
