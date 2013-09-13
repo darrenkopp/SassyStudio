@@ -22,6 +22,7 @@ namespace SassyStudio
         ParentReference,
         Interpolation,
         SystemFunction,
+        PropertyName,
         FunctionBrace,
         Punctuation,
         CurlyBrace,

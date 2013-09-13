@@ -24,6 +24,7 @@ namespace SassyStudio.Scss.Classifications
         public const string Interpolation = "scss_interpolation";
         public const string StringValue = "scss_string";
         public const string ParentReference = "scss_parent_reference";
+        public const string CssPropertyName = "scss_css_property_name";
     }
 
     static class ScssClassificationTypeDefinitions
@@ -66,5 +67,8 @@ namespace SassyStudio.Scss.Classifications
 
         [Export, Name(ScssClassificationTypes.ParentReference), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal static ClassificationTypeDefinition ScssParentReference = null;
+
+        [Export, Name(ScssClassificationTypes.CssPropertyName), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        internal static ClassificationTypeDefinition ScssCssPropertyName = null;
     }
 }

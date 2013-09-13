@@ -111,6 +111,7 @@
     <Compile Include="Sass\SassContentTypeDefinition.cs" />
     <Compile Include="Scss\Classifications\ClassificationMatchResult.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ColorResolvingFormatDefinition.cs" />
+    <Compile Include="Scss\Classifications\FormatDefinitions\ScssCssPropertyName.cs" />
     <Compile Include="Scss\Classifications\IClassificationMatchEvaluator.cs" />
     <Compile Include="Scss\Classifications\Evaluators\RegexClassificationMatchEvaluator.cs" />
     <Compile Include="Scss\Classifications\Evaluators\RegexGroupClassificationMatchEvaluator.cs" />

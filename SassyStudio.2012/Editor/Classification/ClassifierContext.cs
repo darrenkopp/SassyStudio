@@ -45,6 +45,7 @@ namespace SassyStudio.Editor.Classification
                 case SassClassifierType.Interpolation: return ScssClassificationTypes.Interpolation;
                 case SassClassifierType.SystemFunction: return ScssClassificationTypes.FunctionReference;
                 case SassClassifierType.String: return ScssClassificationTypes.StringValue;
+                case SassClassifierType.PropertyName: return ScssClassificationTypes.CssPropertyName;
                 case SassClassifierType.FunctionBrace: return "text";
                 default: return "Default";
             }

@@ -22,6 +22,9 @@ namespace SassyStudio.Compiler.Parsing
                 {
                     Fragments.Add(fragement);
                     Children.Add(fragement);
+
+                    if (fragement is TokenItem)
+                        fragement.ClassifierType = SassClassifierType.PropertyName;
                 }
             }
 

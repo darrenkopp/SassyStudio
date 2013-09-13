@@ -7,7 +7,7 @@ namespace SassyStudio.Compiler.Parsing
 {
     public abstract class ParseItem : IRange
     {
-        public SassClassifierType ClassifierType { get; protected set; }
+        public SassClassifierType ClassifierType { get; set; }
         //public TokenType TokenType { get; protected set; }
         public abstract int Start { get; }
         public abstract int End { get; }
