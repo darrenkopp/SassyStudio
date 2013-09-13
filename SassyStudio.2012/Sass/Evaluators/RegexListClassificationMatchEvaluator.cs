@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Classification;
 
-namespace SassyStudio.Scss.Classifications
+namespace SassyStudio.Sass.Classifications
 {
     class RegexListClassificationMatchEvaluator : IClassificationMatchEvaluator
     {

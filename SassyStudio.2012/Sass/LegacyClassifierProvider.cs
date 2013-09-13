@@ -8,11 +8,11 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 
-namespace SassyStudio.Scss.Classifications
+namespace SassyStudio.Sass.Classifications
 {
-    //[Export(typeof(IClassifierProvider))]
-    //[ContentType(ScssContentTypeDefinition.ScssContentType)]
-    class ScssClassifierProvider : IClassifierProvider
+    [Export(typeof(IClassifierProvider))]
+    [ContentType(SassContentTypeDefinition.SassContentType)]
+    class LegacyClassifierProvider : IClassifierProvider
     {
         [Import, System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal IClassificationTypeRegistryService Registry { get; set; }
@@ -20,7 +20,7 @@ namespace SassyStudio.Scss.Classifications
         public IClassifier GetClassifier(ITextBuffer buffer)
         {
             if (buffer != null)
-                return buffer.Properties.GetOrCreateSingletonProperty<ScssClassifier>(() => new ScssClassifier(Registry));
+                return buffer.Properties.GetOrCreateSingletonProperty(() => new LegacyClassifier(Registry));
 
             return null;
         }

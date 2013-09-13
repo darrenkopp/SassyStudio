@@ -6,13 +6,15 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using SassyStudio.Scss;
+using SassyStudio.Scss.Classifications;
 
-namespace SassyStudio.Scss.Classifications
+namespace SassyStudio.Sass.Classifications
 {
-    class ScssClassifier : IClassifier
+    class LegacyClassifier : IClassifier
     {
         readonly IClassificationMatchEvaluator[] MatchEvaluators;
-        public ScssClassifier(IClassificationTypeRegistryService registry)
+        public LegacyClassifier(IClassificationTypeRegistryService registry)
         {
             MatchEvaluators = GetEvaluators(registry).ToArray();
         }
