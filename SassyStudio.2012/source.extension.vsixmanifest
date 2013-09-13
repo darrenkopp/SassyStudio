@@ -6,7 +6,7 @@
     <Description xml:space="preserve">Provides some support for sass files in visual studio</Description>
     <MoreInfo>https://github.com/darrenkopp/SassyStudio</MoreInfo>
     <License>Licenses.txt</License>
-    <GettingStartedGuide>https://github.com/darrenkopp/SassyStudio</GettingStartedGuide>
+    <GettingStartedGuide>https://github.com/darrenkopp/SassyStudio/releases</GettingStartedGuide>
     <ReleaseNotes>https://github.com/darrenkopp/SassyStudio/blob/master/ReleaseNotes.md</ReleaseNotes>
     <Tags>sass scss</Tags>
   </Metadata>
