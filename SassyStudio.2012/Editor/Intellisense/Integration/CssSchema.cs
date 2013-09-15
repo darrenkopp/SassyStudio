@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace SassyStudio.Editor.Intellisense
 {
     interface ICssSchema
     {
-
+        IEnumerable<CssProperty> GetProperties(string prefix);
     }
 
     class CssSchema : ICssSchema
@@ -16,6 +17,14 @@ namespace SassyStudio.Editor.Intellisense
         readonly IDictionary<string, CssAtDirective> _AtDirectives = new Dictionary<string, CssAtDirective>(StringComparer.Ordinal);
         readonly IDictionary<string, CssProperty> _Properties = new Dictionary<string, CssProperty>(StringComparer.Ordinal);
         readonly IDictionary<string, CssPseudo> _Pseudos = new Dictionary<string, CssPseudo>(StringComparer.Ordinal);
+
+        public IEnumerable<CssProperty> GetProperties(string prefix)
+        {
+            if (string.IsNullOrEmpty(prefix))
+                return _Properties.Values;
+
+            return _Properties.Values.Where(x => x.Name.StartsWith(prefix, StringComparison.Ordinal));
+        }
 
         public static ICssSchema Parse(XDocument document, DirectoryInfo directory)
         {

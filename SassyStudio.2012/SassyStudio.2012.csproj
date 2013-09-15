@@ -74,10 +74,12 @@
     <Compile Include="Editor\Intellisense\Completion\KeywordCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\MixinCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\MixinContainer.cs" />
+    <Compile Include="Editor\Intellisense\Completion\PropertyCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\StylesheetContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\SystemFunctionCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\UserFunctionCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\MixinsProvider.cs" />
+    <Compile Include="Editor\Intellisense\Completion\ValueProviders\PropertiesProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\VariableCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\ICompletionValueContainer.cs" />
     <Compile Include="Editor\Intellisense\IIntellisenseContainer.cs" />

@@ -13,6 +13,7 @@ namespace SassyStudio.Editor.Intellisense
         SystemFunction,
         UserFunction,
         Mixin,
-        Variable
+        Variable,
+        Property
     }
 }

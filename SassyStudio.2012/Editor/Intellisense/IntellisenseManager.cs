@@ -12,15 +12,13 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(IIntellisenseManager))]
     class IntellisenseManager : IIntellisenseManager
     {
-        readonly ICssSchemaManager SchemaManager;
         readonly IEnumerable<ICompletionContextProvider> _ContextProviders;
         readonly IDictionary<SassCompletionContextType, IEnumerable<ICompletionValueProvider>> _ValueProviders;
         readonly ConcurrentDictionary<ISassDocument, IIntellisenseCache> Caches = new ConcurrentDictionary<ISassDocument, IIntellisenseCache>();
 
         [ImportingConstructor]
-        public IntellisenseManager(ICssSchemaManager schemaManager, [ImportMany]IEnumerable<ICompletionContextProvider> contextProviders, [ImportMany]IEnumerable<ICompletionValueProvider> valueProviders)
+        public IntellisenseManager([ImportMany]IEnumerable<ICompletionContextProvider> contextProviders, [ImportMany]IEnumerable<ICompletionValueProvider> valueProviders)
         {
-            SchemaManager = schemaManager;
             _ContextProviders = contextProviders.ToArray();
             _ValueProviders = valueProviders
                 .SelectMany(x => x.SupportedContexts, (p, t) => new { Provider = p, Type = t })

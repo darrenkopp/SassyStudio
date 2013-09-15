@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Editor.Intellisense
 {
-    class KeywordCompletionValue : ICompletionValue
+    class PropertyCompletionValue : ICompletionValue
     {
-        public KeywordCompletionValue(string name)
+        public PropertyCompletionValue(string name, string description)
         {
-            DisplayText = name;
-            CompletionText = name;
+            DisplayText = CompletionText = name;
+            Description = description;
         }
-
-        public SassCompletionValueType Type { get { return SassCompletionValueType.Keyword; } }
 
         public string DisplayText { get; private set; }
 
         public string CompletionText { get; private set; }
 
         public string Description { get; private set; }
+
+        public SassCompletionValueType Type { get { return SassCompletionValueType.Property; } }
     }
 }

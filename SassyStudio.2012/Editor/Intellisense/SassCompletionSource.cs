@@ -81,9 +81,9 @@ namespace SassyStudio.Editor.Intellisense
 
         private ICompletionContext CreateCompletionContext(ISassStylesheet stylesheet, int position)
         {
-            var current = stylesheet.Children.FindItemContainingPosition(Math.Max(0, position-1));
-            if (current != null && !current.IsUnclosed)
-                current = stylesheet.Children.FindItemContainingPosition(position);
+            var current = stylesheet.Children.FindItemContainingPosition(position);
+            if (current is TokenItem)
+                current = current.Parent;
 
             current = current ?? (stylesheet as Stylesheet);
 

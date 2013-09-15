@@ -32,7 +32,8 @@ namespace SassyStudio.Editor.Intellisense
                 { SassCompletionValueType.SystemFunction, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupMethod, StandardGlyphItem.GlyphItemPublic) },
                 { SassCompletionValueType.UserFunction, Glyphs.GetGlyph(StandardGlyphGroup.GlyphExtensionMethod, StandardGlyphItem.GlyphItemInternal) },
                 { SassCompletionValueType.Mixin, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupInterface, StandardGlyphItem.GlyphItemInternal) },
-                { SassCompletionValueType.Variable, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemInternal) }
+                { SassCompletionValueType.Variable, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupVariable, StandardGlyphItem.GlyphItemInternal) },
+                { SassCompletionValueType.Property, Glyphs.GetGlyph(StandardGlyphGroup.GlyphGroupProperty, StandardGlyphItem.TotalGlyphItems) }
             };
         }
 
@@ -55,7 +56,7 @@ namespace SassyStudio.Editor.Intellisense
                 yield return new Completion(
                     displayText: value.DisplayText,
                     insertionText: value.CompletionText,
-                    description: null,
+                    description: value.Description,
                     iconSource: IconMappings[value.Type],
                     iconAutomationText: null
                 );
