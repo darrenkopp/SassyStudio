@@ -81,6 +81,14 @@
     <Compile Include="Editor\Intellisense\Completion\VariableCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\ICompletionValueContainer.cs" />
     <Compile Include="Editor\Intellisense\IIntellisenseContainer.cs" />
+    <Compile Include="Editor\Intellisense\Integration\BrowserReference.cs" />
+    <Compile Include="Editor\Intellisense\Integration\CssAtDirective.cs" />
+    <Compile Include="Editor\Intellisense\Integration\CssProperty.cs" />
+    <Compile Include="Editor\Intellisense\Integration\CssPseudo.cs" />
+    <Compile Include="Editor\Intellisense\Integration\CssSchema.cs" />
+    <Compile Include="Editor\Intellisense\Integration\CssSchemaItem.cs" />
+    <Compile Include="Editor\Intellisense\Integration\CssSchemaManager.cs" />
+    <Compile Include="Editor\Intellisense\Integration\DefaultCssSchemaLoader.cs" />
     <Compile Include="Editor\Intellisense\IntellisenseCache.cs" />
     <Compile Include="Editor\Intellisense\IntellisenseManager.cs" />
     <Compile Include="Editor\Intellisense\SassCompletionSource.cs" />
@@ -195,6 +203,8 @@
     <Reference Include="System.ComponentModel.Composition.Registration" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />

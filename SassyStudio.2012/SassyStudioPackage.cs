@@ -56,6 +56,18 @@ namespace SassyStudio
         internal CompositionContainer Composition { get; private set; }
         internal OptionsProvider Options { get { return _Options; } }
         internal DTE2 DTE { get { return _DTE.Value; } }
+        public int LocaleId
+        {
+            get
+            {
+                IUIHostLocale globalService = (IUIHostLocale)GetGlobalService(typeof(IUIHostLocale));
+                uint localeId;
+                if (globalService != null && globalService.GetUILocale(out localeId) == 0)
+                    return (int)localeId;
+
+                return 0;
+            }
+        }
 
         private CompositionContainer InitializeComposition()
         {
