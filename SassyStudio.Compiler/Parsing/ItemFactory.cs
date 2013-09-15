@@ -118,7 +118,7 @@ namespace SassyStudio.Compiler.Parsing
                 return CreateSelectorComponent(parent, text, stream);
 
             // handle possible property declaration
-            if (IsPropertyContainer(parent) && PropertyDeclaration.IsDeclaration(stream))
+            if (IsPropertyContainer(parent) && PropertyDeclaration.IsDeclaration(text, stream))
                 return new PropertyDeclaration();
 
             if ((parent is Stylesheet || parent is RuleBlock) && IsRuleSet(parent, stream))

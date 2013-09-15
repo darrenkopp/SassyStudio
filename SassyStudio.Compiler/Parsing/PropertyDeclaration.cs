@@ -9,6 +9,8 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class PropertyDeclaration : ComplexItem
     {
+        static readonly ICollection<string> WellKnownPseudoSelectors = CreatePseudoSelectors();
+
         public PropertyDeclaration()
         {
             Values = new ParseItemList();
@@ -22,7 +24,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (IsDeclaration(stream))
+            if (IsDeclaration(text, stream))
             {
                 var name = itemFactory.CreateSpecific<PropertyName>(this, text, stream);
                 if (name.Parse(itemFactory, text, stream))
@@ -82,7 +84,7 @@ namespace SassyStudio.Compiler.Parsing
             }
         }
 
-        public static bool IsDeclaration(ITokenStream stream)
+        public static bool IsDeclaration(ITextProvider text, ITokenStream stream)
         {
             int position = stream.Position;
 
@@ -92,7 +94,7 @@ namespace SassyStudio.Compiler.Parsing
                 var last = stream.Current;
                 var next = stream.Advance();
 
-                if (next.Start > last.End || IsDeclrationTerminator(last.Type))
+                if (next.Start > last.End || IsDeclarationTerminator(last.Type))
                     break;
 
                 if (next.Type == TokenType.Colon)
@@ -102,7 +104,7 @@ namespace SassyStudio.Compiler.Parsing
                     {
                         case TokenType.Identifier:
                         case TokenType.Function:
-                            validPropertyName = value.Start > next.End;
+                            validPropertyName = value.Start > next.End || !IsPseudoSelector(text, value);
                             break;
                         default:
                             validPropertyName = true;
@@ -116,7 +118,19 @@ namespace SassyStudio.Compiler.Parsing
             return validPropertyName;
         }
 
-        private static bool IsDeclrationTerminator(TokenType type)
+        static bool IsPseudoSelector(ITextProvider text, Token token)
+        {
+            switch (token.Type)
+            {
+                case TokenType.Identifier:
+                case TokenType.Function:
+                    return WellKnownPseudoSelectors.Contains(text.GetText(token.Start, token.Length));
+                default:
+                    return true;
+            }
+        }
+
+        private static bool IsDeclarationTerminator(TokenType type)
         {
             switch (type)
             {
@@ -128,6 +142,54 @@ namespace SassyStudio.Compiler.Parsing
                 default:
                     return false;
             }
+        }
+
+        private static ICollection<string> CreatePseudoSelectors()
+        {
+            return new HashSet<string>(StringComparer.Ordinal)
+            {
+                "active",
+                "after",
+                "before",
+                "checked",
+                "default",
+                "dir",
+                "disabled",
+                "empty",
+                "enabled",
+                "first",
+                "first-child",
+                "first-of-type",
+                "focus",
+                "fullscreen",
+                "hover",
+                "indeterminate",
+                "in-range",
+                "invalid",
+                "lang",
+                "last-child",
+                "last-of-type",
+                "left",
+                "link",
+                "not",
+                "nth-child",
+                "nth-last-child",
+                "nth-last-of-type",
+                "nth-of-type",
+                "only-child",
+                "only-of-type",
+                "optional",
+                "out-of-range",
+                "read-only",
+                "read-write",
+                "required",
+                "right",
+                "root",
+                "scope",
+                "target",
+                "valid",
+                "visited"
+            };
         }
     }
 }
