@@ -9,7 +9,8 @@ namespace SassyStudio.Editor.Intellisense
     {
         public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            if (current is RuleBlock || current is SelectorGroup)
+            Logger.Log("Current type: " + current.GetType().Name);
+            if (current is RuleBlock || current is SelectorGroup || current.Parent is SelectorGroup)
             {
                 //var predecessor = current.PreviousSibling();
                 //if (predecessor is SimpleSelector)

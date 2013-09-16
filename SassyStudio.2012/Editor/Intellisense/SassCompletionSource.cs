@@ -40,7 +40,7 @@ namespace SassyStudio.Editor.Intellisense
 
             var span = FindTokenSpanAtPosition(session); 
             var position = span.GetSpan(session.TextView.TextSnapshot).Start.Position;
-            var context = CreateCompletionContext(stylesheet, position);
+            var context = CreateCompletionContext(stylesheet, position, session.TextView.TextSnapshot);
             if (IsInvalidCompletionContext(context))
                 return;
 
@@ -79,7 +79,7 @@ namespace SassyStudio.Editor.Intellisense
             );
         }
 
-        private ICompletionContext CreateCompletionContext(ISassStylesheet stylesheet, int position)
+        private ICompletionContext CreateCompletionContext(ISassStylesheet stylesheet, int position, ITextSnapshot snapshot)
         {
             var current = stylesheet.Children.FindItemContainingPosition(position);
             if (current is TokenItem)
@@ -91,7 +91,8 @@ namespace SassyStudio.Editor.Intellisense
             {
                 Current = current,
                 Position = position,
-                Cache = Cache
+                Cache = Cache,
+                DocumentTextProvider = new SnapshotTextProvider(snapshot)
             };
         }
 
@@ -115,6 +116,8 @@ namespace SassyStudio.Editor.Intellisense
             public ParseItem Current { get; internal set; }
 
             public int Position { get; internal set; }
+
+            public ITextProvider DocumentTextProvider { get; internal set; }
         }
     }
 

@@ -13,6 +13,8 @@ namespace SassyStudio.Editor.Intellisense
         IEnumerable<CssAtDirective> GetDirectives();
 
         IEnumerable<CssPseudo> GetPseudos();
+
+        IEnumerable<CssPropertyValue> GetPropertyValues(string propertyName);
     }
 
     class CssSchema : ICssSchema
@@ -28,6 +30,15 @@ namespace SassyStudio.Editor.Intellisense
                 return _Properties.Values;
 
             return _Properties.Values.Where(x => x.Name.StartsWith(prefix, StringComparison.Ordinal));
+        }
+
+        public IEnumerable<CssPropertyValue> GetPropertyValues(string propertyName)
+        {
+            CssProperty property;
+            if (!string.IsNullOrEmpty(propertyName) && _Properties.TryGetValue(propertyName, out property))
+                return property.Values;
+
+            return Enumerable.Empty<CssPropertyValue>();
         }
 
         public IEnumerable<CssAtDirective> GetDirectives()

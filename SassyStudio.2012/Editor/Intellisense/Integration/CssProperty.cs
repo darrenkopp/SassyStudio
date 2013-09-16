@@ -16,6 +16,8 @@ namespace SassyStudio.Editor.Intellisense
             if (!_Values.ContainsKey(value.Name))
                 _Values.Add(value.Name, value);
         }
+
+        public IEnumerable<CssPropertyValue> Values { get { return _Values.Values; } }
     }
 
     class CssPropertyValue : CssSchemaItem
