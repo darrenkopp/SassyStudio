@@ -13,7 +13,6 @@ namespace SassyStudio.Editor.Intellisense
     {
         public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
         {
-            Logger.Log("not finding context in this shiz. " + current.GetType().Name);
             if (current is RuleBlock)
             {
                 yield return SassCompletionContextType.PropertyDeclaration;

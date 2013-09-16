@@ -29,12 +29,10 @@ namespace SassyStudio.Editor.Intellisense
 
         public IEnumerable<ICompletionValue> GetCompletions(SassCompletionContextType type, ICompletionContext context)
         {
-            Logger.Log("wanting completions for properties");
             var schema = SchemaManager.CurrentSchema;
             if (schema == null)
                 return Enumerable.Empty<ICompletionValue>();
 
-            Logger.Log("giving those completions");
             return schema.GetProperties(null).Select(x => new PropertyCompletionValue(x.Name, x.Description));
         }
     }

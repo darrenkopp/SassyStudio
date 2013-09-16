@@ -1,13 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using Microsoft.VisualStudio.Language.Intellisense;
 
 namespace SassyStudio.Editor.Intellisense
 {
     [Export(typeof(ICompletionValueProvider))]
     class KeywordsProvider : ICompletionValueProvider
     {
+        readonly ICssSchemaManager SchemaManager;
+
+        [ImportingConstructor]
+        public KeywordsProvider(ICssSchemaManager schemaManager)
+        {
+            SchemaManager = schemaManager;
+        }
+
         public IEnumerable<SassCompletionContextType> SupportedContexts
         {
             get
@@ -40,6 +47,11 @@ namespace SassyStudio.Editor.Intellisense
 
         IEnumerable<string> GetKeywords(SassCompletionContextType type)
         {
+            foreach (var cssDirective in GetCssDirectives())
+            {
+                yield return cssDirective;
+            }
+
             switch (type)
             {
                 case SassCompletionContextType.AtDirectiveName:
@@ -106,6 +118,15 @@ namespace SassyStudio.Editor.Intellisense
                     yield return "@while";
                     break;
             }
+        }
+
+        public IEnumerable<string> GetCssDirectives()
+        {
+            var schema = SchemaManager.CurrentSchema;
+            if (schema == null) 
+                return Enumerable.Empty<string>();
+
+            return schema.GetDirectives().Select(x => "@" + x.Name);
         }
     }
 }

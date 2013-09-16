@@ -9,6 +9,8 @@ namespace SassyStudio.Editor.Intellisense
     interface ICssSchema
     {
         IEnumerable<CssProperty> GetProperties(string prefix);
+
+        IEnumerable<CssAtDirective> GetDirectives();
     }
 
     class CssSchema : ICssSchema
@@ -24,6 +26,11 @@ namespace SassyStudio.Editor.Intellisense
                 return _Properties.Values;
 
             return _Properties.Values.Where(x => x.Name.StartsWith(prefix, StringComparison.Ordinal));
+        }
+
+        public IEnumerable<CssAtDirective> GetDirectives()
+        {
+            return _AtDirectives.Values;
         }
 
         public static ICssSchema Parse(XDocument document, DirectoryInfo directory)
