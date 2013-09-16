@@ -47,11 +47,6 @@ namespace SassyStudio.Editor.Intellisense
 
         IEnumerable<string> GetKeywords(SassCompletionContextType type)
         {
-            foreach (var cssDirective in GetCssDirectives())
-            {
-                yield return cssDirective;
-            }
-
             switch (type)
             {
                 case SassCompletionContextType.AtDirectiveName:
@@ -66,6 +61,8 @@ namespace SassyStudio.Editor.Intellisense
                 case SassCompletionContextType.CssDirective:
                     yield return "@media";
                     yield return "@page";
+                    foreach (var cssDirective in GetCssDirectives())
+                        yield return cssDirective;
                     break;
                 case SassCompletionContextType.EachDirective:
                     yield return "@each";

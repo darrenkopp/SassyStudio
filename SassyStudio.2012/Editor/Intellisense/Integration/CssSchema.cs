@@ -11,6 +11,8 @@ namespace SassyStudio.Editor.Intellisense
         IEnumerable<CssProperty> GetProperties(string prefix);
 
         IEnumerable<CssAtDirective> GetDirectives();
+
+        IEnumerable<CssPseudo> GetPseudos();
     }
 
     class CssSchema : ICssSchema
@@ -31,6 +33,11 @@ namespace SassyStudio.Editor.Intellisense
         public IEnumerable<CssAtDirective> GetDirectives()
         {
             return _AtDirectives.Values;
+        }
+
+        public IEnumerable<CssPseudo> GetPseudos()
+        {
+            return _Pseudos.Values;
         }
 
         public static ICssSchema Parse(XDocument document, DirectoryInfo directory)

@@ -62,6 +62,10 @@ namespace SassyStudio.Editor.Intellisense
         PropertyName,
         PropertyValue,
 
+        PseudoClass,
+        PseudoElement,
+        PseudoFunction,
+
         VariableDeclaration,
         VariableName,
         VariableValue,
