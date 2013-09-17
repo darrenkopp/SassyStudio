@@ -19,8 +19,8 @@ namespace SassyStudio.Editor.Classification
             Editor = editor;
 
             Editor.DocumentChanged += OnDocumentChanged;
-        }        
-        
+        }
+
         public event EventHandler<ClassificationChangedEventArgs> ClassificationChanged;
 
         void OnDocumentChanged(object sender, DocumentChangedEventArgs e)
@@ -40,28 +40,18 @@ namespace SassyStudio.Editor.Classification
             {
                 try
                 {
-                    var item = stylesheet.Children.FindItemContainingPosition(span.Start);
-                    if (item == null)
-                        item = stylesheet as Stylesheet;
-
-                    if (!(item is IParseItemContainer))
-                        item = item.Parent ?? item;
-
-                    for (var current = item; current != null; current = current.InOrderSuccessor())
+                    foreach (var current in GetItems(stylesheet.Children, span))
                     {
-                        if (current.Start <= span.End && current.End >= span.Start)
-                        {
-                            if (current.Start > span.End)
-                                break;
+                        if (current.Start > span.End)
+                            break;
 
-                            var type = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
-                            if (type != null)
-                            {
-                                var start = Math.Max(0, current.Start);
-                                var length = Math.Min(snapshot.Length - start, current.Length);
-                                results.Add(new ClassificationSpan(new SnapshotSpan(snapshot, new Span(start, length)), type));
-                            }
-                        }
+                        var type = ClassifierContextCache.Get(current.ClassifierType).GetClassification(Registry);
+                        if (type == null)
+                            continue;
+
+                        var start = Math.Max(0, current.Start);
+                        var length = Math.Min(snapshot.Length - start, current.Length);
+                        results.Add(new ClassificationSpan(new SnapshotSpan(snapshot, new Span(start, length)), type));
                     }
                 }
                 catch (Exception ex)
@@ -71,6 +61,24 @@ namespace SassyStudio.Editor.Classification
             }
 
             return results;
+        }
+
+        static IEnumerable<ParseItem> GetItems(ParseItemList items, SnapshotSpan span)
+        {
+            foreach (var item in items)
+            {
+                if (item.Start <= span.End && item.End >= span.Start)
+                {
+                    yield return item;
+
+                    var container = item as IParseItemContainer;
+                    if (container != null)
+                    {
+                        foreach (var child in GetItems(container.Children, span))
+                            yield return child;
+                    }
+                }
+            }
         }
     }
 }
