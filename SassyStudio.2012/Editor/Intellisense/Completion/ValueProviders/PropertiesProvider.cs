@@ -58,7 +58,7 @@ namespace SassyStudio.Editor.Intellisense
             // in the future may support evaluating #{$name}-left style properties
             var propertyName = context.DocumentTextProvider.GetText(property.Name.Start, property.Name.Length);
 
-            return schema.GetPropertyValues(propertyName).Select(x => new PropertyCompletionValue(x.Name, x.Description));
+            return schema.GetPropertyValues(propertyName).Select(x => new PropertyValueCompletionValue(x.Name, x.Description));
         }
 
         private bool IsPlainPropertyName(PropertyName name)
@@ -68,7 +68,7 @@ namespace SassyStudio.Editor.Intellisense
 
         public IEnumerable<ICompletionValue> GetPropertyNames(ICompletionContext context, ICssSchema schema)
         {
-            return schema.GetProperties(null).Select(x => new PropertyCompletionValue(x.Name, x.Description));
+            return schema.GetProperties(null).Select(x => new PropertyNameCompletionValue(x.Name, x.Description));
         }
     }
 }

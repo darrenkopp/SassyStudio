@@ -11,16 +11,40 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class PropertyValueContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
         {
             if (current is RuleBlock)
             {
                 yield return SassCompletionContextType.PropertyDeclaration;
             }
-            else if (current is PropertyDeclaration)
+            else
             {
-                yield return SassCompletionContextType.PropertyValue;
+                var declaration = FindDeclaration(current) ?? FindDeclaration(predecessor);
+                if (declaration == null)
+                    yield break;
+
+                if (declaration.Colon == null || declaration.Colon.Start > position)
+                {
+                    yield return SassCompletionContextType.PropertyName;
+                }
+                else if (declaration.Colon != null && (declaration.End > position || declaration.IsUnclosed))
+                {
+                    yield return SassCompletionContextType.PropertyValue;
+                }
             }
+        }
+
+        static PropertyDeclaration FindDeclaration(ParseItem item)
+        {
+            while (item != null)
+            {
+                if (item is PropertyDeclaration)
+                    return item as PropertyDeclaration;
+
+                item = item.Parent;
+            }
+
+            return null;
         }
     }
 }

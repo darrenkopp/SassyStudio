@@ -28,6 +28,34 @@ namespace SassyStudio.Compiler.Parsing
             return item;
         }
 
+        public ParseItem FindItemPrecedingPosition(int position)
+        {
+            int start = 0;
+            int end = Count - 1;
+
+            ParseItem match = null;
+            while (start <= end)
+            {
+                int midpoint = (start + end) / 2;
+                var current = this[midpoint];
+
+                if (current.End <= position)
+                {
+                    match = current;
+                    start = midpoint + 1;
+                }
+                else if (current.End > position)
+                {
+                    end = midpoint - 1;
+                }
+            }
+
+            if (match is IParseItemContainer)
+                return (match as IParseItemContainer).Children.FindItemPrecedingPosition(position) ?? match;
+
+            return null;
+        }
+
         public ParseItem FindItemContainingPosition(int position)
         {
             int start = 0;

@@ -76,7 +76,8 @@
     <Compile Include="Editor\Intellisense\Completion\KeywordCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\MixinCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\MixinContainer.cs" />
-    <Compile Include="Editor\Intellisense\Completion\PropertyCompletionValue.cs" />
+    <Compile Include="Editor\Intellisense\Completion\PropertyNameCompletionValue.cs" />
+    <Compile Include="Editor\Intellisense\Completion\PropertyValueCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\PseudoCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\StylesheetContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\SystemFunctionCompletionValue.cs" />

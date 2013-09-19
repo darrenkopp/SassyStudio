@@ -35,7 +35,7 @@ namespace SassyStudio.Editor.Intellisense
             if (stylesheet == null)
                 return;
 
-            // signal to cache that we are in an intellisense session and thus we do not want
+            // TODO: signal to cache that we are in an intellisense session and thus we do not want
             // to update the cache until we are done
 
             var span = FindTokenSpanAtPosition(session); 
@@ -75,21 +75,36 @@ namespace SassyStudio.Editor.Intellisense
             // it's likely that multiple value providers will return the same context type
             // so wrap in a set so we only have to process that type once
             return new HashSet<SassCompletionContextType>(
-                IntellisenseManager.ContextProviders.SelectMany(x => x.GetContext(context.Current, context.Position))
+                IntellisenseManager.ContextProviders.SelectMany(x => x.GetContext(context.Current, context.Predecessor, context.Position))
             );
         }
 
         private ICompletionContext CreateCompletionContext(ISassStylesheet stylesheet, int position, ITextSnapshot snapshot)
         {
-            var current = stylesheet.Children.FindItemContainingPosition(position);
-            if (current is TokenItem)
-                current = current.Parent;
+            ParseItem current = null;
+            ParseItem predecessor = null;
 
-            current = current ?? (stylesheet as Stylesheet);
+            if (position > 0)
+            {
+                current = stylesheet.Children.FindItemContainingPosition(position);
+                //if (current is TokenItem)
+                //    current = current.Parent;
+
+                predecessor = stylesheet.Children.FindItemPrecedingPosition(position);
+                //if (predecessor is TokenItem)
+                //    predecessor = predecessor.Parent;
+            }
+
+            Logger.Log(
+                string.Format("Completion: Current='{0}', Predecessor='{1}'", 
+                (current != null ? current.GetType().Name : ""), 
+                (predecessor != null ? predecessor.GetType().Name : ""))
+            );
 
             return new CompletionContext
             {
                 Current = current,
+                Predecessor = predecessor,
                 Position = position,
                 Cache = Cache,
                 DocumentTextProvider = new SnapshotTextProvider(snapshot)
@@ -114,6 +129,8 @@ namespace SassyStudio.Editor.Intellisense
             public IIntellisenseCache Cache { get; internal set; }
 
             public ParseItem Current { get; internal set; }
+
+            public ParseItem Predecessor { get; internal set; }
 
             public int Position { get; internal set; }
 

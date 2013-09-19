@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace SassyStudio.Editor.Intellisense
 {
-    class PropertyCompletionValue : ICompletionValue
+    class PropertyValueCompletionValue : ICompletionValue
     {
-        public PropertyCompletionValue(string name, string description)
+        public PropertyValueCompletionValue(string name, string description)
         {
-            DisplayText = CompletionText = name;
+            DisplayText = name;
             Description = description;
         }
 
         public string DisplayText { get; private set; }
 
-        public string CompletionText { get; private set; }
+        public string CompletionText { get { return DisplayText; } }
 
         public string Description { get; private set; }
 

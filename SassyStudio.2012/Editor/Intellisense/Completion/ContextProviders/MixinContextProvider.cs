@@ -7,7 +7,7 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class MixinContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
         {
             if (current == null)
                 yield break;

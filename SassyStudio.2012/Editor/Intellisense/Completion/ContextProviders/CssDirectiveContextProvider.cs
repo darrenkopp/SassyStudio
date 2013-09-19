@@ -11,7 +11,7 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class CssDirectiveContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
         {
             if (current is Stylesheet || current is MediaQueryBlock)
                 yield return SassCompletionContextType.CssDirective;

@@ -5,6 +5,6 @@ namespace SassyStudio.Editor.Intellisense
 {
     public interface ICompletionContextProvider
     {
-        IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position);
+        IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position);
     }
 }

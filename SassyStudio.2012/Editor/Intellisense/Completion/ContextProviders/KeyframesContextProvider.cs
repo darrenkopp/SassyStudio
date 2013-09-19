@@ -12,9 +12,9 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class KeyframesContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
         {
-            if (current is Stylesheet)
+            if (current is Stylesheet || current is MediaQueryBlock)
                 yield return SassCompletionContextType.KeyframesDirective;
 
             if (current is KeyframeRuleBlock)
