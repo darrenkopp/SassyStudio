@@ -87,12 +87,12 @@ namespace SassyStudio.Editor.Intellisense
             if (position > 0)
             {
                 current = stylesheet.Children.FindItemContainingPosition(position);
-                //if (current is TokenItem)
-                //    current = current.Parent;
+                if (current is TokenItem)
+                    current = current.Parent;
 
                 predecessor = stylesheet.Children.FindItemPrecedingPosition(position);
-                //if (predecessor is TokenItem)
-                //    predecessor = predecessor.Parent;
+                if (predecessor is TokenItem)
+                    predecessor = predecessor.Parent;
             }
 
             Logger.Log(

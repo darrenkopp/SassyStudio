@@ -51,6 +51,10 @@ namespace SassyStudio.Compiler.Parsing
                     Modifier = modifier;
                     Children.Add(modifier);
                 }
+                else
+                {
+                    Children.AddCurrentAndAdvance(stream);
+                }
             }
 
             if (stream.Current.Type == TokenType.Semicolon)

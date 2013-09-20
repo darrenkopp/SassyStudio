@@ -32,6 +32,24 @@ namespace SassyStudio.Editor.Intellisense
                         yield return SassCompletionContextType.VariableDefaultFlag;
                 }
             }
+            else if (IsUnclosedVariable(predecessor))
+            {
+                yield return SassCompletionContextType.VariableDefaultFlag;
+            }
+        }
+
+        static bool IsUnclosedVariable(ParseItem current)
+        {
+            while (current != null)
+            {
+                var definition = current as VariableDefinition;
+                if (definition != null && definition.Semicolon == null)
+                    return true;
+
+                current = current.Parent;
+            }
+
+            return false;
         }
 
         static bool IsDefinitionScope(ParseItem current)
