@@ -75,7 +75,7 @@ namespace SassyStudio.Editor.Intellisense
             // it's likely that multiple value providers will return the same context type
             // so wrap in a set so we only have to process that type once
             return new HashSet<SassCompletionContextType>(
-                IntellisenseManager.ContextProviders.SelectMany(x => x.GetContext(context.Current, context.Predecessor, context.Position))
+                IntellisenseManager.ContextProviders.SelectMany(x => x.GetContext(context))
             );
         }
 
@@ -86,7 +86,7 @@ namespace SassyStudio.Editor.Intellisense
 
             if (position > 0)
             {
-                current = stylesheet.Children.FindItemContainingPosition(position);
+                current = stylesheet.Children.FindItemContainingPosition(position) ?? (stylesheet as Stylesheet);
                 if (current is TokenItem)
                     current = current.Parent;
 

@@ -15,6 +15,8 @@ namespace SassyStudio.Editor.Intellisense
         IEnumerable<CssPseudo> GetPseudos();
 
         IEnumerable<CssPropertyValue> GetPropertyValues(string propertyName);
+
+        bool IsProperty(string propertyName);
     }
 
     class CssSchema : ICssSchema
@@ -49,6 +51,11 @@ namespace SassyStudio.Editor.Intellisense
         public IEnumerable<CssPseudo> GetPseudos()
         {
             return _Pseudos.Values;
+        }
+
+        public bool IsProperty(string propertyName)
+        {
+            return _Properties.ContainsKey(propertyName);
         }
 
         public static ICssSchema Parse(XDocument document, DirectoryInfo directory)

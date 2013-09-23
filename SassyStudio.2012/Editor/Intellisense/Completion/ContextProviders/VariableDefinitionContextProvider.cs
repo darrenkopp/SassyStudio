@@ -11,8 +11,10 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class VariableDefinitionContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)
         {
+            var current = context.Current;
+            var predecessor = context.Predecessor;
             if (IsDefinitionScope(current))
             {
                 yield return SassCompletionContextType.VariableName;

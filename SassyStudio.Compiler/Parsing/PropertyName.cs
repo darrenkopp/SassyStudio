@@ -37,6 +37,17 @@ namespace SassyStudio.Compiler.Parsing
             Fragments.TrimExcess();
         }
 
+        public string GetName(ITextProvider text)
+        {
+            if (Fragments.Count == 0 || !Fragments.All(x => x is TokenItem))
+                return "";
+
+            var start = Fragments[0];
+            var end = Fragments[Fragments.Count - 1];
+
+            return text.GetText(start.Start, end.End - start.Start);
+        }
+
         static bool IsValidNameComponent(TokenType type)
         {
             switch (type)

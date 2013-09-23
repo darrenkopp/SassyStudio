@@ -102,6 +102,9 @@ namespace SassyStudio.Compiler.Parsing
                     var value = stream.Peek(1);
                     switch (value.Type)
                     {
+                        case TokenType.Ampersand:
+                            validPropertyName = false;
+                            break;
                         case TokenType.Identifier:
                         case TokenType.Function:
                             validPropertyName = value.Start > next.End || !IsPseudoSelector(text, value);

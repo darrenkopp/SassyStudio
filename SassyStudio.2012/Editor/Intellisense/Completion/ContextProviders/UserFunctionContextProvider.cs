@@ -11,8 +11,9 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class UserFunctionContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)
         {
+            var current = context.Current;
             if (current is Stylesheet)
             {
                 yield return SassCompletionContextType.FunctionDirective;

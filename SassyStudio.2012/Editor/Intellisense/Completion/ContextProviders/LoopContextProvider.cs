@@ -11,8 +11,10 @@ namespace SassyStudio.Editor.Intellisense
     [Export(typeof(ICompletionContextProvider))]
     class LoopContextProvider : ICompletionContextProvider
     {
-        public IEnumerable<SassCompletionContextType> GetContext(ParseItem current, ParseItem predecessor, int position)
+        public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)
         {
+            var current = context.Current;
+            var position = context.Position;
             if (current is EachLoopDirective)
             {
                 var directive = current as EachLoopDirective;
