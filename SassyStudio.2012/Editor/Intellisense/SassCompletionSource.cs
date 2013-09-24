@@ -95,11 +95,13 @@ namespace SassyStudio.Editor.Intellisense
                     predecessor = predecessor.Parent;
             }
 
+#if DEBUG
             Logger.Log(
-                string.Format("Completion: Current='{0}', Predecessor='{1}'", 
-                (current != null ? current.GetType().Name : ""), 
+                string.Format("Completion: Current='{0}', Predecessor='{1}'",
+                (current != null ? current.GetType().Name : ""),
                 (predecessor != null ? predecessor.GetType().Name : ""))
             );
+#endif
 
             return new CompletionContext
             {
