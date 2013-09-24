@@ -4,7 +4,7 @@ using SassyStudio.Compiler.Parsing;
 
 namespace SassyStudio.Editor.Intellisense
 {
-    [Export(typeof(ICompletionContextProvider))]
+    //[Export(typeof(ICompletionContextProvider))]
     class SelectorContextProvider : ICompletionContextProvider
     {
         readonly ICssSchemaManager SchemaManager;
