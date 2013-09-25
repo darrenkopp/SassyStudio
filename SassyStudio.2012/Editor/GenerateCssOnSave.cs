@@ -13,8 +13,9 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 using NSass;
 using SassyStudio.Options;
+using Yahoo.Yui.Compressor;
 
-namespace SassyStudio.Scss
+namespace SassyStudio.Editor
 {
     [Export(typeof(IWpfTextViewCreationListener))]
     [ContentType(ScssContentTypeDefinition.ScssContentType)]
@@ -62,13 +63,18 @@ namespace SassyStudio.Scss
             if (time < source.LastWriteTime)
                 return;
 
-            var target = new FileInfo(Path.Combine(source.Directory.FullName, Path.GetFileNameWithoutExtension(source.Name) + ".css"));
+            var filename = Path.GetFileNameWithoutExtension(source.Name);
+            var target = new FileInfo(Path.Combine(source.Directory.FullName, filename + ".css"));
+            var minifiedTarget = new FileInfo(Path.Combine(source.Directory.FullName, filename + ".min.css"));
 
             try
             {
                 var output = Compiler.CompileFile(path, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: new[] { source.Directory.FullName });
                 File.WriteAllText(target.FullName, output, UTF8_ENCODING);
-                // TODO: change this to a way that supports web essentials auto minify options
+
+                if (Options.GenerateMinifiedCssOnSave)
+                    Minify(output, minifiedTarget);
+
                 if (Options.IncludeCssInProject)
                     AddFileToProject(source, target, Options);
             }
@@ -78,6 +84,23 @@ namespace SassyStudio.Scss
                     SaveExceptionToFile(ex, target);
 
                 Logger.Log(ex, "Failed to compile css");
+            }
+        }
+
+        private void Minify(string css, FileInfo file)
+        {
+            try
+            {
+                var compressor = new CssCompressor();
+                var minified = compressor.Compress(css);
+
+                File.WriteAllText(file.FullName, minified, UTF8_ENCODING);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to generate minified css file.");
+                if (Options.ReplaceCssWithException)
+                    SaveExceptionToFile(ex, file);
             }
         }
 

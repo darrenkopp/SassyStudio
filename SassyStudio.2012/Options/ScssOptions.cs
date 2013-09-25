@@ -14,6 +14,7 @@ namespace SassyStudio.Options
         {
             // defaults
             GenerateCssOnSave = true;
+            GenerateMinifiedCssOnSave = true;
             IncludeCssInProject = true;
             IncludeCssInProjectOutput = true;
             IncludeSourceComments = false;
@@ -31,6 +32,11 @@ namespace SassyStudio.Options
         [Description("When enabled, a css file with the same name will be generated")]
         [Category("SCSS")]
         public bool GenerateCssOnSave { get; set; }
+
+        [LocDisplayName("Generate minified .css file on save")]
+        [Description("When enabled, a .min.css file with the same name will be generated")]
+        [Category("SCSS")]
+        public bool GenerateMinifiedCssOnSave { get; set; }
 
         [LocDisplayName("Include .css in project")]
         [Description("When .css file is generated it will be added as nested file of .scss file")]
