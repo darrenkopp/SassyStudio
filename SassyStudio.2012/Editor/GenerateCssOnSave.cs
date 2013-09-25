@@ -91,7 +91,7 @@ namespace SassyStudio.Editor
         {
             try
             {
-                var compressor = new CssCompressor();
+                var compressor = new CssCompressor { RemoveComments = true };
                 var minified = compressor.Compress(css);
 
                 File.WriteAllText(file.FullName, minified, UTF8_ENCODING);
