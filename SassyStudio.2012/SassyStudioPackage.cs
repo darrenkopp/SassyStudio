@@ -11,7 +11,7 @@ using SassyStudio.Options;
 namespace SassyStudio
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "0.7.3", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.7.4", IconResourceID = 400)]
     [GuidAttribute(Guids.guidSassyStudioPkgString)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "General", 101, 102, true, new string[] { "CSS", "SCSS" })]
