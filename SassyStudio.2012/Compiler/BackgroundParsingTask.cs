@@ -39,31 +39,39 @@ namespace SassyStudio.Compiler
         {
             while (!ShutdownToken.IsCancellationRequested)
             {
-                BackgroundParseRequest request;
-                if (Requests.TryTake(out request, -1, ShutdownToken))
+                try
                 {
-                    try
+                    BackgroundParseRequest request;
+                    if (Requests.TryTake(out request, -1, ShutdownToken))
                     {
-                        var source = request.Document.Source;
-                        source.Refresh();
-                        if (source.Exists)
+                        try
                         {
-                            ISassStylesheet stylesheet = null;
-                            var textManager = new FileTextManager(source);
-                            using (var scope = textManager.Open())
+                            var source = request.Document.Source;
+                            source.Refresh();
+                            if (source.Exists)
                             {
-                                var parser = ParserFactory.Create();
-                                stylesheet = parser.Parse(new FileParsingRequest(scope.Text, request.Document));
-                            }
+                                ISassStylesheet stylesheet = null;
+                                var textManager = new FileTextManager(source);
+                                using (var scope = textManager.Open())
+                                {
+                                    var parser = ParserFactory.Create();
+                                    stylesheet = parser.Parse(new FileParsingRequest(scope.Text, request.Document));
+                                }
 
-                            if (stylesheet != null)
-                                request.Document.Update(stylesheet);
+                                if (stylesheet != null)
+                                    request.Document.Update(stylesheet);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log(ex, "Failed to process background document parse request.");
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.Log(ex, "Failed to process background document parse request.");
-                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // ignore
+                    return;
                 }
             }
         }
