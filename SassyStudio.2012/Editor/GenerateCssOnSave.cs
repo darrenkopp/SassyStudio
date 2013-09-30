@@ -64,8 +64,9 @@ namespace SassyStudio.Editor
                 return;
 
             var filename = Path.GetFileNameWithoutExtension(source.Name);
-            var target = new FileInfo(Path.Combine(source.Directory.FullName, filename + ".css"));
-            var minifiedTarget = new FileInfo(Path.Combine(source.Directory.FullName, filename + ".min.css"));
+            var directory = DetermineSaveDirectory(source);
+            var target = new FileInfo(Path.Combine(directory.FullName, filename + ".css"));
+            var minifiedTarget = new FileInfo(Path.Combine(directory.FullName, filename + ".min.css"));
 
             try
             {
@@ -75,7 +76,8 @@ namespace SassyStudio.Editor
                 if (Options.GenerateMinifiedCssOnSave)
                     Minify(output, minifiedTarget);
 
-                if (Options.IncludeCssInProject)
+                // only add to project if options allow it and not moving to another directory
+                if (Options.IncludeCssInProject && string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
                     AddFileToProject(source, target, Options);
             }
             catch (Exception ex)
@@ -85,6 +87,46 @@ namespace SassyStudio.Editor
 
                 Logger.Log(ex, "Failed to compile css");
             }
+        }
+
+        private DirectoryInfo DetermineSaveDirectory(FileInfo source)
+        {
+            if (string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
+                return source.Directory;
+
+            var path = new Stack<string>();
+            var current = source.Directory;
+            while (current != null && ContainsSassFiles(current.Parent))
+            {
+                path.Push(current.Name);
+                current = current.Parent;
+            }
+
+            // eh, things aren't working out so well, just go back to default
+            if (current == null || current.Parent == null)
+                return source.Directory;
+
+            // move to sibling directory
+            current = new DirectoryInfo(Path.Combine(current.Parent.FullName, Options.CssGenerationOutputDirectory));
+            while (path.Count > 0)
+                current = new DirectoryInfo(Path.Combine(current.FullName, path.Pop()));
+
+            EnsureDirectory(current);
+            return current;
+        }
+
+        private void EnsureDirectory(DirectoryInfo current)
+        {
+            if (current != null && !current.Exists)
+            {
+                EnsureDirectory(current.Parent);
+                current.Create();
+            }
+        }
+
+        private bool ContainsSassFiles(DirectoryInfo directory)
+        {
+            return directory != null && directory.EnumerateFiles("*.scss").Any();
         }
 
         private void Minify(string css, FileInfo file)
@@ -108,7 +150,7 @@ namespace SassyStudio.Editor
         {
             try
             {
-                File.WriteAllText(target.FullName, 
+                File.WriteAllText(target.FullName,
                     new StringBuilder()
                         .AppendLine("/*")
                         .AppendLine(error.Message)

@@ -33,6 +33,11 @@ namespace SassyStudio.Options
         [Category("SCSS")]
         public bool GenerateCssOnSave { get; set; }
 
+        [LocDisplayName("CSS Generation Output Directory")]
+        [Description("When directory name provided (ie css) then all generated css files will end up in a top-level, sibling directory by that name.")]
+        [Category("SCSS")]
+        public string CssGenerationOutputDirectory { get; set; }
+
         [LocDisplayName("Generate minified .css file on save")]
         [Description("When enabled, a .min.css file with the same name will be generated")]
         [Category("SCSS")]
