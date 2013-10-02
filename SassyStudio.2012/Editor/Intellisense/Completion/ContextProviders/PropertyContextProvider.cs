@@ -16,7 +16,11 @@ namespace SassyStudio.Editor.Intellisense
             var current = context.Current;
             var predecessor = context.Predecessor;
             var position = context.Position;
-            if (current is RuleBlock)
+            if (current is PropertyDeclaration)
+            {
+                yield return SassCompletionContextType.PropertyValue;
+            }
+            else if (current is RuleBlock)
             {
                 yield return SassCompletionContextType.PropertyDeclaration;
             }

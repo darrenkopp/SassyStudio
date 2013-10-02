@@ -49,6 +49,7 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.EndOfFile:
                 case TokenType.Comma:
                 case TokenType.OpenCurlyBrace:
+                case TokenType.CloseCurlyBrace:
                 case TokenType.Semicolon:
                     return true;
                 default:
