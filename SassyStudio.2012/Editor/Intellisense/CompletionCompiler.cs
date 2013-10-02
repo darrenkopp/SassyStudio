@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace SassyStudio.Editor.Intellisense
                 moniker: "SASS",
                 displayName: "SASS",
                 applicableTo: span,
-                completions: new LinkedList<Completion>(Transform(values)),
+                completions: new LinkedList<Completion>(Transform(values)).OrderBy(x => x.DisplayText, StringComparer.OrdinalIgnoreCase),
                 completionBuilders: null
             );
         }
