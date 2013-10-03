@@ -10,14 +10,17 @@ namespace SassyStudio.Compiler.Parsing
     public class ImportFile : ComplexItem
     {
         public ISassDocument Document { get; set; }
-        public TokenItem Filename { get; protected set; }
+        public StringValue Filename { get; protected set; }
         public TokenItem Comma { get; protected set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.String || stream.Current.Type == TokenType.BadString)
             {
-                Filename = Children.AddCurrentAndAdvance(stream, SassClassifierType.String);
+                Filename = itemFactory.CreateSpecificParsed<StringValue>(this, text, stream);
+                if (Filename != null)
+                    Children.Add(Filename);
+
                 if (stream.Current.Type == TokenType.Comma)
                     Comma = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
             }

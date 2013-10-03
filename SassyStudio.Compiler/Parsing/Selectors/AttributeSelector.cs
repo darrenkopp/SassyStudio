@@ -11,7 +11,7 @@ namespace SassyStudio.Compiler.Parsing.Selectors
         public TokenItem OpenBrace { get; protected set; }
         public TokenItem Attribute { get; protected set; }
         public TokenItem Operator { get; protected set; }
-        public TokenItem Value { get; protected set; }
+        public StringValue Value { get; protected set; }
         public TokenItem CloseBrace { get; protected set; }
         protected override bool ParseSelectorToken(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
@@ -25,7 +25,11 @@ namespace SassyStudio.Compiler.Parsing.Selectors
                     Operator = Children.AddCurrentAndAdvance(stream);
 
                 if (stream.Current.Type == TokenType.String || stream.Current.Type == TokenType.BadString)
-                    Value = Children.AddCurrentAndAdvance(stream, SassClassifierType.String);
+                {
+                    Value = itemFactory.CreateSpecificParsed<StringValue>(this, text, stream);
+                    if (Value != null)
+                        Children.Add(Value);
+                }
 
                 if (stream.Current.Type == TokenType.CloseBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.SquareBrace);

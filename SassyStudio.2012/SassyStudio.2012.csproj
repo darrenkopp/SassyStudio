@@ -73,6 +73,7 @@
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\KeyframesContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\PropertyContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\SelectorContextProvider.cs" />
+    <Compile Include="Editor\Intellisense\Completion\ContextProviders\StringValueProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\FunctionContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\ImportContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\KeywordCompletionValue.cs" />

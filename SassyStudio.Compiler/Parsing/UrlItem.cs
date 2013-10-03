@@ -10,7 +10,7 @@ namespace SassyStudio.Compiler.Parsing
     {
         public TokenItem Function { get; set; }
         public TokenItem OpenBrace { get; set; }
-        public TokenItem Url { get; set; }
+        public StringValue Url { get; set; }
         public TokenItem CloseBrace { get; set; }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
@@ -23,7 +23,11 @@ namespace SassyStudio.Compiler.Parsing
                     OpenBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
 
                 if ((stream.Current.Type == TokenType.String || stream.Current.Type == TokenType.BadString))
-                    Url = Children.AddCurrentAndAdvance(stream, SassClassifierType.String);
+                {
+                    Url = itemFactory.CreateSpecificParsed<StringValue>(this, text, stream);
+                    if (Url != null)
+                        Children.Add(Url);
+                }
 
                 if (stream.Current.Type == TokenType.CloseFunctionBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);

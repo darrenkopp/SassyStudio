@@ -41,9 +41,6 @@ namespace SassyStudio.Editor.Intellisense
             var span = FindTokenSpanAtPosition(session); 
             var position = span.GetSpan(session.TextView.TextSnapshot).Start.Position;
             var context = CreateCompletionContext(stylesheet, position, session.TextView.TextSnapshot);
-            if (IsInvalidCompletionContext(context))
-                return;
-
             var types = CalculateApplicableContexts(context);
 
             var values = (
@@ -56,18 +53,6 @@ namespace SassyStudio.Editor.Intellisense
             var set = Compiler.Compile(span, values);
             if (set.Completions.Count > 0)
                 completionSets.Add(set);
-        }
-
-        private bool IsInvalidCompletionContext(ICompletionContext context)
-        {
-            if (context.Current == null || context.Current is Comment)
-                return true;
-
-            var token = context.Current as TokenItem;
-            if (token != null && (token.SourceType == TokenType.String || token.SourceType == TokenType.BadString))
-                return true;
-
-            return false;
         }
 
         private IEnumerable<SassCompletionContextType> CalculateApplicableContexts(ICompletionContext context)

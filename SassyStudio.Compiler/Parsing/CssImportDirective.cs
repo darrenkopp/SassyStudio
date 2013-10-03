@@ -11,14 +11,16 @@ namespace SassyStudio.Compiler.Parsing
         readonly List<MediaQuery> _MediaQueries = new List<MediaQuery>(0);
 
         public UrlItem Url { get; protected set; }
-        public TokenItem Filename { get; protected set; }
+        public StringValue Filename { get; protected set; }
         public IReadOnlyCollection<MediaQuery> MediaQueries { get { return _MediaQueries; } }
 
         protected override void ParseImport(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.String || stream.Current.Type == TokenType.BadString)
             {
-                Filename = Children.AddCurrentAndAdvance(stream, SassClassifierType.String);
+                Filename = itemFactory.CreateSpecificParsed<StringValue>(this, text, stream);
+                if (Filename != null)
+                    Children.Add(Filename);
             }
             else if (UrlItem.IsUrl(text, stream.Current))
             {

@@ -145,6 +145,7 @@
     <Compile Include="Parsing\Stylesheet.cs" />
     <Compile Include="Parsing\TokenStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Parsing\StringValue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SassyStudio.Interfaces\SassyStudio.Interfaces.csproj">

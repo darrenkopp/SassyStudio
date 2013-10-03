@@ -37,6 +37,15 @@ namespace SassyStudio.Compiler.Parsing
             return (T)Create<T>(parent, text, stream);
         }
 
+        public T CreateSpecificParsed<T>(ComplexItem parent, ITextProvider text, ITokenStream stream) where T : ParseItem, new()
+        {
+            var item = CreateSpecific<T>(parent, text, stream);
+            if (!item.Parse(this, text, stream))
+                return null;
+
+            return item;
+        }
+
         public bool TryCreateParsed<T>(ComplexItem parent, ITextProvider text, ITokenStream stream, out ParseItem item) where T : ParseItem
         {
             item = null;
@@ -69,7 +78,7 @@ namespace SassyStudio.Compiler.Parsing
                     break;
                 case TokenType.String:
                 case TokenType.BadString:
-                    item = new TokenItem(SassClassifierType.String);
+                    item = new StringValue();
                     break;
                 case TokenType.OpenCssComment:
                     item = new CssComment();
