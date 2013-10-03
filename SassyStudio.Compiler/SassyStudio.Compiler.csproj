@@ -48,7 +48,6 @@
     <Compile Include="Parsing\DocumentParserFactory.cs" />
     <Compile Include="Parsing\PercentageUnit.cs" />
     <Compile Include="Parsing\Rules\FontFaceDirective.cs" />
-    <Compile Include="Parsing\IVariableScope.cs" />
     <Compile Include="Lexing\DefaultLexerFactory.cs" />
     <Compile Include="Lexing\ILexer.cs" />
     <Compile Include="Lexing\ILexerFactory.cs" />

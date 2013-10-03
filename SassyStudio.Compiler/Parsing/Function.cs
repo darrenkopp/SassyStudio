@@ -33,7 +33,7 @@ namespace SassyStudio.Compiler.Parsing
 
                 ParseArguments(itemFactory, text, stream);
 
-                if (stream.Current.Type == TokenType.CloseFunctionBrace)
+                if (OpenBrace != null && stream.Current.Type == TokenType.CloseFunctionBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
             }
 
