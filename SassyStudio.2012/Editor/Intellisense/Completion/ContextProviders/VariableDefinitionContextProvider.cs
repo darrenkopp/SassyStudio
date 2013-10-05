@@ -14,7 +14,6 @@ namespace SassyStudio.Editor.Intellisense
         public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)
         {
             var current = context.Current;
-            var predecessor = context.Predecessor;
             if (IsDefinitionScope(current))
             {
                 yield return SassCompletionContextType.VariableName;
@@ -34,7 +33,7 @@ namespace SassyStudio.Editor.Intellisense
                         yield return SassCompletionContextType.VariableDefaultFlag;
                 }
             }
-            else if (IsUnclosedVariable(predecessor))
+            else if (IsUnclosedVariable(current))
             {
                 yield return SassCompletionContextType.VariableDefaultFlag;
             }

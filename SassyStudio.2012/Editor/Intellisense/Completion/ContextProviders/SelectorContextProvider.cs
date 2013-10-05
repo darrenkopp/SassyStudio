@@ -26,12 +26,12 @@ namespace SassyStudio.Editor.Intellisense
                 yield return SassCompletionContextType.PseudoElement;
                 yield return SassCompletionContextType.PseudoFunction;
             }
-            else if (FindSelector(context.Predecessor) != null && IsNestedSelector(context.Predecessor))
-            {
-                yield return SassCompletionContextType.PseudoClass;
-                yield return SassCompletionContextType.PseudoElement;
-                yield return SassCompletionContextType.PseudoFunction;
-            }
+            //else if (FindSelector(context.Predecessor) != null && IsNestedSelector(context.Predecessor))
+            //{
+            //    yield return SassCompletionContextType.PseudoClass;
+            //    yield return SassCompletionContextType.PseudoElement;
+            //    yield return SassCompletionContextType.PseudoFunction;
+            //}
         }
 
         private bool IsValidProperty(ICompletionContext context)

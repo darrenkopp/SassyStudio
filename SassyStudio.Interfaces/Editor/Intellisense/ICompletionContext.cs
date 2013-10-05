@@ -12,7 +12,7 @@ namespace SassyStudio.Editor.Intellisense
         IIntellisenseCache Cache { get; }
         ITextProvider DocumentTextProvider { get; }
         ParseItem Current { get; }
-        ParseItem Predecessor { get; }
+        //ParseItem Predecessor { get; }
         int Position { get; }
     }
 }

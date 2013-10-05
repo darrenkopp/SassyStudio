@@ -14,7 +14,6 @@ namespace SassyStudio.Editor.Intellisense
         public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)
         {
             var current = context.Current;
-            var predecessor = context.Predecessor;
             var position = context.Position;
             if (current is PropertyDeclaration)
             {
@@ -26,7 +25,7 @@ namespace SassyStudio.Editor.Intellisense
             }
             else
             {
-                var declaration = FindDeclaration(current) ?? FindDeclaration(predecessor);
+                var declaration = FindDeclaration(current);
                 if (declaration == null)
                     yield break;
 

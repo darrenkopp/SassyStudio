@@ -69,22 +69,38 @@ namespace SassyStudio.Editor.Intellisense
             ParseItem current = stylesheet as Stylesheet;
             ParseItem predecessor = null;
 
-            if (position > 0)
+            if (position >= 0)
             {
-                current = stylesheet.Children.FindItemContainingPosition(Math.Max(0, position - 1)) ?? (stylesheet as Stylesheet);
+                var previousCharacterIndex = FindPreceedingCharacter(position-1, snapshot);
+                if (previousCharacterIndex != position)
+                    current = stylesheet.Children.FindItemContainingPosition(previousCharacterIndex);
+
+                current = current ?? stylesheet.Children.FindItemContainingPosition(position);
                 if (current is TokenItem)
                     current = current.Parent;
 
-                if (!current.IsUnclosed)
+                if (current != null && !IsUnclosed(current) && previousCharacterIndex != position)
+                {
                     current = stylesheet.Children.FindItemContainingPosition(position);
+                    if (current is TokenItem)
+                        current = current.Parent;
+                }
+                //current = stylesheet.Children.FindItemContainingPosition(position) ?? current;
+                //if (current is TokenItem)
+                //    current = current.Parent;
 
-                if (current is TokenItem)
-                    current = current.Parent;
+                //if (!current.IsUnclosed)
+                //    current = stylesheet.Children.FindItemContainingPosition(position);
+
+                //if (current is TokenItem)
+                //    current = current.Parent;
 
                 //predecessor = stylesheet.Children.FindItemPrecedingPosition(position);
                 //if (predecessor is TokenItem)
                 //    predecessor = predecessor.Parent;
             }
+
+            current = current ?? stylesheet as Stylesheet;
 
 #if DEBUG
             Logger.Log(
@@ -97,11 +113,46 @@ namespace SassyStudio.Editor.Intellisense
             return new CompletionContext
             {
                 Current = current,
-                Predecessor = predecessor,
+                //Predecessor = predecessor,
                 Position = position,
                 Cache = Cache,
                 DocumentTextProvider = new SnapshotTextProvider(snapshot)
             };
+        }
+
+        private bool IsUnclosed(ParseItem current)
+        {
+            while (current != null)
+            {
+                if (current.IsUnclosed) return true;
+                if (current is BlockItem) return false;
+
+                current = current.Parent;
+            }
+
+            return false;
+        }
+
+        private int FindPreceedingCharacter(int position, ITextSnapshot snapshot)
+        {
+            var current = position;
+            while (current >= 0)
+            {
+                char c = snapshot[current];
+                switch (c)
+                {
+                    case ' ':
+                    case '\r':
+                    case '\n':
+                    case '\t':
+                        current--;
+                        break;
+                    default:
+                        return current;
+                }
+            }
+
+            return position;
         }
 
         private ITrackingSpan FindTokenSpanAtPosition(ICompletionSession session)
@@ -123,7 +174,7 @@ namespace SassyStudio.Editor.Intellisense
 
             public ParseItem Current { get; internal set; }
 
-            public ParseItem Predecessor { get; internal set; }
+            //public ParseItem Predecessor { get; internal set; }
 
             public int Position { get; internal set; }
 

@@ -21,6 +21,7 @@ namespace SassyStudio.Compiler.Parsing
         public ImportanceModifier Modifier { get; protected set; }
         public TokenItem Semicolon { get; protected set; }
         public ParseItemList Values { get; protected set; }
+        public override bool IsUnclosed { get { return Colon == null || (Colon != null && Semicolon == null); } }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {

@@ -25,9 +25,9 @@ namespace SassyStudio.Editor.Intellisense
             {
                 yield return SassCompletionContextType.IncludeDirective;
             }
-            else if (current is MixinReference)
+            else if (current is MixinReference || (current is AtRule && current.Parent is MixinReference))
             {
-                var reference = current as MixinReference;
+                var reference = (current as MixinReference) ?? (current.Parent as MixinReference);
                 if (reference.Name == null)
                 {
                     yield return SassCompletionContextType.IncludeDirectiveMixinName;
