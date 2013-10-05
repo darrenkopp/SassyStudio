@@ -53,5 +53,41 @@ namespace SassyStudio.Compiler.Parsing
                     return false;
             }
         }
+
+        public static bool IsValidRuleSet(ITokenStream stream)
+        {
+            int position = stream.Position;
+            try
+            {
+                var previous = stream.Current;
+                while (stream.Advance().Type != TokenType.EndOfFile)
+                {
+                    var curent = stream.Current;
+                    // selector body
+                    if (curent.Type == TokenType.OpenCurlyBrace) return true;
+                    // parent terminator
+                    if (curent.Type == TokenType.CloseCurlyBrace) return false;
+                    // property terminator
+                    if (curent.Type == TokenType.Semicolon) return false;
+                    if (curent.Type == TokenType.Colon)
+                    {
+                        var next = stream.Advance();
+                        // if space after colon, then we are in a property
+                        if (curent.End != next.Start) return false;
+                    }
+
+                    // check for space
+                    if (curent.Start != previous.End) return true;
+                    
+                    previous = stream.Current;
+                }
+            }
+            finally
+            {
+                stream.SeekTo(position);
+            }
+
+            return false;
+        }
     }
 }
