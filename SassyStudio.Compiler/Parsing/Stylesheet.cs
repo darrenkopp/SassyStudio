@@ -7,6 +7,8 @@ namespace SassyStudio.Compiler.Parsing
 {
     public class Stylesheet : ComplexItem, ISassStylesheet
     {
+        public override bool IsUnclosed { get { return false; } }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.StartOfFile)

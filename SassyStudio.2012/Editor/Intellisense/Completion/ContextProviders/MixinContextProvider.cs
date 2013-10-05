@@ -37,8 +37,12 @@ namespace SassyStudio.Editor.Intellisense
                     yield return SassCompletionContextType.IncludeDirectiveMixinArgument;
                 }
             }
+            else if (current is MixinName && current.Parent is MixinReference)
+            {
+                yield return SassCompletionContextType.IncludeDirectiveMixinName;
+            }
             else if (current is FunctionArgument && current.Parent is MixinReference)
-            {                   
+            {
                 // if current is named argument, then variable has already been named, so we only care about values
                 var namedArgument = current as NamedFunctionArgument;
                 if (namedArgument == null || namedArgument.Variable == null)

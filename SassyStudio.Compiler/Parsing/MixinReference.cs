@@ -18,7 +18,7 @@ namespace SassyStudio.Compiler.Parsing
         public TokenItem Semicolon { get; protected set; }
         public IReadOnlyCollection<FunctionArgument> Arguments { get { return _Arguments; } }
 
-        public override bool IsUnclosed { get { return Semicolon != null || CloseBrace != null; } }
+        public override bool IsUnclosed { get { return Semicolon == null || (OpenBrace != null && CloseBrace != null); } }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {

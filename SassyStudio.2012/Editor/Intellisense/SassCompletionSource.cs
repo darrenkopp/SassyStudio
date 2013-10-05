@@ -38,7 +38,7 @@ namespace SassyStudio.Editor.Intellisense
             // TODO: signal to cache that we are in an intellisense session and thus we do not want
             // to update the cache until we are done
 
-            var span = FindTokenSpanAtPosition(session); 
+            var span = FindTokenSpanAtPosition(session);
             var position = span.GetSpan(session.TextView.TextSnapshot).Start.Position;
             var context = CreateCompletionContext(stylesheet, position, session.TextView.TextSnapshot);
             var types = CalculateApplicableContexts(context);
@@ -71,13 +71,19 @@ namespace SassyStudio.Editor.Intellisense
 
             if (position > 0)
             {
-                current = stylesheet.Children.FindItemContainingPosition(position) ?? (stylesheet as Stylesheet);
+                current = stylesheet.Children.FindItemContainingPosition(Math.Max(0, position - 1)) ?? (stylesheet as Stylesheet);
                 if (current is TokenItem)
                     current = current.Parent;
 
-                predecessor = stylesheet.Children.FindItemPrecedingPosition(position);
-                if (predecessor is TokenItem)
-                    predecessor = predecessor.Parent;
+                if (!current.IsUnclosed)
+                    current = stylesheet.Children.FindItemContainingPosition(position);
+
+                if (current is TokenItem)
+                    current = current.Parent;
+
+                //predecessor = stylesheet.Children.FindItemPrecedingPosition(position);
+                //if (predecessor is TokenItem)
+                //    predecessor = predecessor.Parent;
             }
 
 #if DEBUG
