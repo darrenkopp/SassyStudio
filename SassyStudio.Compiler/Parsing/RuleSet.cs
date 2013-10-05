@@ -28,11 +28,14 @@ namespace SassyStudio.Compiler.Parsing
                     Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
             }
 
-            var block = itemFactory.CreateSpecific<RuleBlock>(this, text, stream);
-            if (block.Parse(itemFactory, text, stream))
+            if (stream.Current.Type == TokenType.OpenCurlyBrace)
             {
-                Block = block;
-                Children.Add(block);
+                var block = itemFactory.CreateSpecific<RuleBlock>(this, text, stream);
+                if (block.Parse(itemFactory, text, stream))
+                {
+                    Block = block;
+                    Children.Add(block);
+                }
             }
 
             return Children.Count > 0;
@@ -40,7 +43,15 @@ namespace SassyStudio.Compiler.Parsing
 
         private bool IsSelectorTerminator(TokenType type)
         {
-            return type == TokenType.EndOfFile || type == TokenType.OpenCurlyBrace;
+            switch (type)
+            {
+                case TokenType.EndOfFile:
+                case TokenType.OpenCurlyBrace:
+                case TokenType.CloseCurlyBrace:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

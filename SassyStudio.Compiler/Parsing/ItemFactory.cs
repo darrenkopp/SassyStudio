@@ -126,6 +126,10 @@ namespace SassyStudio.Compiler.Parsing
             if (parent is SelectorGroup)
                 return CreateSelectorComponent(parent, text, stream);
 
+            // if we are nested property, then automatically a property declaration
+            if (parent is NestedPropertyBlock)
+                return new PropertyDeclaration();
+
             // handle possible property declaration
             if (IsPropertyContainer(parent) && PropertyDeclaration.IsDeclaration(text, stream))
                 return new PropertyDeclaration();
