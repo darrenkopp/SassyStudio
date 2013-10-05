@@ -126,18 +126,28 @@ namespace SassyStudio.Compiler.Parsing
             if (parent is SelectorGroup)
                 return CreateSelectorComponent(parent, text, stream);
 
-            // if we are nested property, then automatically a property declaration
-            if (parent is NestedPropertyBlock)
-                return new PropertyDeclaration();
-
-            // handle possible property declaration
-            if (IsPropertyContainer(parent) && PropertyDeclaration.IsDeclaration(text, stream))
-                return new PropertyDeclaration();
-
-            if ((parent is Stylesheet || parent is RuleBlock) && IsRuleSet(parent, stream))
+            // although it's slower, we need to attempt to build a build valid selector
+            // and then default to a property if we didn't have a valid selector
+            if ((parent is Stylesheet || parent is RuleBlock) && RuleSet.IsValidRuleSet(stream))
                 return new RuleSet();
 
+            // handle possible property declaration
+            if (IsPropertyContainer(parent) && IsValidPropertyComponent(stream.Current.Type))
+                return new PropertyDeclaration();
+
             return CreateValueItem(parent, text, stream);
+        }
+
+        static bool IsValidPropertyComponent(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.Identifier:
+                case TokenType.OpenInterpolation:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         private ParseItem CreateValueItem(ComplexItem parent, ITextProvider text, ITokenStream stream)

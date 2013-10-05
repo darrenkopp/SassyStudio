@@ -24,7 +24,8 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (IsDeclaration(text, stream))
+            //if (IsDeclaration(text, stream))
+            if (stream.Current.Type == TokenType.Identifier || stream.Current.Type == TokenType.OpenInterpolation)
             {
                 var name = itemFactory.CreateSpecific<PropertyName>(this, text, stream);
                 if (name.Parse(itemFactory, text, stream))
