@@ -19,7 +19,7 @@ namespace SassyStudio.Editor.Intellisense
             {
                 yield return SassCompletionContextType.PropertyValue;
             }
-            else if (current is RuleBlock)
+            else if (current is RuleBlock || current is NestedPropertyBlock)
             {
                 yield return SassCompletionContextType.PropertyDeclaration;
             }
