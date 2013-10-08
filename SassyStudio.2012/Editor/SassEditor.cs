@@ -132,8 +132,8 @@ namespace SassyStudio.Editor
             return new DocumentChangedEventArgs
             {
                 Stylesheet = current,
-                ChangeStart = start,
-                ChangeEnd = end
+                ChangeStart = Math.Min(start, change.Position),
+                ChangeEnd = Math.Max(end, change.Position + change.InsertedLength)
             };
         }
 
