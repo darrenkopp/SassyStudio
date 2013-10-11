@@ -36,6 +36,8 @@ namespace SassyStudio
         SquareBrace,
         PlaceholderName,
         Number,
-        Parentheses
+        Parentheses,
+        XmlDocumentationComment,
+        XmlDocumentationTag
     }
 }

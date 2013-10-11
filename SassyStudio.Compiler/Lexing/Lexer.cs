@@ -26,6 +26,9 @@ namespace SassyStudio.Compiler.Lexing
                 if (ConsumeComment(stream, tokens))
                     continue;
 
+                if (ConsumeNewLine(stream, tokens))
+                    continue;
+
                 if (ConsumeWhitespace(stream))
                     continue;
 
@@ -62,6 +65,9 @@ namespace SassyStudio.Compiler.Lexing
                     break;
 
                 if (ConsumeComment(stream, tokens))
+                    continue;
+
+                if (ConsumeNewLine(stream, tokens))
                     continue;
 
                 if (ConsumeWhitespace(stream))
@@ -250,13 +256,35 @@ namespace SassyStudio.Compiler.Lexing
             return true;
         }
 
+        private bool ConsumeNewLine(ITextStream stream, TokenList tokens)
+        {
+            if (IsNewLine(stream.Current))
+            {
+                int start = stream.Position;
+                while (IsNewLine(stream.Current))
+                    stream.Advance();
+
+                tokens.Add(Token.Create(TokenType.NewLine, start, stream.Position - start));
+                return true;
+            }
+
+            return false;
+        }
+
         private bool ConsumeComment(ITextStream stream, TokenList tokens)
         {
             if (stream.Current == '/')
             {
                 int start = stream.Position;
                 var next = stream.Peek(1);
-                if (next == '/')
+                if (next == '/' && stream.Peek(2) == '/')
+                {
+                    stream.Advance(3);
+                    tokens.Add(Token.Create(TokenType.XmlDocumentationComment, start, 3));
+
+                    return true;
+                }
+                else if (next == '/')
                 {
                     stream.Advance(2);
                     tokens.Add(Token.Create(TokenType.CppComment, start, 2));
@@ -709,9 +737,9 @@ namespace SassyStudio.Compiler.Lexing
             {
                 case ' ':
                 case '\t':
-                case '\f':
-                case '\n':
-                case '\r':
+                //case '\f':
+                //case '\n':
+                //case '\r':
                     while (IsWhitespace(stream.Current))
                         stream.Advance();
 
@@ -729,7 +757,8 @@ namespace SassyStudio.Compiler.Lexing
                 case '\t':
                     return true;
                 default:
-                    return IsNewLine(c);
+                    return false;
+                    //return IsNewLine(c);
             }
         }
 

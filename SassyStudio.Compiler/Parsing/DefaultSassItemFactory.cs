@@ -17,6 +17,7 @@ namespace SassyStudio.Compiler.Parsing
             {
                 { typeof(FunctionArgument), CreateFunctionArgument },
                 { typeof(SimpleSelector), CreateSimpleSelector },
+                { typeof(XmlDocumentationTag), CreateDocumentationTag },
             };
         }
 
@@ -59,6 +60,26 @@ namespace SassyStudio.Compiler.Parsing
                 {
                     case TokenType.Identifier: return new PseudoClassSelector();
                     case TokenType.Function: return new PseudoFunctionSelector();
+                }
+            }
+
+            return null;
+        }
+
+        static ParseItem CreateDocumentationTag(ComplexItem parent, IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
+        {
+            if (!(parent is XmlDocumentationComment))
+                return null;
+
+            if (stream.Current.Type == TokenType.LessThan)
+            {
+                var next = stream.Peek(1);
+                if (next.Type != TokenType.Identifier)
+                    return null;
+
+                switch (text.GetText(next.Start, next.Length))
+                {
+                    case "reference": return new FileReferenceTag();
                 }
             }
 

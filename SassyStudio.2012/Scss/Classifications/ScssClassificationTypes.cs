@@ -25,6 +25,8 @@ namespace SassyStudio.Scss.Classifications
         public const string StringValue = "scss_string";
         public const string ParentReference = "scss_parent_reference";
         public const string CssPropertyName = "scss_css_property_name";
+        public const string XmlDocumentationComment = "scss_xml_documentation_comment";
+        public const string XmlDocumentationTag = "scss_xml_documentation_tag";
     }
 
     static class ScssClassificationTypeDefinitions
@@ -70,5 +72,11 @@ namespace SassyStudio.Scss.Classifications
 
         [Export, Name(ScssClassificationTypes.CssPropertyName), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
         internal static ClassificationTypeDefinition ScssCssPropertyName = null;
+
+        [Export, Name(ScssClassificationTypes.XmlDocumentationComment), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        internal static ClassificationTypeDefinition ScssXmlDocumentationCommentDefinition = null;
+        
+        [Export, Name(ScssClassificationTypes.XmlDocumentationTag), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields")]
+        internal static ClassificationTypeDefinition ScssXmlDocumentationTagDefinition = null;
     }
 }

@@ -47,6 +47,8 @@ namespace SassyStudio.Editor.Classification
                 case SassClassifierType.String: return ScssClassificationTypes.StringValue;
                 case SassClassifierType.PropertyName: return ScssClassificationTypes.CssPropertyName;
                 case SassClassifierType.FunctionBrace: return "text";
+                case SassClassifierType.XmlDocumentationComment: return ScssClassificationTypes.XmlDocumentationComment;
+                case SassClassifierType.XmlDocumentationTag: return ScssClassificationTypes.XmlDocumentationTag;
                 default: return "Default";
             }
         }

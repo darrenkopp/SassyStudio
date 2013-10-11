@@ -76,6 +76,9 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.StartOfFile:
                     item = Create<Stylesheet>(parent, text, stream);
                     break;
+                case TokenType.NewLine:
+                    item = new TokenItem();
+                    break;
                 case TokenType.String:
                 case TokenType.BadString:
                     item = new StringValue();
@@ -100,6 +103,9 @@ namespace SassyStudio.Compiler.Parsing
                     break;
                 case TokenType.Function:
                     item = CreateFunction(parent, text, stream);
+                    break;
+                case TokenType.XmlDocumentationComment:
+                    item = new XmlDocumentationComment();
                     break;
                 case TokenType.Asterisk:
                 case TokenType.GreaterThan:

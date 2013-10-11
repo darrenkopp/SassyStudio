@@ -72,6 +72,8 @@ namespace SassyStudio.Editor.Intellisense
         VariableDefaultFlag,
 
         WhileLoopDirective,
-        WhileLoopCondition
+        WhileLoopCondition,
+
+        XmlDocumentationComment,
     }
 }

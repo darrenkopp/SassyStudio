@@ -143,6 +143,10 @@
     <Compile Include="Parsing\WhileLoopDirective.cs" />
     <Compile Include="Parsing\Stylesheet.cs" />
     <Compile Include="Parsing\TokenStream.cs" />
+    <Compile Include="Parsing\XmlAttribute.cs" />
+    <Compile Include="Parsing\XmlDocumentationComment.cs" />
+    <Compile Include="Parsing\XmlDocumentationTag.cs" />
+    <Compile Include="Parsing\XmlDoc\FileReferenceTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parsing\StringValue.cs" />
   </ItemGroup>
@@ -152,6 +156,7 @@
       <Name>SassyStudio.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

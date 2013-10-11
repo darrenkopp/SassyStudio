@@ -63,6 +63,8 @@ namespace SassyStudio
         DoubleColon,
         PrefixMatch,
         Caret,
-        PercentSign
+        PercentSign,
+        XmlDocumentationComment,
+        NewLine
     }
 }

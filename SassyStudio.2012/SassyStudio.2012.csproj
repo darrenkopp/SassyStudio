@@ -74,6 +74,7 @@
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\PropertyContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\SelectorContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\StringValueProvider.cs" />
+    <Compile Include="Editor\Intellisense\Completion\ContextProviders\XmlDocumentationContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\FunctionContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\ImportContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\KeywordCompletionValue.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\MixinsProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\PropertiesProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\PseudoValueProviders.cs" />
+    <Compile Include="Editor\Intellisense\Completion\ValueProviders\XmlDocumentationValueProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\VariableCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\ICompletionValueContainer.cs" />
     <Compile Include="Editor\Intellisense\IIntellisenseContainer.cs" />
@@ -137,6 +139,8 @@
     <Compile Include="Sass\LegacyClassifier.cs" />
     <Compile Include="Sass\LegacyClassifierProvider.cs" />
     <Compile Include="Editor\GenerateCssOnSave.cs" />
+    <Compile Include="Scss\Classifications\FormatDefinitions\ScssXmlDocumentationComment.cs" />
+    <Compile Include="Scss\Classifications\FormatDefinitions\ScssXmlDocumentationTag.cs" />
     <Compile Include="Scss\ScssContentTypeDefinition.cs" />
     <Compile Include="Scss\Classifications\ScssClassificationTypes.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssComment.cs" />
