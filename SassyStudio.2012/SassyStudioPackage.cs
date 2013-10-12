@@ -11,10 +11,10 @@ using SassyStudio.Options;
 namespace SassyStudio
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "0.7.5", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.7.6", IconResourceID = 400)]
     [GuidAttribute(Guids.guidSassyStudioPkgString)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
-    [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "General", 101, 102, true, new string[] { "CSS", "SCSS" })]
+    [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "General", 101, 102, true, new[] { "CSS", "SCSS" })]
     public sealed class SassyStudioPackage : Package
     {
         readonly CancellationTokenSource CancellationTokens = new CancellationTokenSource();
