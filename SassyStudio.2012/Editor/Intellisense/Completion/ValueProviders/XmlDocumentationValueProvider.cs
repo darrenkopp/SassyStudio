@@ -12,7 +12,11 @@ namespace SassyStudio.Editor.Intellisense
     {
         public IEnumerable<SassCompletionContextType> SupportedContexts
         {
-            get { yield return SassCompletionContextType.XmlDocumentationComment; }
+            get
+            {
+                yield return SassCompletionContextType.XmlDocumentationComment;
+                yield return SassCompletionContextType.FileReferenceFileAttribute;
+            }
         }
 
         public IEnumerable<ICompletionValue> GetCompletions(SassCompletionContextType type, ICompletionContext context)
@@ -21,6 +25,9 @@ namespace SassyStudio.Editor.Intellisense
             {
                 case SassCompletionContextType.XmlDocumentationComment:
                     yield return new KeywordCompletionValue("reference");
+                    break;
+                case SassCompletionContextType.FileReferenceFileAttribute:
+                    yield return new KeywordCompletionValue("file") { CompletionText = "file=\"" };
                     break;
             }
         }

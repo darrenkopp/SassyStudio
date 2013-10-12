@@ -33,26 +33,7 @@ namespace SassyStudio.Compiler.Parsing
             if (Filename == null || Filename.Length == 0)
                 return null;
 
-            var relativePath = text.GetText(Filename.Start, Filename.Length).Trim('\'', '"');
-            var segments = relativePath.Split('/');
-            if (segments.Length == 0)
-                return null;
-
-            var path = currentDirectory.FullName;
-            for (int i = 0; i < (segments.Length - 1); i++)
-                path = Path.Combine(path, segments[i]);
-
-            var directory = new DirectoryInfo(Path.GetFullPath(path));
-            var filename = segments[segments.Length - 1];
-            if (string.IsNullOrEmpty(Path.GetExtension(filename)))
-                filename += ".scss";
-
-            var files = directory.GetFiles("*" + filename);
-            
-            var comparer = StringComparer.OrdinalIgnoreCase;
-            return files.Where(x => comparer.Equals(x.Name, filename) || comparer.Equals(x.Name, "_" + filename))
-                .Select(x => x.FullName)
-                .FirstOrDefault();
+            return ImportResolver.ResolvePath(Filename, text, currentDirectory);
         }
     }
 }

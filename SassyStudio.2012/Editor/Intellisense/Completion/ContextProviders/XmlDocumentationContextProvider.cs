@@ -13,7 +13,13 @@ namespace SassyStudio.Editor.Intellisense
     {
         public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)
         {
-            if (context.Current is XmlDocumentationTag)
+            if (context.Current is FileReferenceTag)
+            {
+                var tag = context.Current as FileReferenceTag;
+                if (tag.Filename == null)
+                    yield return SassCompletionContextType.FileReferenceFileAttribute;
+            }
+            else if (context.Current is XmlDocumentationTag)
             {
                 yield return SassCompletionContextType.XmlDocumentationComment;
             }

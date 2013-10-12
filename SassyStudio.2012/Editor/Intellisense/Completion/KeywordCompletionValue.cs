@@ -18,7 +18,7 @@ namespace SassyStudio.Editor.Intellisense
 
         public string DisplayText { get; private set; }
 
-        public string CompletionText { get; private set; }
+        public string CompletionText { get; set; }
 
         public string Description { get; private set; }
     }

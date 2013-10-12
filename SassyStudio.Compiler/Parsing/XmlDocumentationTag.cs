@@ -12,6 +12,8 @@ namespace SassyStudio.Compiler.Parsing
         public TokenItem CloseSlash { get; protected set; }
         public TokenItem CloseTag { get; protected set; }
 
+        public override bool IsUnclosed { get { return CloseTag == null; } }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (stream.Current.Type == TokenType.LessThan)
@@ -29,6 +31,7 @@ namespace SassyStudio.Compiler.Parsing
 
                         Children.Add(attribute);
                         _Attributes.Add(attribute);
+                        OnAttributeParsed(attribute, text);
                     }
                 }
 
@@ -39,8 +42,11 @@ namespace SassyStudio.Compiler.Parsing
                     CloseTag = Children.AddCurrentAndAdvance(stream, SassClassifierType.XmlDocumentationTag);
             }
 
-            OutputLogger.Log("Woot, parsed a doc tag");
             return Children.Count > 0;
+        }
+
+        protected virtual void OnAttributeParsed(XmlAttribute attribute, ITextProvider text)
+        {
         }
 
         public override void Freeze()

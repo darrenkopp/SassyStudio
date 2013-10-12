@@ -10,11 +10,11 @@ namespace SassyStudio.Editor.Intellisense
     class ImportContainer : IIntellisenseContainer
     {
         readonly IIntellisenseCache Cache;
-        public ImportContainer(SassImportDirective directive, IIntellisenseCache cache)
+        public ImportContainer(ParseItem source, IIntellisenseCache cache)
         {
             Cache = cache;
-            Start = directive.Start;
-            End = directive.End;
+            Start = source.Start;
+            End = source.End;
         }
 
         public int Start { get; private set; }

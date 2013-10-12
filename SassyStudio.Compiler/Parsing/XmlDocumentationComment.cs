@@ -35,14 +35,14 @@ namespace SassyStudio.Compiler.Parsing
                 }
                 else
                 {
-                    while (IsCommentTerminator(stream.Current.Type))
+                    while (!IsCommentTerminator(stream.Current.Type))
                     {
                         Children.AddCurrentAndAdvance(stream, SassClassifierType.XmlDocumentationComment);
                     }
                 }
 
-                if (stream.Current.Type == TokenType.NewLine)
-                    NewLine = Children.AddCurrentAndAdvance(stream);
+                //if (stream.Current.Type == TokenType.NewLine)
+                //    NewLine = Children.AddCurrentAndAdvance(stream);
             }
 
             return Children.Count > 0;

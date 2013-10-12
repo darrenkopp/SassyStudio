@@ -75,5 +75,6 @@ namespace SassyStudio.Editor.Intellisense
         WhileLoopCondition,
 
         XmlDocumentationComment,
+        FileReferenceFileAttribute
     }
 }

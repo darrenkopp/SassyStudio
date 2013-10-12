@@ -32,6 +32,9 @@ namespace SassyStudio.Compiler.Parsing
                 foreach (var import in stylesheet.Children.OfType<SassImportDirective>())
                     import.ResolveImports(request.Text, request.Document, DocumentManager);
 
+                foreach (var reference in ResolveReferences(stylesheet))
+                    reference.ResolveImports(request.Text, request.Document, DocumentManager);
+
                 return stylesheet;
             }
 
@@ -48,6 +51,13 @@ namespace SassyStudio.Compiler.Parsing
         protected virtual ITokenStream CreateTokenStream(TokenList tokens, IParsingExecutionContext context)
         {
             return new TokenStream(tokens, context);
+        }
+
+        IEnumerable<FileReferenceTag> ResolveReferences(Stylesheet stylesheet)
+        {
+            return stylesheet
+                .Children.OfType<XmlDocumentationComment>()
+                .SelectMany(x => x.Children.OfType<FileReferenceTag>());
         }
 
         class ParsingRequestLexingContext : ILexingContext

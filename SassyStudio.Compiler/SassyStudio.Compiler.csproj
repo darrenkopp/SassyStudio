@@ -37,6 +37,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImportResolver.cs" />
     <Compile Include="Parsing\CssImportDirective.cs" />
     <Compile Include="IParsingCancellationToken.cs" />
     <Compile Include="IParsingContext.cs" />

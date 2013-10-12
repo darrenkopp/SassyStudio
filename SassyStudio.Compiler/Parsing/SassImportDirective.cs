@@ -66,22 +66,5 @@ namespace SassyStudio.Compiler.Parsing
                 }
             }
         }
-
-        private FileInfo CheckAllPossiblePaths(string path)
-        {
-            if (!path.EndsWith(".scss"))
-                path += ".scss";
-
-            var file = new FileInfo(path);
-            if (file.Exists)
-                return file;
-
-            // check for include only file
-            file = new FileInfo(Path.Combine(file.Directory.FullName, "_" + Path.GetFileName(file.FullName)));
-            if (file.Exists)
-                return file;
-
-            return new FileInfo(path);
-        }
     }
 }

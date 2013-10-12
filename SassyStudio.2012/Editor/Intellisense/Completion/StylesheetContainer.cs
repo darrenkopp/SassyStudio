@@ -23,6 +23,12 @@ namespace SassyStudio.Editor.Intellisense
                 foreach (var file in directive.Files.Where(x => x.IsValid))
                     Containers.Add(new ImportContainer(directive, IntellisenseManager.Get(file.Document)));
             }
+            else if (item is XmlDocumentationComment)
+            {
+                var comment = item as XmlDocumentationComment;
+                foreach (var tag in comment.Children.OfType<FileReferenceTag>().Where(x => x.Document != null))
+                    Containers.Add(new ImportContainer(tag, IntellisenseManager.Get(tag.Document)));
+            }
             else if (item is MixinDefinition)
             {
                 var definition = item as MixinDefinition;
