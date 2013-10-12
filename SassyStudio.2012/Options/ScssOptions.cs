@@ -62,5 +62,10 @@ namespace SassyStudio.Options
         [Description("When enabled, statement completion will be enabled for variables, functions, mixins and keywords.")]
         [Category("Intellisense")]
         public bool EnableExperimentalIntellisense { get; set; }
+
+        [LocDisplayName("Include Paths")]
+        [Description("A semicolon separated list of directories to include in consideration when generating .css file. This is to support SCSS frameworks like Compass.")]
+        [Category("SCSS")]
+        public string CompilationIncludePaths { get; set; }
     }
 }

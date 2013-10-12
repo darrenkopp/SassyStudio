@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -68,9 +67,13 @@ namespace SassyStudio.Editor
             var target = new FileInfo(Path.Combine(directory.FullName, filename + ".css"));
             var minifiedTarget = new FileInfo(Path.Combine(directory.FullName, filename + ".min.css"));
 
+            IEnumerable<string> includePaths = new[] { source.Directory.FullName };
+            if (!string.IsNullOrWhiteSpace(Options.CompilationIncludePaths) && Directory.Exists(Options.CompilationIncludePaths))
+                includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] {';' }, StringSplitOptions.RemoveEmptyEntries));
+
             try
             {
-                var output = Compiler.CompileFile(path, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: new[] { source.Directory.FullName });
+                var output = Compiler.CompileFile(path, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: includePaths);
                 File.WriteAllText(target.FullName, output, UTF8_ENCODING);
 
                 if (Options.GenerateMinifiedCssOnSave)
