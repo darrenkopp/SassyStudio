@@ -17,6 +17,12 @@ namespace SassyStudio.Compiler.Parsing
         {
             while (!IsTerminator(stream.Current.Type))
             {
+                if (stream.Current.Type == TokenType.NewLine)
+                {
+                    Children.AddCurrentAndAdvance(stream);
+                    continue;
+                }
+
                 var file = itemFactory.CreateSpecific<ImportFile>(this, text, stream) ?? new ImportFile();
                 if (!file.Parse(itemFactory, text, stream))
                     break;

@@ -21,6 +21,9 @@ namespace SassyStudio.Compiler.Parsing
                 if (Filename != null)
                     Children.Add(Filename);
 
+                if (stream.Current.Type == TokenType.NewLine)
+                    Children.AddCurrentAndAdvance(stream);
+
                 if (stream.Current.Type == TokenType.Comma)
                     Comma = Children.AddCurrentAndAdvance(stream, SassClassifierType.Punctuation);
             }
