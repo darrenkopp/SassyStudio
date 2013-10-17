@@ -105,6 +105,7 @@
     <Compile Include="Editor\Intellisense\IntellisenseManager.cs" />
     <Compile Include="Editor\Intellisense\SassCompletionSource.cs" />
     <Compile Include="Editor\Outlining\ScssOutliningTagger.cs" />
+    <Compile Include="Editor\RootLevelDocumentCache.cs" />
     <Compile Include="Editor\SassEditor.cs">
       <SubType>Code</SubType>
     </Compile>

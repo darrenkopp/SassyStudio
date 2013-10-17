@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 using NSass;
+using SassyStudio.Compiler.Parsing;
 using SassyStudio.Options;
 using Yahoo.Yui.Compressor;
 
@@ -28,6 +29,14 @@ namespace SassyStudio.Editor
 
         private ScssOptions Options { get { return _Options.Value; } }
         private ISassCompiler Compiler { get { return _Compiler.Value; } }
+
+        readonly IRootLevelDocumentCache DocumentCache;
+
+        [ImportingConstructor]
+        public GenerateCssOnSave(IRootLevelDocumentCache documentCache)
+        {
+            DocumentCache = documentCache;
+        }
 
         public void TextViewCreated(IWpfTextView textView)
         {
@@ -48,11 +57,46 @@ namespace SassyStudio.Editor
                 var filename = Path.GetFileName(e.FilePath);
 
                 // ignore anything that isn't .scss and not a root document
-                if (filename.StartsWith("_") || !filename.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
+                if (!filename.EndsWith(".scss", StringComparison.OrdinalIgnoreCase))
                     return;
 
-                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateCss(e.Time, e.FilePath)), DispatcherPriority.Background);
+                if (filename.StartsWith("_"))
+                {
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateAllReferencing(e.Time, e.FilePath)), DispatcherPriority.Background);
+                }
+                else
+                {
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateCss(e.Time, e.FilePath)), DispatcherPriority.Background);
+                }
             }
+        }
+
+        private void GenerateAllReferencing(DateTime time, string path)
+        {
+            var source = new FileInfo(path);
+            var documents = DocumentCache.Documents;
+
+            var visited = new HashSet<ISassDocument>();
+            foreach (var document in documents)
+            {
+                if (IsReferenced(source, document, visited))
+                    GenerateCss(time, document.Source.FullName);
+            }
+        }
+
+        private bool IsReferenced(FileInfo source, ISassDocument document, HashSet<ISassDocument> visited)
+        {
+            var comparer = StringComparer.CurrentCultureIgnoreCase;
+            foreach (var import in document.Stylesheet.Children.OfType<SassImportDirective>().SelectMany(x => x.Files).Where(x => x.Document != null))
+            {
+                if (!visited.Add(import.Document)) 
+                    continue;
+
+                if (comparer.Equals(import.Document.Source.FullName, source.FullName) || IsReferenced(source, import.Document, visited))
+                    return true;
+            }
+
+            return false;
         }
 
         private void GenerateCss(DateTime time, string path)
