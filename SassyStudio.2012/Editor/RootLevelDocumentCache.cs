@@ -45,7 +45,7 @@ namespace SassyStudio.Editor
         private void OnObservedDocumentAdded(object sender, DocumentAddedEventArgs e)
         {
             if (IsRootLevelDocument(e.Document.Source))
-                _Documents.AddOrUpdate(e.Document.Source, f => DocumentManager.Get(f), (f, d) => d);
+                _Documents.AddOrUpdate(e.Document.Source, f => e.Document, (f, d) => d);
         }
 
         public IEnumerable<FileInfo> Flatten()
