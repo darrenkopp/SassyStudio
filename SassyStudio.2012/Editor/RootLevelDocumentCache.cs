@@ -19,26 +19,33 @@ namespace SassyStudio.Editor
     [Export(typeof(IRootLevelDocumentCache))]
     class RootLevelDocumentCache : IRootLevelDocumentCache
     {
-        readonly ConcurrentBag<ISassDocument> _Documents = new ConcurrentBag<ISassDocument>();
+        readonly ConcurrentDictionary<FileInfo,ISassDocument> _Documents = new ConcurrentDictionary<FileInfo,ISassDocument>();
         readonly IDocumentManager DocumentManager;
 
         [ImportingConstructor]
         public RootLevelDocumentCache(IDocumentManager documentManager)
         {
             DocumentManager = documentManager;
+            DocumentManager.DocumentAdded += OnObservedDocumentAdded;
 
             Initialize();
         }
 
-        public IReadOnlyCollection<ISassDocument> Documents { get { return new List<ISassDocument>(_Documents); } } 
+        public IReadOnlyCollection<ISassDocument> Documents { get { return new List<ISassDocument>(_Documents.Values); } } 
 
         public void Initialize()
         {
             Task.Run(() =>
             {
                 foreach (var file in Flatten().Where(IsRootLevelDocument))
-                    _Documents.Add(DocumentManager.Get(file));
+                    _Documents.AddOrUpdate(file, f => DocumentManager.Get(f), (f,d) => d);
             });
+        }
+
+        private void OnObservedDocumentAdded(object sender, DocumentAddedEventArgs e)
+        {
+            if (IsRootLevelDocument(e.Document.Source))
+                _Documents.AddOrUpdate(e.Document.Source, f => DocumentManager.Get(f), (f, d) => d);
         }
 
         public IEnumerable<FileInfo> Flatten()
