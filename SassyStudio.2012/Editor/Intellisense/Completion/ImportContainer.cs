@@ -32,17 +32,25 @@ namespace SassyStudio.Editor.Intellisense
 
         public IEnumerable<ICompletionValue> GetVariables(int position)
         {
-            return Cache.GetVariables();
+            return SafeCache(c => c.GetVariables());
         }
 
         public IEnumerable<ICompletionValue> GetFunctions(int position)
         {
-            return Cache.GetFunctions();
+            return SafeCache(c => c.GetFunctions());
         }
 
         public IEnumerable<ICompletionValue> GetMixins(int position)
         {
-            return Cache.GetMixins();
+            return SafeCache(c => c.GetMixins());
+        }
+
+        private IEnumerable<ICompletionValue> SafeCache(Func<IIntellisenseCache, IEnumerable<ICompletionValue>> callback)
+        {
+            if (Cache == null)
+                return Enumerable.Empty<ICompletionValue>();
+
+            return callback(Cache);
         }
     }
 }

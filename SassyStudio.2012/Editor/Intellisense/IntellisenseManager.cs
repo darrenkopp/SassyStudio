@@ -28,6 +28,9 @@ namespace SassyStudio.Editor.Intellisense
 
         public IIntellisenseCache Get(ISassDocument document)
         {
+            if (document == null) 
+                return null;
+
             return Caches.GetOrAdd(document, key => CreateCache(key));
         }
 

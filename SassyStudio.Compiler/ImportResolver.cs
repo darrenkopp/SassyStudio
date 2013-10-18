@@ -22,6 +22,9 @@ namespace SassyStudio.Compiler
                 path = Path.Combine(path, segments[i]);
 
             var directory = new DirectoryInfo(Path.GetFullPath(path));
+            if (!directory.Exists)
+                return null;
+
             var filename = segments[segments.Length - 1];
             if (string.IsNullOrEmpty(Path.GetExtension(filename)))
                 filename += ".scss";
