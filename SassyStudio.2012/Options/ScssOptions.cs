@@ -72,5 +72,10 @@ namespace SassyStudio.Options
         [Description("The directory that ruby is installed in")]
         [Category("Compass")]
         public string RubyInstallPath { get; set; }
+
+        [LocDisplayName("Debug Logging")]
+        [Description("When enabled, more information will be logged")]
+        [Category("Diagnostics")]
+        public bool IsDebugLoggingEnabled { get; set; }
     }
 }

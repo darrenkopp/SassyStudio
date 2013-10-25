@@ -42,13 +42,23 @@ namespace SassyStudio.Editor
         {
             ITextDocument document;
             if (textView.TextDataModel.DocumentBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document))
+            {
                 document.FileActionOccurred += OnFileActionOccurred;
+            }
+            else
+            {
+                if (Options.IsDebugLoggingEnabled)
+                    Logger.Log("Eh? Couldn't find text document. Can't handle saving documents now.");
+            }
         }
 
         private void OnFileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
+                if (Options.IsDebugLoggingEnabled)
+                    Logger.Log("Detected file saved: " + e.FilePath);
+
                 if (!Options.GenerateCssOnSave) return;
 
                 var filename = Path.GetFileName(e.FilePath);
@@ -59,10 +69,16 @@ namespace SassyStudio.Editor
 
                 if (filename.StartsWith("_"))
                 {
+                    if (Options.IsDebugLoggingEnabled)
+                        Logger.Log("Compiling all files referencing include file: " + filename);
+
                     Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateAllReferencing(e.Time, e.FilePath)), DispatcherPriority.Background);
                 }
                 else
                 {
+                    if (Options.IsDebugLoggingEnabled)
+                        Logger.Log("Compiling: " + filename);
+
                     Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateCss(e.Time, e.FilePath)), DispatcherPriority.Background);
                 }
             }
@@ -101,10 +117,18 @@ namespace SassyStudio.Editor
 
         private void GenerateCss(DateTime time, string path)
         {
+            if (Options.IsDebugLoggingEnabled)
+                Logger.Log("Beginning compile: " + path);
+
             var source = new FileInfo(path);
             // file is stale, likely another request coming in
             if (time < source.LastWriteTime)
+            {
+                if (Options.IsDebugLoggingEnabled)
+                    Logger.Log("Ignoring compile due to stale document.");
+
                 return;
+            }
 
             var filename = Path.GetFileNameWithoutExtension(source.Name);
             var document = new FileInfo(path);
@@ -131,34 +155,8 @@ namespace SassyStudio.Editor
                 Logger.Log(ex, "Failed to compile css.");
             }
 
-            //var filename = Path.GetFileNameWithoutExtension(source.Name);
-            //var directory = DetermineSaveDirectory(source);
-            //var target = new FileInfo(Path.Combine(directory.FullName, filename + ".css"));
-            //var minifiedTarget = new FileInfo(Path.Combine(directory.FullName, filename + ".min.css"));
-
-            //IEnumerable<string> includePaths = new[] { source.Directory.FullName };
-            //if (!string.IsNullOrWhiteSpace(Options.CompilationIncludePaths) && Directory.Exists(Options.CompilationIncludePaths))
-            //    includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] {';' }, StringSplitOptions.RemoveEmptyEntries));
-
-            //try
-            //{
-            //    var output = Compiler.CompileFile(path, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: includePaths);
-            //    File.WriteAllText(target.FullName, output, UTF8_ENCODING);
-
-            //    if (Options.GenerateMinifiedCssOnSave)
-            //        Minify(output, minifiedTarget);
-
-            //    // only add to project if options allow it and not moving to another directory
-            //    if (Options.IncludeCssInProject && string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
-            //        AddFileToProject(source, target, Options);
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (Options.ReplaceCssWithException)
-            //        SaveExceptionToFile(ex, target);
-
-            //    Logger.Log(ex, "Failed to compile css");
-            //}
+            if (Options.IsDebugLoggingEnabled)
+                Logger.Log("Compile complete.");
         }
 
         private IDocumentCompiler PickCompiler(FileInfo document)

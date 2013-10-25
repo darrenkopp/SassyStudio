@@ -11,7 +11,7 @@ using SassyStudio.Options;
 namespace SassyStudio
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "0.7.8", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.7.9", IconResourceID = 400)]
     [GuidAttribute(Guids.guidSassyStudioPkgString)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "General", 101, 102, true, new[] { "CSS", "SCSS" })]
@@ -38,6 +38,24 @@ namespace SassyStudio
             Composition = InitializeComposition();
             OutputLogger.MessageReceived += (s, e) => Logger.Log(e.Message);
             OutputLogger.ExceptionReceived += (s, e) => Logger.Log(e.Error, e.Message);
+
+            if (Options.Scss.IsDebugLoggingEnabled)
+                System.Threading.Tasks.Task.Run(() => LogInitialization(Options));
+        }
+
+        static void LogInitialization(OptionsProvider options)
+        {
+            Logger.Log("Sassy studio initializing.", true);
+            Logger.Log("ComplationIncludePaths = " + options.Scss.CompilationIncludePaths);
+            Logger.Log("CssGenerationOutputDirectory = " + options.Scss.CssGenerationOutputDirectory);
+            Logger.Log("EnableExperimentalIntellisense = " + options.Scss.EnableExperimentalIntellisense);
+            Logger.Log("GenerateCssOnSave = " + options.Scss.GenerateCssOnSave);
+            Logger.Log("GenerateMinifiedCssOnSave = " + options.Scss.GenerateMinifiedCssOnSave);
+            Logger.Log("IncludeCssInProject = " + options.Scss.IncludeCssInProject);
+            Logger.Log("IncludeCssInProjectOutput = " + options.Scss.IncludeCssInProjectOutput);
+            Logger.Log("IncludeSourceComments = " + options.Scss.IncludeSourceComments);
+            Logger.Log("ReplaceCssWithException = " + options.Scss.ReplaceCssWithException);
+            Logger.Log("RubyInstallPath = " + options.Scss.RubyInstallPath);
         }
 
         protected override void Dispose(bool disposing)
@@ -71,13 +89,21 @@ namespace SassyStudio
 
         private CompositionContainer InitializeComposition()
         {
-            var catalog = new AggregateCatalog(
-                new AssemblyCatalog(typeof(SassyStudioPackage).Assembly),
-                new AssemblyCatalog(typeof(TokenType).Assembly),
-                new AssemblyCatalog(typeof(ISassDocument).Assembly)
-            );
+            try
+            {
+                var catalog = new AggregateCatalog(
+                    new AssemblyCatalog(typeof(SassyStudioPackage).Assembly),
+                    new AssemblyCatalog(typeof(TokenType).Assembly),
+                    new AssemblyCatalog(typeof(ISassDocument).Assembly)
+                );
 
-            return new CompositionContainer(catalog);
+                return new CompositionContainer(catalog);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to initialize composition container");
+                throw;
+            }
         }
 
         internal class OptionsProvider
