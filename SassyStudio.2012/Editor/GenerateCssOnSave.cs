@@ -86,10 +86,13 @@ namespace SassyStudio.Editor
             var comparer = StringComparer.CurrentCultureIgnoreCase;
             foreach (var import in document.Stylesheet.Children.OfType<SassImportDirective>().SelectMany(x => x.Files).Where(x => x.Document != null))
             {
+                if (comparer.Equals(import.Document.Source.FullName, source.FullName))
+                    return true;
+
                 if (!visited.Add(import.Document))
                     continue;
 
-                if (comparer.Equals(import.Document.Source.FullName, source.FullName) || IsReferenced(source, import.Document, visited))
+                if (IsReferenced(source, import.Document, visited))
                     return true;
             }
 
