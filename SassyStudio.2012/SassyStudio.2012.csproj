@@ -122,6 +122,10 @@
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\FunctionsProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\KeywordsProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\VariablesProvider.cs" />
+    <Compile Include="Integration\Compass\CompassDocumentCompiler.cs" />
+    <Compile Include="Integration\Compass\CompassSupport.cs" />
+    <Compile Include="Compiler\IDocumentCompiler.cs" />
+    <Compile Include="Integration\LibSass\NSassDocumentCompiler.cs" />
     <Compile Include="InteropHelper.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Options\ScssOptions.cs">

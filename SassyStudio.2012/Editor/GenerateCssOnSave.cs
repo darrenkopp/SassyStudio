@@ -11,7 +11,10 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
 using NSass;
+using SassyStudio.Compiler;
 using SassyStudio.Compiler.Parsing;
+using SassyStudio.Integration.Compass;
+using SassyStudio.Integration.LibSass;
 using SassyStudio.Options;
 using Yahoo.Yui.Compressor;
 
@@ -22,13 +25,10 @@ namespace SassyStudio.Editor
     [TextViewRole(PredefinedTextViewRoles.Document)]
     class GenerateCssOnSave : IWpfTextViewCreationListener
     {
-        static int IsResolverInitialized = 0;
         static readonly Encoding UTF8_ENCODING = new UTF8Encoding(true);
-        readonly Lazy<ISassCompiler> _Compiler = new Lazy<ISassCompiler>(() => new SassCompiler());
         readonly Lazy<ScssOptions> _Options = new Lazy<ScssOptions>(() => SassyStudioPackage.Instance.Options.Scss, true);
 
         private ScssOptions Options { get { return _Options.Value; } }
-        private ISassCompiler Compiler { get { return _Compiler.Value; } }
 
         readonly IRootLevelDocumentCache DocumentCache;
 
@@ -42,10 +42,7 @@ namespace SassyStudio.Editor
         {
             ITextDocument document;
             if (textView.TextDataModel.DocumentBuffer.Properties.TryGetProperty(typeof(ITextDocument), out document))
-            {
-                FixNSassAssemblyResolution();
                 document.FileActionOccurred += OnFileActionOccurred;
-            }
         }
 
         private void OnFileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
@@ -89,7 +86,7 @@ namespace SassyStudio.Editor
             var comparer = StringComparer.CurrentCultureIgnoreCase;
             foreach (var import in document.Stylesheet.Children.OfType<SassImportDirective>().SelectMany(x => x.Files).Where(x => x.Document != null))
             {
-                if (!visited.Add(import.Document)) 
+                if (!visited.Add(import.Document))
                     continue;
 
                 if (comparer.Equals(import.Document.Source.FullName, source.FullName) || IsReferenced(source, import.Document, visited))
@@ -107,73 +104,66 @@ namespace SassyStudio.Editor
                 return;
 
             var filename = Path.GetFileNameWithoutExtension(source.Name);
-            var directory = DetermineSaveDirectory(source);
-            var target = new FileInfo(Path.Combine(directory.FullName, filename + ".css"));
-            var minifiedTarget = new FileInfo(Path.Combine(directory.FullName, filename + ".min.css"));
-
-            IEnumerable<string> includePaths = new[] { source.Directory.FullName };
-            if (!string.IsNullOrWhiteSpace(Options.CompilationIncludePaths) && Directory.Exists(Options.CompilationIncludePaths))
-                includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] {';' }, StringSplitOptions.RemoveEmptyEntries));
+            var document = new FileInfo(path);
+            var compiler = PickCompiler(document);
+            var output = compiler.GetOutput(document);
 
             try
             {
-                var output = Compiler.CompileFile(path, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: includePaths);
-                File.WriteAllText(target.FullName, output, UTF8_ENCODING);
+                compiler.Compile(document, output);
 
-                if (Options.GenerateMinifiedCssOnSave)
-                    Minify(output, minifiedTarget);
+                // minify
+                if (Options.GenerateMinifiedCssOnSave && output != null)
+                    Minify(File.ReadAllText(output.FullName), new FileInfo(Path.Combine(output.Directory.FullName, filename + ".min.css")));
 
-                // only add to project if options allow it and not moving to another directory
-                if (Options.IncludeCssInProject && string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
-                    AddFileToProject(source, target, Options);
+                // add to project
+                if (Options.IncludeCssInProject && output != null && string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
+                    AddFileToProject(source, output, Options);
             }
             catch (Exception ex)
             {
-                if (Options.ReplaceCssWithException)
-                    SaveExceptionToFile(ex, target);
+                if (Options.ReplaceCssWithException && output != null)
+                    SaveExceptionToFile(ex, output);
 
-                Logger.Log(ex, "Failed to compile css");
-            }
-        }
-
-        private DirectoryInfo DetermineSaveDirectory(FileInfo source)
-        {
-            if (string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
-                return source.Directory;
-
-            var path = new Stack<string>();
-            var current = source.Directory;
-            while (current != null && ContainsSassFiles(current.Parent))
-            {
-                path.Push(current.Name);
-                current = current.Parent;
+                Logger.Log(ex, "Failed to compile css.");
             }
 
-            // eh, things aren't working out so well, just go back to default
-            if (current == null || current.Parent == null)
-                return source.Directory;
+            //var filename = Path.GetFileNameWithoutExtension(source.Name);
+            //var directory = DetermineSaveDirectory(source);
+            //var target = new FileInfo(Path.Combine(directory.FullName, filename + ".css"));
+            //var minifiedTarget = new FileInfo(Path.Combine(directory.FullName, filename + ".min.css"));
 
-            // move to sibling directory
-            current = new DirectoryInfo(Path.Combine(current.Parent.FullName, Options.CssGenerationOutputDirectory));
-            while (path.Count > 0)
-                current = new DirectoryInfo(Path.Combine(current.FullName, path.Pop()));
+            //IEnumerable<string> includePaths = new[] { source.Directory.FullName };
+            //if (!string.IsNullOrWhiteSpace(Options.CompilationIncludePaths) && Directory.Exists(Options.CompilationIncludePaths))
+            //    includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] {';' }, StringSplitOptions.RemoveEmptyEntries));
 
-            EnsureDirectory(current);
-            return current;
+            //try
+            //{
+            //    var output = Compiler.CompileFile(path, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: includePaths);
+            //    File.WriteAllText(target.FullName, output, UTF8_ENCODING);
+
+            //    if (Options.GenerateMinifiedCssOnSave)
+            //        Minify(output, minifiedTarget);
+
+            //    // only add to project if options allow it and not moving to another directory
+            //    if (Options.IncludeCssInProject && string.IsNullOrWhiteSpace(Options.CssGenerationOutputDirectory))
+            //        AddFileToProject(source, target, Options);
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (Options.ReplaceCssWithException)
+            //        SaveExceptionToFile(ex, target);
+
+            //    Logger.Log(ex, "Failed to compile css");
+            //}
         }
 
-        private void EnsureDirectory(DirectoryInfo current)
+        private IDocumentCompiler PickCompiler(FileInfo document)
         {
-            if (current != null && !current.Exists)
-            {
-                EnsureDirectory(current.Parent);
-                current.Create();
-            }
-        }
+            if (CompassSupport.IsCompassInstalled && CompassSupport.IsInCompassProject(document.Directory))
+                return new CompassDocumentCompiler();
 
-        private bool ContainsSassFiles(DirectoryInfo directory)
-        {
-            return directory != null && directory.EnumerateFiles("*.scss").Any();
+            return new NSassDocumentCompiler(Options);
         }
 
         private void Minify(string css, FileInfo file)
@@ -221,21 +211,6 @@ namespace SassyStudio.Editor
         {
             var buildAction = options.IncludeCssInProjectOutput ? InteropHelper.BuildActionType.Content : InteropHelper.BuildActionType.None;
             InteropHelper.AddNestedFile(SassyStudioPackage.Instance.DTE, source.FullName, target.FullName, buildAction);
-        }
-
-        private static void FixNSassAssemblyResolution()
-        {
-            if (Interlocked.CompareExchange(ref IsResolverInitialized, 1, 0) == 0)
-            {
-                var basePath = new FileInfo(new Uri(typeof(GenerateCssOnSave).Assembly.CodeBase).LocalPath).Directory.FullName;
-                AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
-                {
-                    if (e.Name.StartsWith("NSass.Wrapper.proxy", StringComparison.Ordinal))
-                        return Assembly.LoadFrom(Path.Combine(basePath, "NSass.Wrapper.x86.dll"));
-
-                    return null;
-                };
-            }
         }
     }
 }

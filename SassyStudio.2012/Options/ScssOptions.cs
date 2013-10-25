@@ -67,5 +67,10 @@ namespace SassyStudio.Options
         [Description("A semicolon separated list of directories to include in consideration when generating .css file. This is to support SCSS frameworks like Compass.")]
         [Category("SCSS")]
         public string CompilationIncludePaths { get; set; }
+
+        [LocDisplayName("Ruby Install Path")]
+        [Description("The directory that ruby is installed in")]
+        [Category("Compass")]
+        public string RubyInstallPath { get; set; }
     }
 }
