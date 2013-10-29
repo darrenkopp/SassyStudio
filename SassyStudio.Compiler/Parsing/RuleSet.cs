@@ -59,6 +59,7 @@ namespace SassyStudio.Compiler.Parsing
             int position = stream.Position;
             try
             {
+                bool seenColon = false;
                 var previous = stream.Current;
                 while (stream.Advance().Type != TokenType.EndOfFile)
                 {
@@ -71,13 +72,16 @@ namespace SassyStudio.Compiler.Parsing
                     if (curent.Type == TokenType.Semicolon) return false;
                     if (curent.Type == TokenType.Colon)
                     {
+                        seenColon = true;
                         var next = stream.Advance();
                         // if space after colon, then we are in a property
                         if (curent.End != next.Start) return false;
+                        // if next value is not identifer or function, then we are a property
+                        if (!(next.Type == TokenType.Identifier || next.Type == TokenType.Function)) return false;
                     }
 
                     // check for space
-                    if (curent.Start != previous.End) return true;
+                    if (curent.Start != previous.End && !seenColon) return true;
                     
                     previous = stream.Current;
                 }
