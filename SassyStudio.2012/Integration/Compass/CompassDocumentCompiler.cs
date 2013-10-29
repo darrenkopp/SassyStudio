@@ -15,18 +15,22 @@ namespace SassyStudio.Integration.Compass
             if (project == null)
                 throw new InvalidOperationException(string.Format("Cannot compile '{0}' with compass because we are not in a compass project.", source.Name));
 
-            var executor = Process.Start(new ProcessStartInfo
+            var start = new ProcessStartInfo
             {
                 FileName = CompassSupport.CompassBatchFile,
                 Arguments = GetCompassArguments(source, project),
                 WorkingDirectory = project.FullName,
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden
-            });
-            executor.WaitForExit();
+            };
 
-            if (executor.ExitCode != 0)
-                throw new Exception("Compass returned an error.");
+            using (var executor = Process.Start(start))
+            {
+                executor.WaitForExit();
+
+                if (executor.ExitCode != 0)
+                    throw new Exception("Compass returned an error.");
+            }
         }
 
         public FileInfo GetOutput(FileInfo source)
