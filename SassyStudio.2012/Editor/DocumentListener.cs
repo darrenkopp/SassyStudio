@@ -30,18 +30,12 @@ namespace SassyStudio.Editor
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             var textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
-            textView.Closed += OnClosed;
 
             textView.Properties.GetOrCreateSingletonProperty(() => new CommentSelectionCommandHandler(textViewAdapter, textView));
+            textView.Properties.GetOrCreateSingletonProperty(() => new FormatDocumentHandler(textViewAdapter, textView));
 
             if (SassyStudioPackage.Instance.Options.Scss.EnableExperimentalIntellisense)
                 textView.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(CompletionBroker, textViewAdapter, textView));
-        }
-
-        void OnClosed(object sender, EventArgs e)
-        {
-            var view = sender as IWpfTextView;
-            view.Closed -= OnClosed;
         }
     }
 }

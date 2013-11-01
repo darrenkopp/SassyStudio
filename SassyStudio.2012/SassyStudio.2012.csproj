@@ -64,6 +64,7 @@
     <Compile Include="Editor\Classification\SassClassifierProvider.cs" />
     <Compile Include="Editor\CommentSelectionCommandHandler.cs" />
     <Compile Include="Editor\DocumentListener.cs" />
+    <Compile Include="Editor\FormatDocumentHandler.cs" />
     <Compile Include="Editor\Intellisense\CompletionCommandHandler.cs" />
     <Compile Include="Editor\Intellisense\CompletionCompiler.cs" />
     <Compile Include="Editor\Intellisense\Completion\BlockScopeContainer.cs" />
