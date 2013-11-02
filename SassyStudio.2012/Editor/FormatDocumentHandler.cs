@@ -31,6 +31,9 @@ namespace SassyStudio.Editor
                 foreach (var line in TextView.TextBuffer.CurrentSnapshot.Lines)
                 {
                     var text = line.GetText();
+                    if (IsSingleLineComment(text))
+                        continue;
+
                     if (spaces > 0)
                     {
                         int offset;
@@ -60,6 +63,18 @@ namespace SassyStudio.Editor
             }
 
             return true;
+        }
+
+        private bool IsSingleLineComment(string text)
+        {
+            for (int i = 0; i < text.Length - 1; i++)
+            {
+                char c = text[i];
+                if (!char.IsWhiteSpace(c))
+                    return c == '/' && text[i + 1] == '/';
+            }
+
+            return false;
         }
 
         int IndexOfFirstNonWhitespaceCharacter(string text, out int offset)
