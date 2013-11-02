@@ -7,6 +7,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
 using SassyStudio.Options;
 using SassyStudio.Scss;
 
@@ -26,6 +27,7 @@ namespace SassyStudio
         readonly OptionsProvider _Options;
         readonly Lazy<DTE2> _DTE;
         ScssLanguageService _ScssService;
+
         public SassyStudioPackage()
         {
             _ScssOptions = new Lazy<ScssOptions>(() => GetDialogPage(typeof(ScssOptions)) as ScssOptions, true);
@@ -55,6 +57,8 @@ namespace SassyStudio
         {
             _ScssService = new ScssLanguageService();
             ((IServiceContainer)this).AddService(typeof(ScssLanguageService), _ScssService, true);
+
+            LanguageSettings = new LanguageSettings();
         }
 
         static void LogInitialization(OptionsProvider options)
@@ -88,6 +92,8 @@ namespace SassyStudio
         internal CompositionContainer Composition { get; private set; }
         internal OptionsProvider Options { get { return _Options; } }
         internal DTE2 DTE { get { return _DTE.Value; } }
+        internal LanguageSettings LanguageSettings { get; private set; }
+
         public int LocaleId
         {
             get

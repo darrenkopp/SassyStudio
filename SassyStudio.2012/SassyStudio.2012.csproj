@@ -128,6 +128,7 @@
     <Compile Include="Compiler\IDocumentCompiler.cs" />
     <Compile Include="Integration\LibSass\NSassDocumentCompiler.cs" />
     <Compile Include="InteropHelper.cs" />
+    <Compile Include="LanguageSettings.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Options\ScssOptions.cs">
       <SubType>Component</SubType>

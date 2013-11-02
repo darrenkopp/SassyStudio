@@ -15,7 +15,12 @@ namespace SassyStudio.Editor
         public FormatDocumentHandler(IVsTextView vsTextView, IWpfTextView textView)
             : base(vsTextView, textView)
         {
+            IndentationCharacter = SassyStudioPackage.Instance.LanguageSettings.IsUsingSpaces ? ' ' : '\t';
+            IndentationSize = SassyStudioPackage.Instance.LanguageSettings.FormatterIndentSize;
         }
+
+        private char IndentationCharacter { get; set; }
+        private int IndentationSize { get; set; }
 
         protected override bool Execute(VSCommand command, uint options, IntPtr pvaIn, IntPtr pvaOut)
         {
@@ -32,7 +37,7 @@ namespace SassyStudio.Editor
                         var end = IndexOfFirstNonWhitespaceCharacter(text, out offset);
                         if (end != -1 && (spaces + offset) > 0)
                         {
-                            edit.Replace(line.Start.Position, end, new string(' ', spaces + offset));
+                            edit.Replace(line.Start.Position, end, new string(IndentationCharacter, spaces - offset));
                             changed = true;
                         }
                     }
@@ -44,7 +49,7 @@ namespace SassyStudio.Editor
                         {
                             case '{':
                             case '}':
-                                spaces = Math.Max(0, c == '{' ? spaces + 4 : spaces - 4);
+                                spaces = Math.Max(0, c == '{' ? spaces + IndentationSize : spaces - IndentationSize);
                                 break;
                         }
                     }
@@ -57,7 +62,7 @@ namespace SassyStudio.Editor
             return true;
         }
 
-        static int IndexOfFirstNonWhitespaceCharacter(string text, out int offset)
+        int IndexOfFirstNonWhitespaceCharacter(string text, out int offset)
         {
             offset = 0;
 
@@ -68,7 +73,7 @@ namespace SassyStudio.Editor
                 {
                     // if line starts with close paren, unindent
                     if (c == '}')
-                        offset = -4;
+                        offset = IndentationSize;
 
                     return i;
                 }
