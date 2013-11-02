@@ -162,6 +162,7 @@
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssUserFunctionReference.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssVariableDefinition.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssVariableReference.cs" />
+    <Compile Include="Scss\ScssLanguageService.cs" />
     <Compile Include="Scss\ScssWellKnownFunctionNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
