@@ -55,7 +55,16 @@ namespace SassyStudio.Editor.Intellisense
             {
                 var localeId = SassyStudioPackage.Instance.LocaleId;
                 if (localeId != 0)
-                    return Path.Combine(VisualStudioInstallPath, "Common7", "Packages", localeId.ToString(), "schemas", "css");
+                {
+                    // we'll assume this is the path moving forward
+                    var vs2013 = Path.Combine(VisualStudioInstallPath, "Common7", "IDE", "CommonExtensions", "Microsoft", "Web", "Schemas", localeId.ToString(), "css");
+                    if (Directory.Exists(vs2013))
+                        return vs2013;
+
+                    var vs2012 = Path.Combine(VisualStudioInstallPath, "Common7", "Packages", localeId.ToString(), "schemas", "css");
+                    if (Directory.Exists(vs2012))
+                        return vs2012;
+                }
 
                 return string.Empty;
             }
