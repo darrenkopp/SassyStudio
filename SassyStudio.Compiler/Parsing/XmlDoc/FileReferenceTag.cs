@@ -14,8 +14,20 @@ namespace SassyStudio.Compiler.Parsing
 
         protected override void OnAttributeParsed(XmlAttribute attribute, ITextProvider text)
         {
-            if (attribute.Name != null && text.GetText(attribute.Name.Start, attribute.Name.Length) == "file")
+            if (attribute.Name != null && IsPathAttribute(text.GetText(attribute.Name.Start, attribute.Name.Length)))
                 Filename = attribute;
+        }
+
+        private bool IsPathAttribute(string attributeName)
+        {
+            switch (attributeName)
+            {
+                case "file":
+                case "path":
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public void ResolveImports(ITextProvider text, ISassDocument document, IDocumentManager documentManager)
