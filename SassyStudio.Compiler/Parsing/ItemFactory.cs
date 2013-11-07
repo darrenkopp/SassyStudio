@@ -240,7 +240,7 @@ namespace SassyStudio.Compiler.Parsing
         private ParseItem CreateAtRule(ComplexItem parent, ITextProvider text, ITokenStream stream)
         {
             var nameToken = stream.Peek(1);
-            if (nameToken.Type == TokenType.Identifier)
+            if (nameToken.Type == TokenType.Identifier || nameToken.Type == TokenType.Function)
             {
                 var ruleName = text.GetText(nameToken.Start, nameToken.Length);
                 switch (ruleName)

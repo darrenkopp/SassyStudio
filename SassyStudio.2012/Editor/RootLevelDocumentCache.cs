@@ -19,7 +19,7 @@ namespace SassyStudio.Editor
     [Export(typeof(IRootLevelDocumentCache))]
     class RootLevelDocumentCache : IRootLevelDocumentCache
     {
-        readonly ConcurrentDictionary<FileInfo,ISassDocument> _Documents = new ConcurrentDictionary<FileInfo,ISassDocument>();
+        readonly ConcurrentDictionary<FileInfo, ISassDocument> _Documents = new ConcurrentDictionary<FileInfo, ISassDocument>();
         readonly IDocumentManager DocumentManager;
 
         [ImportingConstructor]
@@ -31,14 +31,14 @@ namespace SassyStudio.Editor
             Initialize();
         }
 
-        public IReadOnlyCollection<ISassDocument> Documents { get { return new List<ISassDocument>(_Documents.Values); } } 
+        public IReadOnlyCollection<ISassDocument> Documents { get { return new List<ISassDocument>(_Documents.Values); } }
 
         public void Initialize()
         {
             Task.Run(() =>
             {
                 foreach (var file in Flatten().Where(IsRootLevelDocument))
-                    _Documents.AddOrUpdate(file, f => DocumentManager.Get(f), (f,d) => d);
+                    _Documents.AddOrUpdate(file, f => DocumentManager.Get(f), (f, d) => d);
             });
         }
 
@@ -58,10 +58,17 @@ namespace SassyStudio.Editor
 
         private IEnumerable<FileInfo> Flatten(EnvDTE.ProjectItems items)
         {
+            if (items == null)
+                yield break;
+
             foreach (EnvDTE.ProjectItem item in items)
             {
-                if (item.FileCount > 0)
-                    yield return new FileInfo(item.Properties.Item("FullPath").Value.ToString());
+                if (item.FileCount > 0 && item.Properties != null && item.Properties.Count > 0)
+                {
+                    var path = item.Properties.Item("FullPath");
+                    if (path != null && path.Value != null)
+                        yield return new FileInfo(path.Value.ToString());
+                }
 
                 foreach (var child in Flatten(item.ProjectItems))
                     yield return child;

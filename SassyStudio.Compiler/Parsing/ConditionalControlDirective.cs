@@ -64,7 +64,7 @@ namespace SassyStudio.Compiler.Parsing
             if (stream.Current.Type == TokenType.At)
             {
                 var name = stream.Peek(1);
-                if (name.Type == TokenType.Identifier)
+                if (name.Type == TokenType.Identifier || name.Type == TokenType.Function)
                     return text.CompareOrdinal(name.Start, "if");
             }
 

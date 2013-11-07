@@ -18,7 +18,7 @@ namespace SassyStudio.Compiler.Parsing
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
-            if (stream.Current.Type == TokenType.At && stream.Peek(1).Type == TokenType.Identifier)
+            if (stream.Current.Type == TokenType.At && IsValidTokenType(stream.Peek(1).Type))
             {
                 At = Children.AddCurrentAndAdvance(stream);
                 Name = Children.AddCurrentAndAdvance(stream);
@@ -37,6 +37,18 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return false;
+        }
+
+        static bool IsValidTokenType(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.Identifier:
+                case TokenType.Function:
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         public static AtRule CreateParsed(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
