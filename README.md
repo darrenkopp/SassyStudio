@@ -8,10 +8,10 @@ SASS / SCSS a bit friendlier. Here's what we provide so far:
 - Generate css file on save
 - Multiline Comments
 - Intellisense completion support for variables, functions, mixins, and keywords
+- Intellisense completion support for CSS syntax
 
 In the near future I am planning to add support for the following (assuming VS/Web team doesn't add it first):
 
-- CSS Editor integration to get intellisense / syntax highlighting support
 - Error integration
 
 You can grab the extension from [the Visual Studio Gallery](http://visualstudiogallery.msdn.microsoft.com/85fa99a6-e4c6-4a1c-9f00-e6a8129b6f4d)
