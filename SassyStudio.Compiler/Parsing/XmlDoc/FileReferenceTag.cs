@@ -22,8 +22,8 @@ namespace SassyStudio.Compiler.Parsing
         {
             switch (attributeName)
             {
-                case "file":
                 case "path":
+                case "file":
                     return true;
                 default:
                     return false;
