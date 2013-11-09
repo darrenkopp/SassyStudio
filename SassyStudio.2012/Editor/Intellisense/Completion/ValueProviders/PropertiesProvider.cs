@@ -102,8 +102,6 @@ namespace SassyStudio.Editor.Intellisense
             if (builder.Length == 0)
                 return null;
 
-            Logger.Log("Nested property prefix is " + builder.ToString());
-
             // if we aren't currently in "nested" block directly, then chop off current value
             if (!(context.Current is NestedPropertyBlock))
                 return builder.ToString(0, LastHyphen(builder));
