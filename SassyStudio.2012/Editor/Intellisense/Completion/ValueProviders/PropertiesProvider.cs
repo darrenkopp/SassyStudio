@@ -68,7 +68,56 @@ namespace SassyStudio.Editor.Intellisense
 
         public IEnumerable<ICompletionValue> GetPropertyNames(ICompletionContext context, ICssSchema schema)
         {
-            return schema.GetProperties(null).Select(x => new PropertyNameCompletionValue(x.Name, x.Description));
+            var prefix = ResolvePrefix(context);
+
+            return schema.GetProperties(prefix).Select(x => new PropertyNameCompletionValue(x.Name, x.Description));
+        }
+
+        private string ResolvePrefix(ICompletionContext context)
+        {
+            var current = context.Current;
+            var parts = new Stack<PropertyDeclaration>(1);
+            while (current != null)
+            {
+                if (current is PropertyDeclaration)
+                {
+                    var property = current as PropertyDeclaration;
+                    if (property.Name != null && property.Name.Fragments.All(x => x is TokenItem))
+                        parts.Push(property);
+                }
+
+                current = current.Parent;
+            }
+
+            var builder = new StringBuilder();
+            while (parts.Count > 0)
+            {
+                var part = parts.Pop();
+                if (builder.Length > 0)
+                    builder.Append("-");
+
+                builder.Append(part.Name.GetName(context.DocumentTextProvider));
+            }
+
+            if (builder.Length == 0)
+                return null;
+
+            Logger.Log("Nested property prefix is " + builder.ToString());
+
+            // if we aren't currently in "nested" block directly, then chop off current value
+            if (!(context.Current is NestedPropertyBlock))
+                return builder.ToString(0, LastHyphen(builder));
+
+            return builder.ToString();
+        }
+
+        private int LastHyphen(StringBuilder builder)
+        {
+            for (int i = builder.Length - 1; i > 0; i--)
+                if (builder[i] == '-')
+                    return i;
+
+            return builder.Length;
         }
     }
 }

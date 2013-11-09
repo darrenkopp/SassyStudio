@@ -31,7 +31,10 @@ namespace SassyStudio.Editor.Intellisense
             if (string.IsNullOrEmpty(prefix))
                 return _Properties.Values;
 
-            return _Properties.Values.Where(x => x.Name.StartsWith(prefix, StringComparison.Ordinal));
+            return _Properties.Values
+                .Where(x => x.Name.Length > prefix.Length + 1)
+                .Where(x => x.Name.StartsWith(prefix, StringComparison.Ordinal))
+                .Select(x => new CssProperty(x.Name.Substring(prefix.Length + 1), x.Description));
         }
 
         public IEnumerable<CssPropertyValue> GetPropertyValues(string propertyName)
