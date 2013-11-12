@@ -34,7 +34,7 @@ namespace SassyStudio.Editor.Intellisense
                 var definition = item as MixinDefinition;
                 if (definition.Name != null && definition.Name.Name != null)
                 {
-                    Parse(new MixinContainer(definition), definition.Children, text);
+                    Parse(new MixinContainer(definition, text), definition.Children, text);
 
                     var name = text.GetText(definition.Name.Name.Start, definition.Name.Name.Length);
                     _Mixins.Add(definition.End, new MixinCompletionValue(name));
@@ -45,7 +45,7 @@ namespace SassyStudio.Editor.Intellisense
                 var definition = item as UserFunctionDefinition;
                 if (definition.Name != null)
                 {
-                    Parse(new FunctionContainer(definition), definition.Children, text);
+                    Parse(new FunctionContainer(definition, text), definition.Children, text);
 
                     var name = text.GetText(definition.Name.Start, definition.Name.Length);
                     _Functions.Add(definition.End, new UserFunctionCompletionValue(name));

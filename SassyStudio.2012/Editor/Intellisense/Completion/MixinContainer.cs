@@ -11,11 +11,15 @@ namespace SassyStudio.Editor.Intellisense
     {
         readonly MixinDefinition Definition;
 
-        public MixinContainer(MixinDefinition definition)
+        public MixinContainer(MixinDefinition definition, ITextProvider text)
         {
             Definition = definition;
             Start = Math.Max(definition.Start, ((definition.Body != null && definition.Body.OpenCurlyBrace != null) ? definition.Body.OpenCurlyBrace.Start : 0));
             End = definition.End;
+
+            // add all arguments as variables
+            foreach (var variable in definition.Arguments.Select(x => x.Variable))
+                AddVariable(variable, text);
         }
     }
 }

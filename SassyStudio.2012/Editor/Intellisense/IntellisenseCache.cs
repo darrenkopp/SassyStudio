@@ -10,17 +10,6 @@ namespace SassyStudio.Editor.Intellisense
 {
     class IntellisenseCache : IIntellisenseCache
     {
-        delegate IIntellisenseContainer ContainerFactory(ComplexItem item);
-        static readonly IDictionary<Type, ContainerFactory> ContainerFactoryMappings;
-        static IntellisenseCache()
-        {
-            ContainerFactoryMappings = new Dictionary<Type, ContainerFactory>
-            {
-                { typeof(MixinDefinition), item => new MixinContainer(item as MixinDefinition) },
-                { typeof(UserFunctionDefinition), item => new FunctionContainer(item as UserFunctionDefinition) }
-            };
-        }
-
         readonly ISassDocument Document;
         readonly IIntellisenseManager IntellisenseManager;
         public IntellisenseCache(ISassDocument document, IIntellisenseManager intellisenseManager)
