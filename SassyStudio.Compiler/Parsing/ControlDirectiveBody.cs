@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class ControlDirectiveBody : RuleBlock
+    public class ControlDirectiveBody : BlockItem
     {
     }
 }
