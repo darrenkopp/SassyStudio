@@ -19,7 +19,7 @@ namespace SassyStudio.Editor.Intellisense
             {
                 yield return SassCompletionContextType.PropertyValue;
             }
-            else if (current is RuleBlock || current is NestedPropertyBlock)
+            else if (IsInDeclarationContext(current))
             {
                 yield return SassCompletionContextType.PropertyDeclaration;
             }
@@ -38,6 +38,15 @@ namespace SassyStudio.Editor.Intellisense
                     yield return SassCompletionContextType.PropertyValue;
                 }
             }
+        }
+
+        static bool IsInDeclarationContext(ParseItem current)
+        {
+            // exclude when not nested in rule block
+            if (current is ControlDirectiveBody && (current.Parent == null || !(current.Parent.Parent is RuleBlock)))
+                return false;
+
+            return current is RuleBlock || current is NestedPropertyBlock;
         }
 
         static PropertyDeclaration FindDeclaration(ParseItem item)
