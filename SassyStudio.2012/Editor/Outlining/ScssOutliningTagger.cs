@@ -78,6 +78,10 @@ namespace SassyStudio.Editor.Outlining
 
                 if (open != null && close != null)
                 {
+                    // if some of our values go over range, then we are done
+                    if (open.Start > snapshot.Length || close.Start > snapshot.Length) 
+                        return results.Values;
+
                     var startLine = snapshot.GetLineFromPosition(open.Start);
                     var endLine = snapshot.GetLineFromPosition(close.Start);
                     if (startLine.LineNumber != endLine.LineNumber)
