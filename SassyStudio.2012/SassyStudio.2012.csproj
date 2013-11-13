@@ -76,6 +76,7 @@
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\SelectorContextProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\StringValueProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\XmlDocumentationContextProvider.cs" />
+    <Compile Include="Editor\Intellisense\Completion\FileSystemCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\FunctionContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\ImportContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\KeywordCompletionValue.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Editor\Intellisense\Completion\StylesheetContainer.cs" />
     <Compile Include="Editor\Intellisense\Completion\SystemFunctionCompletionValue.cs" />
     <Compile Include="Editor\Intellisense\Completion\UserFunctionCompletionValue.cs" />
+    <Compile Include="Editor\Intellisense\Completion\ValueProviders\ImportFileCompletionProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\MixinsProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\PropertiesProvider.cs" />
     <Compile Include="Editor\Intellisense\Completion\ValueProviders\PseudoValueProviders.cs" />

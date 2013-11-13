@@ -9,6 +9,7 @@ namespace SassyStudio.Editor.Intellisense
 {
     public interface ICompletionContext
     {
+        ISassDocument Document { get; }
         IIntellisenseCache Cache { get; }
         ITextProvider DocumentTextProvider { get; }
         ParseItem Current { get; }

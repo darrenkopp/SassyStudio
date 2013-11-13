@@ -8,7 +8,7 @@ using SassyStudio.Compiler.Parsing;
 
 namespace SassyStudio.Editor.Intellisense
 {
-    [Export(typeof(ICompletionContextProvider))]
+    //[Export(typeof(ICompletionContextProvider))]
     class StringValueProvider : ICompletionContextProvider
     {
         public IEnumerable<SassCompletionContextType> GetContext(ICompletionContext context)

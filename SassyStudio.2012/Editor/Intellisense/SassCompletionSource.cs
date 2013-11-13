@@ -85,19 +85,6 @@ namespace SassyStudio.Editor.Intellisense
                     if (current is TokenItem)
                         current = current.Parent;
                 }
-                //current = stylesheet.Children.FindItemContainingPosition(position) ?? current;
-                //if (current is TokenItem)
-                //    current = current.Parent;
-
-                //if (!current.IsUnclosed)
-                //    current = stylesheet.Children.FindItemContainingPosition(position);
-
-                //if (current is TokenItem)
-                //    current = current.Parent;
-
-                //predecessor = stylesheet.Children.FindItemPrecedingPosition(position);
-                //if (predecessor is TokenItem)
-                //    predecessor = predecessor.Parent;
             }
 
             current = current ?? stylesheet as Stylesheet;
@@ -112,6 +99,7 @@ namespace SassyStudio.Editor.Intellisense
 
             return new CompletionContext
             {
+                Document = Editor.Document,
                 Current = current,
                 //Predecessor = predecessor,
                 Position = position,
@@ -170,6 +158,8 @@ namespace SassyStudio.Editor.Intellisense
 
         class CompletionContext : ICompletionContext
         {
+            public ISassDocument Document { get; internal set; }
+
             public IIntellisenseCache Cache { get; internal set; }
 
             public ParseItem Current { get; internal set; }

@@ -15,7 +15,13 @@ namespace SassyStudio.Editor.Intellisense
         {
             var current = context.Current;
             if (current is Stylesheet || (current is RuleBlock || current.Parent is Stylesheet))
+            {
                 yield return SassCompletionContextType.ImportDirective;
+            }
+            else if (current is StringValue && current.Parent is ImportFile)
+            {
+                yield return SassCompletionContextType.ImportDirectiveFile;
+            }
         }
     }
 }
