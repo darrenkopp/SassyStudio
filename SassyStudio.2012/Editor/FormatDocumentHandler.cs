@@ -38,7 +38,7 @@ namespace SassyStudio.Editor
                     {
                         int offset;
                         var end = IndexOfFirstNonWhitespaceCharacter(text, out offset);
-                        if (end != -1 && (spaces + offset) > 0)
+                        if (end != -1 && (spaces - offset) > 0)
                         {
                             edit.Replace(line.Start.Position, end, new string(IndentationCharacter, spaces - offset));
                             changed = true;
