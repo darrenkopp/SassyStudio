@@ -182,30 +182,12 @@
     <None Include="..\Key.snk">
       <Link>Key.snk</Link>
     </None>
-    <VSTemplate Include="ItemTemplates\SassFile\web.vb.vstemplate" />
-    <Resource Include="ItemTemplates\SassPartial\sassy.ico" />
-    <Resource Include="ItemTemplates\SassFile\sassy.ico" />
-    <Resource Include="ItemTemplates\ItemTemplates\SassFile\sassy.ico" />
-    <Content Include="ItemTemplates\ItemTemplates\SassFile\web.csharp.vstemplate" />
-    <Content Include="ItemTemplates\ItemTemplates\SassFile\web.vb.vstemplate" />
-    <Resource Include="ItemTemplates\ItemTemplates\SassPartial\sassy.ico" />
-    <Content Include="ItemTemplates\ItemTemplates\SassPartial\web.csharp.vstemplate" />
-    <Content Include="ItemTemplates\ItemTemplates\SassPartial\web.vb.vstemplate" />
-    <Resource Include="ItemTemplates\ItemTemplates\sassy.ico" />
-    <Content Include="ItemTemplates\SassPartial\web.vb.vstemplate" />
-    <None Include="ItemTemplates\ItemTemplates\SassFile\file.scss" />
-    <None Include="ItemTemplates\ItemTemplates\SassPartial\partial.scss" />
-    <None Include="ItemTemplates\SassFile\file.scss" />
-    <None Include="ItemTemplates\SassPartial\partial.scss" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ItemTemplates\sassy.ico" />
-    <VSTemplate Include="ItemTemplates\SassFile\web.csharp.vstemplate" />
-    <Content Include="ItemTemplates\SassPartial\web.csharp.vstemplate" />
     <Content Include="Licenses.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -342,6 +324,13 @@
       <Name>SassyStudio.Interfaces</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\SassyStudio.ItemTemplates\SassyStudio.ItemTemplates.csproj">
+      <Project>{76DECEA8-880D-4792-AA7E-94CED3F4E985}</Project>
+      <Name>SassyStudio.ItemTemplates</Name>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

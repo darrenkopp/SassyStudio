@@ -3,14 +3,12 @@
   <TemplateData>
     <Name>SASS File</Name>
     <Description>Adds a new SASS document file to the project</Description>
-    <Icon>sassy.ico</Icon>
-    <ProjectType>Web</ProjectType>
-    <ProjectSubType>VisualBasic</ProjectSubType>
+    <Icon>sassy-72.png</Icon>
+    <ProjectType>VisualBasic</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
-    <DefaultName>file.scss</DefaultName>
+    <DefaultName>app.scss</DefaultName>
   </TemplateData>
   <TemplateContent>
-    <References />
     <ProjectItem ReplaceParameters="true">file.scss</ProjectItem>
   </TemplateContent>
 </VSTemplate>

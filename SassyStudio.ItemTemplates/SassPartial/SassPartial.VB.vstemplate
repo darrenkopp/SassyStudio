@@ -3,13 +3,12 @@
   <TemplateData>
     <Name>SASS Partial</Name>
     <Description>Adds a new SASS partial file to the project</Description>
-    <Icon>sassy.ico</Icon>
-    <ProjectType>Web</ProjectType>
-    <ProjectSubType>CSharp</ProjectSubType>
+    <Icon>sassy-72.png</Icon>
+    <ProjectType>VisualBasic</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <DefaultName>_file.scss</DefaultName>
   </TemplateData>
   <TemplateContent>
-    <ProjectItem ReplaceParameters="false">partial.scss</ProjectItem>
+    <ProjectItem ReplaceParameters="true">partial.scss</ProjectItem>
   </TemplateContent>
 </VSTemplate>
