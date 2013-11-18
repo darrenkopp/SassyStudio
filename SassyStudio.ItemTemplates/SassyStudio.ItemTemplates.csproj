@@ -58,16 +58,16 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web\SassFile\file.scss" />
-    <None Include="Web\SassPartial\partial.scss" />
+    <None Include="SassFile\file.scss" />
+    <None Include="SassPartial\partial.scss" />
   </ItemGroup>
   <ItemGroup>
-    <VSTemplate Include="Web\SassPartial\SassPartial.VB.vstemplate" />
-    <VSTemplate Include="Web\SassPartial\SassPartial.CSharp.vstemplate" />
-    <VSTemplate Include="Web\SassFile\SassFile.CSharp.vstemplate" />
-    <VSTemplate Include="Web\SassFile\SassFile.VB.vstemplate" />
-    <Content Include="Web\SassFile\sassy-72.png" />
-    <Content Include="Web\SassPartial\sassy-72.png" />
+    <VSTemplate Include="SassPartial\SassPartial.VB.vstemplate" />
+    <VSTemplate Include="SassPartial\SassPartial.CSharp.vstemplate" />
+    <VSTemplate Include="SassFile\SassFile.CSharp.vstemplate" />
+    <VSTemplate Include="SassFile\SassFile.VB.vstemplate" />
+    <Content Include="SassFile\sassy-72.png" />
+    <Content Include="SassPartial\sassy-72.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
