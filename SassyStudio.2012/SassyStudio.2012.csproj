@@ -132,6 +132,8 @@
     <Compile Include="Integration\Compass\CompassSupport.cs" />
     <Compile Include="Compiler\IDocumentCompiler.cs" />
     <Compile Include="Integration\LibSass\NSassDocumentCompiler.cs" />
+    <Compile Include="Integration\SassGem\SassDocumentCompiler.cs" />
+    <Compile Include="Integration\SassGem\SassSupport.cs" />
     <Compile Include="InteropHelper.cs" />
     <Compile Include="LanguageSettings.cs" />
     <Compile Include="Logger.cs" />

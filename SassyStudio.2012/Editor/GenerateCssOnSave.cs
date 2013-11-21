@@ -15,6 +15,7 @@ using SassyStudio.Compiler;
 using SassyStudio.Compiler.Parsing;
 using SassyStudio.Integration.Compass;
 using SassyStudio.Integration.LibSass;
+using SassyStudio.Integration.SassGem;
 using SassyStudio.Options;
 using Yahoo.Yui.Compressor;
 
@@ -163,6 +164,9 @@ namespace SassyStudio.Editor
         {
             if (CompassSupport.IsCompassInstalled && CompassSupport.IsInCompassProject(document.Directory))
                 return new CompassDocumentCompiler();
+
+            if (SassSupport.IsSassGemInstalled)
+                return new SassDocumentCompiler(Options);
 
             return new NSassDocumentCompiler(Options);
         }
