@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using SassyStudio.Integration.Compass;
 using SassyStudio.Options;
 
 namespace SassyStudio.Integration.SassGem
