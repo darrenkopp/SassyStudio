@@ -24,17 +24,38 @@ namespace SassyStudio.Integration.SassGem
             {
                 FileName = SassSupport.SassBatchFile,
                 Arguments = GetSassArguments(source, output),
-                WorkingDirectory = source.FullName,
+                WorkingDirectory = Path.Combine(Options.RubyInstallPath, "bin"),
                 CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden
+                WindowStyle = ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
             };
 
             using (var executor = Process.Start(start))
             {
+                StringBuilder standardOutput = new StringBuilder(), errorOutput = new StringBuilder();
+                executor.OutputDataReceived += (sender, e) => standardOutput.AppendLine(e.Data);
+                executor.ErrorDataReceived += (sender, e) => errorOutput.AppendLine(e.Data);
+                executor.BeginOutputReadLine();
+                executor.BeginErrorReadLine();
+
                 executor.WaitForExit();
 
                 if (executor.ExitCode != 0)
-                    throw new Exception("Sass returned an error.");
+                {
+                    var message = "Sass returned an error.";
+                    if (errorOutput.Length > 0)
+                    {
+                        message += Environment.NewLine + errorOutput.ToString();
+                    }
+                    else if (standardOutput.Length > 0)
+                    {
+                        message += Environment.NewLine + standardOutput.ToString();
+                    }
+
+                    throw new Exception(message);
+                }
             }
         }
 
