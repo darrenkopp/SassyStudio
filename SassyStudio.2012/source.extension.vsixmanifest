@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="SassyStudio..141b7a26-b79d-4ca0-9102-77e7cc7e0ec8" Version="0.8.2" Language="en-US" Publisher="Darren Kopp" />
+    <Identity Id="SassyStudio..141b7a26-b79d-4ca0-9102-77e7cc7e0ec8" Version="0.8.3" Language="en-US" Publisher="Darren Kopp" />
     <DisplayName>SassyStudio</DisplayName>
     <Description xml:space="preserve">Provides some support for sass files in visual studio</Description>
     <MoreInfo>https://github.com/darrenkopp/SassyStudio</MoreInfo>
