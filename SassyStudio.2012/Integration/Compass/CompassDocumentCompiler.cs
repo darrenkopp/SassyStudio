@@ -36,17 +36,20 @@ namespace SassyStudio.Integration.Compass
 
                 executor.WaitForExit();
 
-                var message = "Compass returned an error.";
-                if (errorOutput.Length > 0)
+                if (executor.ExitCode != 0)
                 {
-                    message += Environment.NewLine + errorOutput.ToString();
-                }
-                else if (standardOutput.Length > 0)
-                {
-                    message += Environment.NewLine + standardOutput.ToString();
-                }
+                    var message = "Compass returned an error.";
+                    if (errorOutput.Length > 0)
+                    {
+                        message += Environment.NewLine + errorOutput.ToString();
+                    }
+                    else if (standardOutput.Length > 0)
+                    {
+                        message += Environment.NewLine + standardOutput.ToString();
+                    }
 
-                throw new Exception(message);
+                    throw new Exception(message);
+                }
             }
         }
 
