@@ -17,13 +17,14 @@ namespace SassyStudio
         {
             // ignore if child doesn't exist
             if (!File.Exists(child)) return;
+            if (dte == null) return;
 
             // if we can't load parent or child already part of solution, don't attempt to change anything
             ProjectItem parentItem, childItem;
             if (!TryGetProjectItem(dte.Solution, parent, out parentItem) || TryGetProjectItem(dte.Solution, child, out childItem))
                 return;
 
-            // add the the child item and save project
+            // add the child item and save project
             childItem = parentItem.ProjectItems.AddFromFile(child);
             childItem.ContainingProject.Save();
 
@@ -56,7 +57,11 @@ namespace SassyStudio
 
         static bool TryGetProjectItem(Solution solution, string path, out ProjectItem item)
         {
-            item = solution.FindProjectItem(path);
+            item = null;
+
+            if (solution != null)
+                item = solution.FindProjectItem(path);
+
             return item != null;
         }
 
