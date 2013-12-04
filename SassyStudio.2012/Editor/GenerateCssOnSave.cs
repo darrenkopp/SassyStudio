@@ -182,6 +182,7 @@ namespace SassyStudio.Editor
                     minified = compressor.Compress(css);
                 }
 
+                InteropHelper.CheckOut(file.FullName);
                 File.WriteAllText(file.FullName, minified, UTF8_ENCODING);
             }
             catch (Exception ex)

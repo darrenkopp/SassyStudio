@@ -13,6 +13,24 @@ namespace SassyStudio
 {
     static class InteropHelper
     {
+        // Utility method from VSWebEssentials, to help out with TFS
+        internal static void CheckOut(string file)
+        {
+            try
+            {
+                var dte = SassyStudioPackage.Instance.DTE;
+                if (File.Exists(file) && dte.Solution.FindProjectItem(file) != null)
+                {
+                    if (dte.SourceControl.IsItemUnderSCC(file) && !dte.SourceControl.IsItemCheckedOut(file))
+                        dte.SourceControl.CheckOutItem(file);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to check out file.");
+            }
+        }
+
         internal static void AddNestedFile(DTE2 dte, string parent, string child, BuildActionType type)
         {
             // ignore if child doesn't exist

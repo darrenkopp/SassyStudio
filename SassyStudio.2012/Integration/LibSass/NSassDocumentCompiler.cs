@@ -46,6 +46,7 @@ namespace SassyStudio.Integration.LibSass
                 includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
 
             var css = Compiler.CompileFile(source.FullName, sourceComments: Options.IncludeSourceComments, additionalIncludePaths: includePaths);
+            InteropHelper.CheckOut(output.FullName);
             File.WriteAllText(output.FullName, css, UTF8_ENCODING);
         }
 
