@@ -90,10 +90,9 @@ namespace SassyStudio.Editor
             var source = new FileInfo(path);
             var documents = DocumentCache.Documents;
 
-            var visited = new HashSet<ISassDocument>();
             foreach (var document in documents)
             {
-                if (IsReferenced(source, document, visited))
+                if (IsReferenced(source, document, new HashSet<ISassDocument>()))
                     GenerateCss(time, document.Source.FullName);
             }
         }
