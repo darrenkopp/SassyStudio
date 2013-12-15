@@ -18,7 +18,7 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssInterpolation()
-            : base("Preprocessor Keyword", category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}", foreground: true, background: true)
+            : base("String(C# @ Verbatim)", category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}", foreground: true)
         {
             DisplayName = "SCSS Interpolation";
             ForegroundCustomizable = true;
