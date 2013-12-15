@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Language.StandardClassification;
+using System.Windows.Media;
 
 namespace SassyStudio.Scss.Classifications
 {
@@ -18,7 +19,7 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssImportanceModifier()
-            : base("String(C# @ Verbatim)", foreground: true, category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}")
+            : base(x => x.Keyword, foreground: true)
         {
             DisplayName = "SCSS Importance Modifier";
             ForegroundCustomizable = true;

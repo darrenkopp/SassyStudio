@@ -18,7 +18,7 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssVariableDefinition()
-            : base("User Types", category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}", foreground: true)
+            : base(x => x.UserTypes, foreground: true)
         {
             DisplayName = "SCSS Variable Definition";
             ForegroundCustomizable = true;

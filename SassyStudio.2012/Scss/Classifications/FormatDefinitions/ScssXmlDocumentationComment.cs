@@ -16,7 +16,7 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssXmlDocumentationComment()
-            : base("XML Doc Comment", "{75A05685-00A8-4DED-BAE5-E7A50BFA929A}", foreground: true)
+            : base(x => x.XmlDocComment, foreground: true)
         {
             DisplayName = "SCSS Xml Doc Comment";
             ForegroundCustomizable = true;

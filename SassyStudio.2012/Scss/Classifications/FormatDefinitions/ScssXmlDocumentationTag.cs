@@ -16,7 +16,7 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssXmlDocumentationTag()
-            : base("XML Doc Tag", "{75A05685-00A8-4DED-BAE5-E7A50BFA929A}", foreground: true)
+            : base(x => x.XmlDocTag, foreground: true)
         {
             DisplayName = "SCSS XML Doc Tag";
             ForegroundCustomizable = true;

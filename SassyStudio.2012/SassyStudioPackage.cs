@@ -13,7 +13,7 @@ using SassyStudio.Scss;
 namespace SassyStudio
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "0.8.6", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.8.6.1", IconResourceID = 400)]
     [GuidAttribute(Guids.guidSassyStudioPkgString)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "General", 101, 102, true, new[] { "CSS", "SCSS" })]
@@ -42,8 +42,8 @@ namespace SassyStudio
             base.Initialize();
             Instance = this;
 
-            FontsAndColorsStorage = GetService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage;
             RegisterScssLanguage();
+            FontsAndColorsStorage = new DefaultColorsStorage(GetService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage);
 
             Composition = InitializeComposition();
             OutputLogger.MessageReceived += (s, e) => Logger.Log(e.Message);
@@ -93,7 +93,7 @@ namespace SassyStudio
         internal OptionsProvider Options { get { return _Options; } }
         internal DTE2 DTE { get { return _DTE.Value; } }
         internal LanguageSettings LanguageSettings { get; private set; }
-        internal IVsFontAndColorStorage FontsAndColorsStorage { get; private set; }
+        internal DefaultColorsStorage FontsAndColorsStorage { get; private set; }
 
         public int LocaleId
         {

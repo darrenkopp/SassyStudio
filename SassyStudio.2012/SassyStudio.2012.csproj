@@ -51,6 +51,7 @@
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DefaultColorsStorage.cs" />
     <Compile Include="Editor\Classification\ClassifierContext.cs">
       <SubType>Code</SubType>
     </Compile>

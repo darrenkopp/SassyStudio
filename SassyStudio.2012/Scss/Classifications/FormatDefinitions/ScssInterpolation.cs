@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Language.StandardClassification;
+using System.Windows.Media;
 
 namespace SassyStudio.Scss.Classifications
 {
@@ -14,16 +15,16 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.Interpolation)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    sealed class ScssInterpolation : ColorResolvingFormatDefinition
+    sealed class ScssInterpolation : ClassificationFormatDefinition
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssInterpolation()
-            : base("String(C# @ Verbatim)", category: "{E0187991-B458-4F7E-8CA9-42C9A573B56C}", foreground: true)
         {
             DisplayName = "SCSS Interpolation";
             ForegroundCustomizable = true;
             BackgroundCustomizable = true;
             IsBold = true;
+            ForegroundColor = Color.FromRgb(0x75, 0x75, 0x75);
         }
     }
 }

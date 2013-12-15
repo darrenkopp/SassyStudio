@@ -3,43 +3,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace SassyStudio.Scss.Classifications
 {
     abstract class ColorResolvingFormatDefinition : ClassificationFormatDefinition
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ColorResolvingFormatDefinition(string property, string category = null, bool foreground = false, bool background = false)
+        readonly Func<DefaultColorsStorage, Tuple<Color?, Color?>> Accessor;
+        protected ColorResolvingFormatDefinition(Func<DefaultColorsStorage,Tuple<Color?,Color?>> accessor, bool foreground = false, bool background = false)
         {
-            var storage = SassyStudioPackage.Instance.FontsAndColorsStorage;
-            var categoryId = Guid.Empty;
-            if (!string.IsNullOrEmpty(category))
-                categoryId = Guid.Parse(category);
+            Accessor = accessor;
+            StyleForeground = foreground;
+            StyleBackground = background;
 
-            var result = storage.OpenCategory(ref categoryId, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
-            try
-            {
-                if (result != 0) return;
-                ColorableItemInfo[] colors = new ColorableItemInfo[1];
-                result = storage.GetItem(property, colors);
-                if (result == 0)
-                {
-                    var color = colors[0];
-                    if (foreground) ForegroundColor = ParseColor(color.crForeground);
-                    if (background) BackgroundColor = ParseColor(color.crBackground);
-                }
-            }
-            finally
-            {
-                storage.CloseCategory();
-            }
+            SassyStudioPackage.Instance.FontsAndColorsStorage.ColorsChanged += OnColorsChanged;
+
+            Apply();
+        }
+        
+        bool StyleForeground { get; set; }
+        bool StyleBackground { get; set; }
+
+        private void Apply()
+        {
+            var value = Accessor(SassyStudioPackage.Instance.FontsAndColorsStorage);
+            if (value == null)
+                return;
+
+            if (StyleForeground && ForegroundColor == null)
+                ForegroundColor = value.Item1;
+
+            if (StyleBackground && BackgroundColor == null)
+                BackgroundColor = value.Item2;
         }
 
-        private Color ParseColor(uint color)
+        private void OnColorsChanged(object sender, EventArgs e)
         {
-            var dcolor = System.Drawing.ColorTranslator.FromOle(Convert.ToInt32(color));
-            return Color.FromArgb(dcolor.A, dcolor.R, dcolor.G, dcolor.B);
+            Apply();
         }
     }
 }
