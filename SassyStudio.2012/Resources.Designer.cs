@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DarrenKopp.SassyStudioPackage {
+namespace SassyStudio {
     using System;
     
     
