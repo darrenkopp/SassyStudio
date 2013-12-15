@@ -17,12 +17,12 @@ namespace SassyStudio.Scss.Classifications
             if (!string.IsNullOrEmpty(category))
                 categoryId = Guid.Parse(category);
 
-            var cr = storage.OpenCategory(ref categoryId, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
+            var result = storage.OpenCategory(ref categoryId, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
             try
             {
-                if (cr != 0) return;
+                if (result != 0) return;
                 ColorableItemInfo[] colors = new ColorableItemInfo[1];
-                var result = storage.GetItem(property, colors);
+                result = storage.GetItem(property, colors);
                 if (result == 0)
                 {
                     var color = colors[0];
