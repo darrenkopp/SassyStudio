@@ -42,6 +42,7 @@ namespace SassyStudio
             base.Initialize();
             Instance = this;
 
+            FontsAndColorsStorage = GetService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage;
             RegisterScssLanguage();
 
             Composition = InitializeComposition();
@@ -92,6 +93,7 @@ namespace SassyStudio
         internal OptionsProvider Options { get { return _Options; } }
         internal DTE2 DTE { get { return _DTE.Value; } }
         internal LanguageSettings LanguageSettings { get; private set; }
+        internal IVsFontAndColorStorage FontsAndColorsStorage { get; private set; }
 
         public int LocaleId
         {
