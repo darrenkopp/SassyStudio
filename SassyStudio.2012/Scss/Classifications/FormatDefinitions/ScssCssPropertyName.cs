@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
+using System.Windows.Media;
 
 namespace SassyStudio.Scss.Classifications
 {
@@ -16,10 +17,13 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssCssPropertyName()
-            : base(x => x.LineNumber, foreground: true)
+            : base(foreground: true)
         {
             DisplayName = "SCSS CSS Property Name";
             ForegroundCustomizable = true;
         }
+
+        protected override FormatColorStorage Light { get { return new FormatColorStorage { Foreground = Color.FromRgb(255, 78, 78) }; } }
+        protected override FormatColorStorage Dark { get { return new FormatColorStorage { Foreground = Color.FromRgb(210, 157, 96) }; } }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Language.StandardClassification;
+using System.Windows.Media;
 
 namespace SassyStudio.Scss.Classifications
 {
@@ -18,10 +19,13 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssFunctionReference()
-            : base(x => x.UserTypesDelegate, foreground: true)
+            : base(foreground: true)
         {
             DisplayName = "SCSS Function Reference";
             ForegroundCustomizable = true;
         }
+
+        protected override FormatColorStorage Light { get { return new FormatColorStorage { Foreground = Color.FromRgb(103, 103, 0) }; } }
+        protected override FormatColorStorage Dark { get { return new FormatColorStorage { Foreground = Color.FromRgb(128, 128, 0) }; } }
     }
 }

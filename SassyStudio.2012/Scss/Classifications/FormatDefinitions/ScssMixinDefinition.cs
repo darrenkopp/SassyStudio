@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Language.StandardClassification;
+using System.Windows.Media;
 
 namespace SassyStudio.Scss.Classifications
 {
@@ -18,10 +19,13 @@ namespace SassyStudio.Scss.Classifications
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         public ScssMixinDefinition()
-            : base(x => x.UserTypesInterfaces, foreground: true)
+            : base(foreground: true)
         {
             DisplayName = "SCSS Mixin Definition";
             ForegroundCustomizable = true;
         }
+
+        protected override FormatColorStorage Light { get { return new FormatColorStorage { Foreground = Color.FromRgb(143, 192, 110) }; } }
+        protected override FormatColorStorage Dark { get { return new FormatColorStorage { Foreground = Color.FromRgb(184, 215, 163) }; } }
     }
 }

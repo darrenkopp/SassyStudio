@@ -51,7 +51,6 @@
     <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DefaultColorsStorage.cs" />
     <Compile Include="Editor\Classification\ClassifierContext.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -146,6 +145,7 @@
     <Compile Include="Sass\SassContentTypeDefinition.cs" />
     <Compile Include="Sass\ClassificationMatchResult.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ColorResolvingFormatDefinition.cs" />
+    <Compile Include="Scss\Classifications\FormatDefinitions\FormatColorStorage.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssCssPropertyName.cs" />
     <Compile Include="Sass\IClassificationMatchEvaluator.cs" />
     <Compile Include="Sass\Evaluators\RegexClassificationMatchEvaluator.cs" />

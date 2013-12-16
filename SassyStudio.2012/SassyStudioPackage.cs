@@ -37,13 +37,17 @@ namespace SassyStudio
 
         internal static SassyStudioPackage Instance { get; private set; }
         public CancellationToken ShutdownToken { get { return CancellationTokens.Token; } }
+        internal CompositionContainer Composition { get; private set; }
+        internal OptionsProvider Options { get { return _Options; } }
+        internal DTE2 DTE { get { return _DTE.Value; } }
+        internal LanguageSettings LanguageSettings { get; private set; }
+
         protected override void Initialize()
         {
             base.Initialize();
             Instance = this;
 
             RegisterScssLanguage();
-            FontsAndColorsStorage = new DefaultColorsStorage(GetService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage);
 
             Composition = InitializeComposition();
             OutputLogger.MessageReceived += (s, e) => Logger.Log(e.Message);
@@ -88,12 +92,6 @@ namespace SassyStudio
                 base.Dispose(disposing);
             }
         }
-
-        internal CompositionContainer Composition { get; private set; }
-        internal OptionsProvider Options { get { return _Options; } }
-        internal DTE2 DTE { get { return _DTE.Value; } }
-        internal LanguageSettings LanguageSettings { get; private set; }
-        internal DefaultColorsStorage FontsAndColorsStorage { get; private set; }
 
         public int LocaleId
         {
