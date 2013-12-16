@@ -33,6 +33,7 @@ namespace SassyStudio.Integration.Compass
                 executor.OutputDataReceived += (sender, e) => standardOutput.AppendLine(e.Data);
                 executor.ErrorDataReceived += (sender, e) => errorOutput.AppendLine(e.Data);
                 executor.BeginOutputReadLine();
+                executor.BeginErrorReadLine();
 
                 executor.WaitForExit();
 
