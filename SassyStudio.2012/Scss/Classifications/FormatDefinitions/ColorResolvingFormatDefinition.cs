@@ -9,8 +9,8 @@ namespace SassyStudio.Scss.Classifications
 {
     abstract class ColorResolvingFormatDefinition : ClassificationFormatDefinition
     {
-        static readonly Lazy<IVsFontAndColorStorage> _Storage = new Lazy<IVsFontAndColorStorage>(() => SassyStudioPackage.GetGlobalService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage);
-        static readonly Lazy<Tuple<Color?, Color?>> _PlainText = new Lazy<Tuple<Color?, Color?>>(() => TryGetItem(_Storage.Value, "Plain Text"));
+        static readonly Lazy<IVsFontAndColorStorage> _Storage = new Lazy<IVsFontAndColorStorage>(() => SassyStudioPackage.GetGlobalService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage, false);
+        static readonly Lazy<Tuple<Color?, Color?>> _PlainText = new Lazy<Tuple<Color?, Color?>>(() => TryGetItem(_Storage.Value, "Plain Text"), false);
         
         protected ColorResolvingFormatDefinition(bool foreground = false, bool background = false)
         {
@@ -39,11 +39,6 @@ namespace SassyStudio.Scss.Classifications
                 BackgroundColor = Pick(value.Item2, Light.Background, Dark.Background);
         }
 
-        private void OnColorsChanged(object sender, EventArgs e)
-        {
-            Apply();
-        }
-
         static Color? Pick(Color? background, Color? light, Color? dark)
         {
             if (background == null) return null;
@@ -64,7 +59,7 @@ namespace SassyStudio.Scss.Classifications
             if (string.IsNullOrEmpty(category)) return;
 
             var categoryId = Guid.Parse(category);
-            var hresult = storage.OpenCategory(ref categoryId, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS | __FCSTORAGEFLAGS.FCSF_NOAUTOCOLORS));
+            var hresult = storage.OpenCategory(ref categoryId, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
 
             try
             {
