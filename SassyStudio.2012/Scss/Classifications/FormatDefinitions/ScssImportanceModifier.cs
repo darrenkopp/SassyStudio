@@ -11,7 +11,6 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.ImportanceModifier)]
-    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.Keyword)]
     [Name(ScssClassificationTypes.ImportanceModifier)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]

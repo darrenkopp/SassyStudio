@@ -11,7 +11,6 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.MixinDefinition)]
-    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.SymbolDefinition)]
     [Name(ScssClassificationTypes.MixinDefinition)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]

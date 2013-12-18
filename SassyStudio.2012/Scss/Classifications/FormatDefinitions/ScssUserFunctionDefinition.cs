@@ -11,7 +11,6 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.UserFunctionDefinition)]
-    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.SymbolDefinition)]
     [Name(ScssClassificationTypes.UserFunctionDefinition)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]

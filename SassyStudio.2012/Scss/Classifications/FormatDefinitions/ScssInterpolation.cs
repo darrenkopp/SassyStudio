@@ -11,7 +11,6 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.Interpolation)]
-    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.Operator)]
     [Name(ScssClassificationTypes.Interpolation)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]

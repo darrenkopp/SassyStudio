@@ -11,7 +11,6 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.Comment)]
-    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.Comment)]
     [Name(ScssClassificationTypes.Comment)]
     [Order(After = Priority.Default)]
     [UserVisible(true)]

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Utilities;
 namespace SassyStudio.Editor.Classification
 {
     [Export(typeof(IClassifierProvider))]
-    [ContentType("SCSS")]
+    [ContentType(ScssContentTypeDefinition.ScssContentType)]
     class SassClassifierProvider : IClassifierProvider
     {
         [Import, System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]

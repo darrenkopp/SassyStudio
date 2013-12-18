@@ -11,7 +11,6 @@ namespace SassyStudio.Scss.Classifications
 {
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = ScssClassificationTypes.ParentReference)]
-    [ClassificationType(ClassificationTypeNames = PredefinedClassificationTypeNames.Operator)]
     [Name(ScssClassificationTypes.ParentReference)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
