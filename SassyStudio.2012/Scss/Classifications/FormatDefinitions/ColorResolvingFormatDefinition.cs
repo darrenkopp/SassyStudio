@@ -54,12 +54,9 @@ namespace SassyStudio.Scss.Classifications
             return hsp > 127.5 ? light : dark;
         }
 
-        static void InCategory(IVsFontAndColorStorage storage, string category, Action callback)
+        static void InCategory(IVsFontAndColorStorage storage, Guid category, Action callback)
         {
-            if (string.IsNullOrEmpty(category)) return;
-
-            var categoryId = Guid.Parse(category);
-            var hresult = storage.OpenCategory(ref categoryId, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
+            var hresult = storage.OpenCategory(ref category, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
 
             try
             {
@@ -76,7 +73,7 @@ namespace SassyStudio.Scss.Classifications
         {
             Tuple<Color?, Color?> result = null;
             // load specific category to prevent our own format classifications being loaded
-            InCategory(storage, "{58E96763-1D3B-4E05-B6BA-FF7115FD0B7B}", () =>
+            InCategory(storage, Microsoft.VisualStudio.Editor.DefGuidList.guidTextEditorFontCategory, () =>
             {
                 ColorableItemInfo[] colors = new ColorableItemInfo[1];
                 var hresult = storage.GetItem(item, colors);
