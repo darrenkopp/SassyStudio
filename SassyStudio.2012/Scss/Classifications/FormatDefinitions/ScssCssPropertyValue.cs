@@ -14,7 +14,6 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.CssPropertyValue)]
     [Order(Before = Priority.Default)]
     [UserVisible(true)]
-    [BaseDefinition("CSS Property Value")]
     sealed class ScssCssPropertyValue : ClassificationFormatDefinition
     {
         public ScssCssPropertyValue()

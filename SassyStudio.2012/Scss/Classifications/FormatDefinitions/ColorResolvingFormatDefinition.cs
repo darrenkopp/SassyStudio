@@ -9,8 +9,8 @@ namespace SassyStudio.Scss.Classifications
 {
     abstract class ColorResolvingFormatDefinition : ClassificationFormatDefinition
     {
-        static readonly Lazy<IVsFontAndColorStorage> _Storage = new Lazy<IVsFontAndColorStorage>(() => SassyStudioPackage.GetGlobalService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage, true);
-        static readonly Lazy<Tuple<Color?, Color?>> _PlainText = new Lazy<Tuple<Color?, Color?>>(() => TryGetItem(_Storage.Value, "Plain Text"), true);
+        static readonly Lazy<IVsFontAndColorStorage> _Storage = new Lazy<IVsFontAndColorStorage>(() => SassyStudioPackage.GetGlobalService(typeof(SVsFontAndColorStorage)) as IVsFontAndColorStorage, false);
+        static readonly Lazy<Tuple<Color?, Color?>> _PlainText = new Lazy<Tuple<Color?, Color?>>(() => TryGetItem(_Storage.Value, "Plain Text"), false);
         
         protected ColorResolvingFormatDefinition(bool foreground = false, bool background = false)
         {

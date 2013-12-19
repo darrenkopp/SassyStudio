@@ -14,7 +14,6 @@ namespace SassyStudio.Scss.Classifications
     [Name(ScssClassificationTypes.CssSelector)]
     [Order(After = Priority.Default)]
     [UserVisible(true)]
-    [BaseDefinition("CSS Selector")]
     sealed class ScssCssSelector : ClassificationFormatDefinition
     {
         public ScssCssSelector()
