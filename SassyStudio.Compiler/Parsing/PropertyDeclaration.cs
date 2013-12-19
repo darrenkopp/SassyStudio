@@ -45,6 +45,10 @@ namespace SassyStudio.Compiler.Parsing
                     {
                         Values.Add(value);
                         Children.Add(value);
+
+                        // bind all unknown values as property values
+                        if (value.ClassifierType == SassClassifierType.Default && value is TokenItem)
+                            value.ClassifierType = SassClassifierType.PropertyValue;
                     }
                 }
 

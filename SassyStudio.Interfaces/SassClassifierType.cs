@@ -23,6 +23,7 @@ namespace SassyStudio
         Interpolation,
         SystemFunction,
         PropertyName,
+        PropertyValue,
         FunctionBrace,
         Punctuation,
         CurlyBrace,

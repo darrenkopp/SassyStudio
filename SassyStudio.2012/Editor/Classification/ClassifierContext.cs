@@ -46,9 +46,16 @@ namespace SassyStudio.Editor.Classification
                 case SassClassifierType.SystemFunction: return ScssClassificationTypes.FunctionReference;
                 case SassClassifierType.String: return ScssClassificationTypes.StringValue;
                 case SassClassifierType.PropertyName: return ScssClassificationTypes.CssPropertyName;
+                case SassClassifierType.PropertyValue: return ScssClassificationTypes.CssPropertyValue;
                 case SassClassifierType.FunctionBrace: return "text";
                 case SassClassifierType.XmlDocumentationComment: return ScssClassificationTypes.XmlDocumentationComment;
                 case SassClassifierType.XmlDocumentationTag: return ScssClassificationTypes.XmlDocumentationTag;
+                case SassClassifierType.ClassName:
+                case SassClassifierType.IdName:
+                case SassClassifierType.ElementName:
+                case SassClassifierType.PseudoClass:
+                case SassClassifierType.PseudoElement:
+                    return ScssClassificationTypes.CssSelector;
                 default: return "Default";
             }
         }

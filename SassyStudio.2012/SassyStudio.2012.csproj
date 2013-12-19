@@ -154,6 +154,8 @@
     <Compile Include="Sass\LegacyClassifier.cs" />
     <Compile Include="Sass\LegacyClassifierProvider.cs" />
     <Compile Include="Editor\GenerateCssOnSave.cs" />
+    <Compile Include="Scss\Classifications\FormatDefinitions\ScssCssPropertyValue.cs" />
+    <Compile Include="Scss\Classifications\FormatDefinitions\ScssCssSelector.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssXmlDocumentationComment.cs" />
     <Compile Include="Scss\Classifications\FormatDefinitions\ScssXmlDocumentationTag.cs" />
     <Compile Include="Scss\ScssContentTypeDefinition.cs" />
