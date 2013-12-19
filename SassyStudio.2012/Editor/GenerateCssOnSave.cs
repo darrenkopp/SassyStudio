@@ -80,9 +80,15 @@ namespace SassyStudio.Editor
                     if (Options.IsDebugLoggingEnabled)
                         Logger.Log("Compiling: " + filename);
 
-                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateCss(e.Time, e.FilePath)), DispatcherPriority.Background);
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateRootDocument(e.Time, e.FilePath)), DispatcherPriority.Background);
                 }
             }
+        }
+
+        private void GenerateRootDocument(DateTime time, string path)
+        {
+            GenerateCss(time, path); 
+            GenerateAllReferencing(time, path); 
         }
 
         private void GenerateAllReferencing(DateTime time, string path)
