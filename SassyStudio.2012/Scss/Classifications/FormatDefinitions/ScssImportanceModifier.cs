@@ -25,7 +25,7 @@ namespace SassyStudio.Scss.Classifications
             IsBold = true;
         }
 
-        protected override FormatColorStorage Light { get { return new FormatColorStorage { Foreground = Color.FromRgb(81, 81, 163) }; } }
+        protected override FormatColorStorage Light { get { return new FormatColorStorage { Foreground = Color.FromRgb(64, 64, 129) }; } }
         protected override FormatColorStorage Dark { get { return new FormatColorStorage { Foreground = Color.FromRgb(128, 128, 192) }; } }
     }
 }
