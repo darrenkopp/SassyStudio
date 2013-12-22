@@ -56,7 +56,7 @@ namespace SassyStudio.Scss.Classifications
 
         static void InCategory(IVsFontAndColorStorage storage, Guid category, Action callback)
         {
-            var hresult = storage.OpenCategory(ref category, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS));
+            var hresult = storage.OpenCategory(ref category, (uint)(__FCSTORAGEFLAGS.FCSF_READONLY | __FCSTORAGEFLAGS.FCSF_LOADDEFAULTS | __FCSTORAGEFLAGS.FCSF_NOAUTOCOLORS));
 
             try
             {
