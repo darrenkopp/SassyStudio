@@ -26,7 +26,6 @@ namespace SassyStudio.Editor
 
         protected override bool Execute(VSConstants.VSStd97CmdID command, uint options, IntPtr pvaIn, IntPtr pvaOut)
         {
-            // TODO: determine if we are in an import file
             var stylesheet = Editor.Document.Stylesheet;
             if (stylesheet != null)
             {
