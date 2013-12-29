@@ -27,12 +27,16 @@ namespace SassyStudio.Editor
         [Import]
         IIntellisenseManager IntellisenseManager { get; set; }
 
+        [Import]
+        ISassEditorManager EditorManager { get; set; }
+
         public void VsTextViewCreated(IVsTextView textViewAdapter)
         {
             var textView = EditorAdaptersFactoryService.GetWpfTextView(textViewAdapter);
 
             textView.Properties.GetOrCreateSingletonProperty(() => new CommentSelectionCommandHandler(textViewAdapter, textView));
             textView.Properties.GetOrCreateSingletonProperty(() => new FormatDocumentHandler(textViewAdapter, textView));
+            textView.Properties.GetOrCreateSingletonProperty(() => new GoToDefinitionCommandHandler(textViewAdapter, textView, EditorManager));
 
             if (SassyStudioPackage.Instance.Options.Scss.EnableExperimentalIntellisense)
                 textView.Properties.GetOrCreateSingletonProperty(() => new CompletionCommandHandler(CompletionBroker, textViewAdapter, textView));
