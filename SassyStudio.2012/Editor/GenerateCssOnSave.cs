@@ -178,6 +178,9 @@ namespace SassyStudio.Editor
 
         private void Minify(string css, FileInfo file)
         {
+            if (Options.IsDebugLoggingEnabled)
+                Logger.Log("Generating minified css file.");
+
             try
             {
                 string minified = "";
@@ -220,8 +223,18 @@ namespace SassyStudio.Editor
 
         private static void AddFileToProject(FileInfo source, FileInfo target, ScssOptions options)
         {
-            var buildAction = options.IncludeCssInProjectOutput ? InteropHelper.BuildActionType.Content : InteropHelper.BuildActionType.None;
-            InteropHelper.AddNestedFile(SassyStudioPackage.Instance.DTE, source.FullName, target.FullName, buildAction);
+            try
+            {
+                if (options.IsDebugLoggingEnabled)
+                    Logger.Log(string.Format("Nesting {0} under {1}", target.Name, source.Name));
+
+                var buildAction = options.IncludeCssInProjectOutput ? InteropHelper.BuildActionType.Content : InteropHelper.BuildActionType.None;
+                InteropHelper.AddNestedFile(SassyStudioPackage.Instance.DTE, source.FullName, target.FullName, buildAction);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, string.Format("Failed to include {0} in project under {1}", target.Name, source.Name));
+            }
         }
     }
 }

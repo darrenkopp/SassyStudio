@@ -19,7 +19,7 @@ namespace SassyStudio
             try
             {
                 var dte = SassyStudioPackage.Instance.DTE;
-                if (File.Exists(file) && dte.Solution.FindProjectItem(file) != null)
+                if (File.Exists(file) && dte.SourceControl != null && dte.Solution.FindProjectItem(file) != null)
                 {
                     if (dte.SourceControl.IsItemUnderSCC(file) && !dte.SourceControl.IsItemCheckedOut(file))
                         dte.SourceControl.CheckOutItem(file);
@@ -44,7 +44,14 @@ namespace SassyStudio
 
             // add the child item and save project
             childItem = parentItem.ProjectItems.AddFromFile(child);
-            childItem.ContainingProject.Save();
+            if (childItem != null)
+            {
+                childItem.ContainingProject.Save();
+            }
+            else
+            {
+                Logger.Log("Could not add child item to project.");
+            }
 
             // schedule call to change build action
             // this is a work around since it seems to ignore property changes until after file saved
