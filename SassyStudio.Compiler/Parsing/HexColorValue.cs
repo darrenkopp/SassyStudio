@@ -14,8 +14,8 @@ namespace SassyStudio.Compiler.Parsing
         {
             if (stream.Current.Type == TokenType.Hash)
             {
-                Hash = Children.AddCurrentAndAdvance(stream, SassClassifierType.HexColor);
-                Color = Children.AddCurrentAndAdvance(stream, SassClassifierType.HexColor);
+                Hash = Children.AddCurrentAndAdvance(stream, SassClassifierType.Default);
+                Color = Children.AddCurrentAndAdvance(stream, SassClassifierType.Default);
             }
 
             return Children.Count > 0;
