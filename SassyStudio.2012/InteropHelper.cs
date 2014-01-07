@@ -43,6 +43,9 @@ namespace SassyStudio
                 return;
 
             // add the child item and save project
+            if (parentItem.ProjectItems == null)
+                Logger.Log("ProjectItems is null. Bad news is about to happen.");
+
             childItem = parentItem.ProjectItems.AddFromFile(child);
             if (childItem != null)
             {
