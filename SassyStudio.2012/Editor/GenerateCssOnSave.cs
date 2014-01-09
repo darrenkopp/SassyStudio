@@ -87,19 +87,33 @@ namespace SassyStudio.Editor
 
         private void GenerateRootDocument(DateTime time, string path)
         {
-            GenerateCss(time, path); 
-            GenerateAllReferencing(time, path); 
+            try
+            {
+                GenerateCss(time, path);
+                GenerateAllReferencing(time, path);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Unhandled exception.");
+            }
         }
 
         private void GenerateAllReferencing(DateTime time, string path)
         {
-            var source = new FileInfo(path);
-            var documents = DocumentCache.Documents;
-
-            foreach (var document in documents)
+            try
             {
-                if (IsReferenced(source, document, new HashSet<ISassDocument>()))
-                    GenerateCss(time, document.Source.FullName);
+                var source = new FileInfo(path);
+                var documents = DocumentCache.Documents;
+
+                foreach (var document in documents)
+                {
+                    if (IsReferenced(source, document, new HashSet<ISassDocument>()))
+                        GenerateCss(time, document.Source.FullName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Unhandled exception.");
             }
         }
 
