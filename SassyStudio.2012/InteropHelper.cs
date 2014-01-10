@@ -90,7 +90,45 @@ namespace SassyStudio
             if (solution != null)
                 item = solution.FindProjectItem(path);
 
+            // if we found project item, but don't have project items, attempt to find
+            // item recursively
+            if (item != null && item.ProjectItems == null)
+                item = FindProjectItemRecursive(solution, path);
+
             return item != null;
+        }
+
+        private static ProjectItem FindProjectItemRecursive(Solution solution, string path)
+        {
+            foreach (Project project in solution.Projects)
+            {
+                var item = FindProjectItemRecursive(project.ProjectItems, path);
+                if (item != null)
+                    return item;
+            }
+
+            return null;
+        }
+
+        private static ProjectItem FindProjectItemRecursive(ProjectItems items, string path)
+        {
+            if (items == null)
+                return null;
+
+            foreach (ProjectItem item in items)
+            {
+                if (item.Properties == null || item.Properties.Count == 0) continue;
+
+                var itemPath = item.Properties.Item("FullPath");
+                if (itemPath != null && itemPath.Value != null && itemPath.Value.ToString().Equals(path, StringComparison.OrdinalIgnoreCase))
+                    return item;
+
+                var child = FindProjectItemRecursive(item.ProjectItems, path);
+                if (child != null)
+                    return child;
+            }
+
+            return null;
         }
 
         internal enum BuildActionType : int
