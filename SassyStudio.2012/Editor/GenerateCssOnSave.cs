@@ -119,8 +119,10 @@ namespace SassyStudio.Editor
 
         private bool IsReferenced(FileInfo source, ISassDocument document, HashSet<ISassDocument> visited)
         {
+            if (document == null || document.Stylesheet == null) return false;
+
             var comparer = StringComparer.CurrentCultureIgnoreCase;
-            foreach (var import in document.Stylesheet.Children.OfType<SassImportDirective>().SelectMany(x => x.Files).Where(x => x.Document != null))
+            foreach (var import in document.Stylesheet.Children.OfType<SassImportDirective>().SelectMany(x => x.Files).Where(x => x.Document != null && x.Document.Source != null))
             {
                 if (comparer.Equals(import.Document.Source.FullName, source.FullName))
                     return true;
