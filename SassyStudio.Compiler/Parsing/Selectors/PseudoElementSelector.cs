@@ -8,11 +8,6 @@ namespace SassyStudio.Compiler.Parsing.Selectors
 {
     public class PseudoElementSelector : SimpleSelector
     {
-        public PseudoElementSelector()
-        {
-            ClassifierType = SassClassifierType.PseudoElement;
-        }
-
         public TokenItem Prefix { get; protected set; }
         public TokenItem Name { get; protected set; }
 
@@ -20,8 +15,8 @@ namespace SassyStudio.Compiler.Parsing.Selectors
         {
             if (stream.Current.Type == TokenType.DoubleColon && stream.Peek(1).Type == TokenType.Identifier)
             {
-                Prefix = Children.AddCurrentAndAdvance(stream);
-                Name = Children.AddCurrentAndAdvance(stream);
+                Prefix = Children.AddCurrentAndAdvance(stream, SassClassifierType.PseudoElement);
+                Name = Children.AddCurrentAndAdvance(stream, SassClassifierType.PseudoElement);
             }
 
             return Children.Count > 0;

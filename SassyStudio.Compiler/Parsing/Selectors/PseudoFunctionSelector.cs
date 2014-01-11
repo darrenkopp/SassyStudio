@@ -8,11 +8,6 @@ namespace SassyStudio.Compiler.Parsing.Selectors
 {
     public class PseudoFunctionSelector : SimpleSelector
     {
-        public PseudoFunctionSelector()
-        {
-            ClassifierType = SassClassifierType.PseudoClass;
-        }
-
         public TokenItem Prefix { get; protected set; }
         public Function Function { get; protected set; }
 
