@@ -64,6 +64,10 @@ namespace SassyStudio
                 var complex = item as ComplexItem;
                 if (complex != null)
                     DumpTree(complex.Children, depth + 1);
+
+                var simplex = item as SimplexItem;
+                if (simplex != null)
+                    DumpTree(simplex.Children, depth + 1);
             }
         }
 
