@@ -140,7 +140,7 @@ namespace SassyStudio.Compiler.Lexing
                 case ':':
                     type = TokenType.Colon;
                     stream.Advance();
-                    if (stream.Peek(1) == ':')
+                    if (stream.Current == ':')
                     {
                         type = TokenType.DoubleColon;
                         stream.Advance();
