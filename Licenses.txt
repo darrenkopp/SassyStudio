@@ -22,7 +22,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ==========
-NSass
+LibSassNet
 ==========
 
 Copyright (C) 2013 by TBAPI-0KA

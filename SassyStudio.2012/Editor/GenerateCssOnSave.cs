@@ -10,7 +10,7 @@ using System.Windows.Threading;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
-using NSass;
+using LibSassNet;
 using SassyStudio.Compiler;
 using SassyStudio.Compiler.Parsing;
 using SassyStudio.Integration.Compass;
@@ -189,7 +189,7 @@ namespace SassyStudio.Editor
             if (SassSupport.IsSassGemInstalled)
                 return new SassDocumentCompiler(Options);
 
-            return new NSassDocumentCompiler(Options);
+            return new LibSassNetDocumentCompiler(Options);
         }
 
         private void Minify(string css, FileInfo file)

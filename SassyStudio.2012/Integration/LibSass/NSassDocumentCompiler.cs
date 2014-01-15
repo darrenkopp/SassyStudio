@@ -2,28 +2,20 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading;
-using NSass;
+using LibSassNet;
 using SassyStudio.Compiler;
 using SassyStudio.Options;
 
 namespace SassyStudio.Integration.LibSass
 {
-    class NSassDocumentCompiler : IDocumentCompiler
+    class LibSassNetDocumentCompiler : IDocumentCompiler
     {
-        static int IsResolverInitialized = 0;
         static readonly Encoding UTF8_ENCODING = new UTF8Encoding(true);
         readonly Lazy<ISassCompiler> _Compiler = new Lazy<ISassCompiler>(() => new SassCompiler());
         readonly ScssOptions Options;
 
-        static NSassDocumentCompiler()
-        {
-            FixNSassAssemblyResolution();
-        }
-
-        public NSassDocumentCompiler(ScssOptions options)
+        public LibSassNetDocumentCompiler(ScssOptions options)
         {
             Options = options;
         }
@@ -92,21 +84,6 @@ namespace SassyStudio.Integration.LibSass
         private bool ContainsSassFiles(DirectoryInfo directory)
         {
             return directory != null && directory.EnumerateFiles("*.scss").Any();
-        }
-
-        private static void FixNSassAssemblyResolution()
-        {
-            if (Interlocked.CompareExchange(ref IsResolverInitialized, 1, 0) == 0)
-            {
-                var basePath = new FileInfo(new Uri(typeof(NSassDocumentCompiler).Assembly.CodeBase).LocalPath).Directory.FullName;
-                AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
-                {
-                    if (e.Name.StartsWith("NSass.Wrapper.proxy", StringComparison.Ordinal))
-                        return Assembly.LoadFrom(Path.Combine(basePath, "NSass.Wrapper.x86.dll"));
-
-                    return null;
-                };
-            }
         }
     }
 }

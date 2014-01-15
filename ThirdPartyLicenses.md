@@ -1,4 +1,4 @@
-### NSass
+### LibSassNet
 
 Copyright (C) 2013 by TBAPI-0KA
 
