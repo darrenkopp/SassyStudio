@@ -10,5 +10,6 @@ namespace SassyStudio
     public interface ISassStylesheet
     {
         ParseItemList Children { get; }
+        ISassDocument Owner { get; set; }
     }
 }

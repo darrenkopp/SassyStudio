@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SassyStudio.Editor;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class ImportFile : ComplexItem
+    public class ImportFile : ComplexItem, IResolvableToken
     {
         public ISassDocument Document { get; set; }
         public StringValue Filename { get; protected set; }
@@ -37,6 +38,14 @@ namespace SassyStudio.Compiler.Parsing
                 return null;
 
             return ImportResolver.ResolvePath(Filename, text, currentDirectory);
+        }
+
+        public ParseItem GetSourceToken(ParseItem token)
+        {
+            if (Document != null)
+                return Document.Stylesheet as Stylesheet;
+
+            return null;
         }
     }
 }

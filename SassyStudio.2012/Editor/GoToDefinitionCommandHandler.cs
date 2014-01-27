@@ -47,9 +47,27 @@ namespace SassyStudio.Editor
             var current = target;
             while (current != null)
             {
-                var importFile = current as ImportFile;
-                if (importFile != null)
-                    return importFile.Document != null ? importFile.Document.Source : null;
+                var resolvable = current as IResolvableToken;
+                if (resolvable != null)
+                    return FindFile(resolvable.GetSourceToken(current));
+
+                current = current.Parent;
+            }
+
+            return null;
+        }
+
+        private FileInfo FindFile(ParseItem item)
+        {
+            if (item == null)
+                return null;
+
+            var current = item;
+            while (current != null)
+            {
+                var sheet = current as ISassStylesheet;
+                if (sheet != null && sheet.Owner != null)
+                    return sheet.Owner.Source;
 
                 current = current.Parent;
             }

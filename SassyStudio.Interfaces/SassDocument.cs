@@ -23,9 +23,13 @@ namespace SassyStudio
             {
                 var previous = Stylesheet;
                 Stylesheet = stylesheet;
+                if (Stylesheet != null)
+                    Stylesheet.Owner = this;
 
                 //DumpTree(stylesheet.Children, 0);
                 OnStylesheetChanged(previous, stylesheet);
+                if (previous != null)
+                    previous.Owner = null;
 
                 return previous;
             }

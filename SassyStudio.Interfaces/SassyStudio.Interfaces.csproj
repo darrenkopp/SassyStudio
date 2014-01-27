@@ -39,6 +39,7 @@
     <Compile Include="Compiler\IDocumentParser.cs" />
     <Compile Include="Compiler\IDocumentParserFactory.cs" />
     <Compile Include="Compiler\IParsingRequest.cs" />
+    <Compile Include="Editor\IResolvableToken.cs" />
     <Compile Include="IRange.cs" />
     <Compile Include="Compiler\Parsing\ComplexItem.cs" />
     <Compile Include="Compiler\Parsing\IItemFactory.cs" />
