@@ -22,11 +22,15 @@ namespace SassyStudio.Compiler.Parsing
         public IList<FunctionArgument> Arguments { get { return _Arguments; } }
         public TokenItem CloseBrace { get; protected set; }
 
+        protected string FunctionName { get; set; }
+
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
         {
             if (IsFunctionCall(stream) && IsFunctionNameValid(text, stream))
             {
                 Name = Children.AddCurrentAndAdvance(stream, FunctionClassifierType);
+                if (Name != null)
+                    FunctionName = text.GetText(Name.Start, Name.Length);
 
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                     OpenBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);

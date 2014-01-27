@@ -20,6 +20,7 @@ namespace SassyStudio.Compiler.Parsing
         public IList<FunctionArgumentDefinition> Arguments { get { return _Arguments; } }
         public TokenItem CloseBrace { get; protected set; }
         public UserFunctionBody Body { get; protected set; }
+        public string FunctionName { get; set; }
 
         public override bool IsValid { get { return Name != null && Name.Length > 0; } }
 
@@ -32,7 +33,10 @@ namespace SassyStudio.Compiler.Parsing
                     Children.Add(Rule);
 
                 if (stream.Current.Type == TokenType.Function)
+                {
                     Name = Children.AddCurrentAndAdvance(stream, SassClassifierType.UserFunctionDefinition);
+                    FunctionName = text.GetText(Name.Start, Name.Length);
+                }
 
                 if (stream.Current.Type == TokenType.OpenFunctionBrace)
                     Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
