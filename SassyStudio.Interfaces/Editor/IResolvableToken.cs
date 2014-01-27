@@ -7,6 +7,6 @@ namespace SassyStudio.Editor
 {
     public interface IResolvableToken
     {
-        ParseItem GetSourceToken(ParseItem token);
+        ParseItem GetSourceToken();
     }
 }

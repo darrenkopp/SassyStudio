@@ -40,7 +40,7 @@ namespace SassyStudio.Compiler.Parsing
             return ImportResolver.ResolvePath(Filename, text, currentDirectory);
         }
 
-        public ParseItem GetSourceToken(ParseItem token)
+        public ParseItem GetSourceToken()
         {
             if (Document != null)
                 return Document.Stylesheet as Stylesheet;

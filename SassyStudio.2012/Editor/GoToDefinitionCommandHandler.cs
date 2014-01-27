@@ -49,7 +49,7 @@ namespace SassyStudio.Editor
             {
                 var resolvable = current as IResolvableToken;
                 if (resolvable != null)
-                    return FindFile(resolvable.GetSourceToken(current));
+                    return FindFile(resolvable.GetSourceToken());
 
                 current = current.Parent;
             }

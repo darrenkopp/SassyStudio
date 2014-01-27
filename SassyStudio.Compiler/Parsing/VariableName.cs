@@ -7,7 +7,7 @@ using SassyStudio.Compiler.Lexing;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class VariableName : SimplexItem
+    public class VariableName : SimplexItem, IEquatable<VariableName>
     {
         public VariableName(SassClassifierType classifierType)
         {
@@ -16,6 +16,8 @@ namespace SassyStudio.Compiler.Parsing
 
         public TokenItem Prefix { get; protected set; }
         public TokenItem Name { get; protected set; }
+        private string NameValue { get; set; }
+
         public override bool IsValid { get { return Prefix != null && Name != null && Name.Length > 0; } }
 
         public override bool Parse(IItemFactory itemFactory, ITextProvider text, ITokenStream stream)
@@ -24,6 +26,7 @@ namespace SassyStudio.Compiler.Parsing
             {
                 Prefix = Children.AddCurrentAndAdvance(stream);
                 Name = Children.AddCurrentAndAdvance(stream);
+                NameValue = text.GetText(Name.Start, Name.Length);
             }
 
             return Children.Count > 0;
@@ -49,6 +52,15 @@ namespace SassyStudio.Compiler.Parsing
             }
 
             return false;
+        }
+
+        public bool Equals(VariableName other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            return Prefix.SourceType == other.Prefix.SourceType
+                && NameValue == other.NameValue;
         }
     }
 }
