@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SassyStudio.Editor;
 
 namespace SassyStudio.Compiler.Parsing
 {
-    public class MixinReference : ComplexItem
+    public class MixinReference : ComplexItem, IResolvableToken
     {
         readonly List<FunctionArgument> _Arguments = new List<FunctionArgument>(0);
 
@@ -90,6 +91,11 @@ namespace SassyStudio.Compiler.Parsing
                 default:
                     return false;
             }
+        }
+
+        public ParseItem GetSourceToken()
+        {
+            return ReverseSearch.Find<MixinDefinition>(this, x => x.Name.Equals(Name));
         }
     }
 }
