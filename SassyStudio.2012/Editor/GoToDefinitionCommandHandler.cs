@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Threading;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -31,10 +29,13 @@ namespace SassyStudio.Editor
             {
                 var position = this.TextView.Caret.Position.BufferPosition.Position;
                 var target = stylesheet.Children.FindItemContainingPosition(position);
-                var file = GetFile(target);
+                var source = GetSourceToken(target);
+                var file = FindFile(source);
+
                 if (file != null)
                 {
                     OpenFileInPreviewTab(file.FullName);
+                    GoToPosition(source);
                     return true;
                 }
             }
@@ -42,19 +43,39 @@ namespace SassyStudio.Editor
             return false;
         }
 
-        private FileInfo GetFile(ParseItem target)
+        private ParseItem GetSourceToken(ParseItem target)
         {
             var current = target;
             while (current != null)
             {
                 var resolvable = current as IResolvableToken;
                 if (resolvable != null)
-                    return FindFile(resolvable.GetSourceToken());
+                    return resolvable.GetSourceToken();
 
                 current = current.Parent;
             }
 
             return null;
+        }
+
+        private void GoToPosition(ParseItem target)
+        {
+
+            try
+            {
+                var view = ExtensibilityHelper.GetCurentTextView();
+                var textBuffer = ExtensibilityHelper.GetCurentTextBuffer();
+                var span = new SnapshotSpan(textBuffer.CurrentSnapshot, target.Start, target.Length);
+                var point = new SnapshotPoint(textBuffer.CurrentSnapshot, target.Start);
+
+                view.ViewScroller.EnsureSpanVisible(span);
+                view.Caret.MoveTo(point);
+                //view.Selection.Select(span, false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex, "Failed to navigate to line.");
+            }
         }
 
         private FileInfo FindFile(ParseItem item)

@@ -118,6 +118,7 @@
     </Compile>
     <Compile Include="Editor\SassEditorManager.cs" />
     <Compile Include="Editor\SnapshotTextProvider.cs" />
+    <Compile Include="ExtensibilityHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Editor\Intellisense\Completion\ContextProviders\ConditionalContextProvider.cs" />
@@ -223,6 +224,7 @@
     <Reference Include="libsassnet">
       <HintPath>..\lib\libsass-net\libsassnet.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Editor, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
