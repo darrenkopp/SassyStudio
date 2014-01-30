@@ -35,7 +35,10 @@ namespace SassyStudio.Editor
                 if (file != null)
                 {
                     OpenFileInPreviewTab(file.FullName);
-                    GoToPosition(source);
+
+                    // if we aren't the entire document, then we want to jump to it's position
+                    if (!(source is Stylesheet))
+                        GoToPosition(source);
                     return true;
                 }
             }
@@ -60,7 +63,6 @@ namespace SassyStudio.Editor
 
         private void GoToPosition(ParseItem target)
         {
-
             try
             {
                 var view = ExtensibilityHelper.GetCurentTextView();
