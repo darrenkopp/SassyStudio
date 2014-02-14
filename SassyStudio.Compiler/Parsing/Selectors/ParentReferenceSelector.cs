@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SassyStudio.Editor;
 
 namespace SassyStudio.Compiler.Parsing.Selectors
 {
-    public class ParentReferenceSelector : SimpleSelector
+    public class ParentReferenceSelector : SimpleSelector, IResolvableToken
     {
         public TokenItem Ampersand { get; protected set; }
 
@@ -16,6 +17,11 @@ namespace SassyStudio.Compiler.Parsing.Selectors
                 Ampersand = Children.AddCurrentAndAdvance(stream, SassClassifierType.ParentReference);
 
             return Children.Count > 0;
+        }
+
+        public ParseItem GetSourceToken()
+        {
+            return Parent.Parent.Parent.Parent;
         }
     }
 }
