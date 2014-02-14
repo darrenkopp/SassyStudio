@@ -25,32 +25,55 @@ namespace SassyStudio.Compiler
                 else if (current is ISassStylesheet)
                 {
                     var sheet = current as ISassStylesheet;
+                    var match = Find(sheet.Children.OfType<T>(), start, predicate);
+                    if (match != null)
+                        return match;
+                    
                     foreach (var import in sheet.Children.OfType<SassImportDirective>().Reverse())
                     {
-                        var match = FindInDocument<T>(import, predicate);
+                        match = FindInDocument<T>(import, predicate);
                         if (match != null)
                             return match;
                     }
+                }
+                else if (current is UserFunctionDefinition)
+                {
+                    // search argument definitions
+                    var function = current as UserFunctionDefinition;
 
-                    // search imports and files for definition in reverse order
-                    //var imports = sheet
-                    //    .Children.OfType<SassImportDirective>().Reverse()
-                    //    .SelectMany(x => x.Files.Reverse())
-                    //    .Select(x => x.Document.Stylesheet)
-                    //    .OfType<Stylesheet>();
+                    var match = Find(function.Arguments.Select(x => x.Variable).OfType<T>(), start, predicate);
+                    if (match != null)
+                        return match;
+                }
+                else if (current is MixinDefinition)
+                {
+                    // search argument definitions
+                    var mixin = current as MixinDefinition;
 
-                    //foreach (var stylesheet in imports)
-                    //{
-
-                    //    if (match != null)
-                    //        return match;
-                    //}
+                    var match = Find(mixin.Arguments.Select(x => x.Variable).OfType<T>(), start, predicate);
+                    if (match != null)
+                        return match;
+                }
+                
+                // search for items defined in block scope
+                if (current is BlockItem)
+                {
+                    var block = current as BlockItem;
+                    var match = Find<T>(block.Children.OfType<T>(), start, predicate);
+                    if (match != null)
+                        return match;
                 }
 
                 current = current.Parent;
             }
 
             return null;
+        }
+
+        private static T Find<T>(IEnumerable<T> items, ParseItem start, Func<T, bool> predicate)
+            where T : ParseItem
+        {
+            return items.Where(x => x.End < start.Start).FirstOrDefault(predicate);
         }
 
         private static T FindInDocument<T>(SassImportDirective import, Func<T, bool> predicate) 
