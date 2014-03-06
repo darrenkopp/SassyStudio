@@ -28,6 +28,14 @@ namespace SassyStudio.Compiler.Parsing
                     if (Url != null)
                         Children.Add(Url);
                 }
+                else
+                {
+                    // not using string, so just consume everything until close of url()
+                    while (!IsUrlTerminator(stream.Current.Type))
+                    {
+                        Children.AddCurrentAndAdvance(stream, SassClassifierType.String);
+                    }
+                }
 
                 if (stream.Current.Type == TokenType.CloseFunctionBrace)
                     CloseBrace = Children.AddCurrentAndAdvance(stream, SassClassifierType.FunctionBrace);
@@ -43,6 +51,20 @@ namespace SassyStudio.Compiler.Parsing
                 case TokenType.Function:
                 case TokenType.Identifier:
                     return text.StartsWithOrdinal(token.Start, "url");
+                default:
+                    return false;
+            }
+        }
+
+        static bool IsUrlTerminator(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.CloseFunctionBrace:
+                case TokenType.NewLine:
+                case TokenType.EndOfFile:
+                case TokenType.Semicolon:
+                    return true;
                 default:
                     return false;
             }
