@@ -67,7 +67,6 @@ namespace SassyStudio.Editor.Intellisense
         private ICompletionContext CreateCompletionContext(ISassStylesheet stylesheet, int position, ITextSnapshot snapshot)
         {
             ParseItem current = stylesheet as Stylesheet;
-            ParseItem predecessor = null;
 
             if (position >= 0)
             {
