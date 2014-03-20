@@ -25,8 +25,8 @@ namespace SassyStudio.Editor
             int start = TextView.Selection.Start.Position.Position;
             int end = TextView.Selection.End.Position.Position;
 
-            // TODO: pre-process the input and determine start position of left-most
-            //       text just like visual studio does
+            // this is what we will store start offset in to get maximal indentation amount
+            int? insertStartOffset = null;
 
             using (var edit = Buffer.CreateEdit())
             {
@@ -39,16 +39,23 @@ namespace SassyStudio.Editor
                         case VSConstants.VSStd2KCmdID.COMMENTBLOCK:
                         case VSConstants.VSStd2KCmdID.COMMENT_BLOCK:
                         {
+                            if (insertStartOffset == null) insertStartOffset = GetOffset(snapshot, start, end);
                             if (!string.IsNullOrEmpty(text))
-                                edit.Insert(line.Start.Position, "//");
+                                edit.Insert(line.Start.Position + insertStartOffset.GetValueOrDefault(), "//");
 
                             break;
                         }
                         case VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK:
                         case VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK:
                         {
-                            if (text.StartsWith("//", StringComparison.OrdinalIgnoreCase))
-                                edit.Delete(line.Start.Position, 2);
+                            for (int i = 0; i < text.Length - 1; i++)
+                            {
+                                if (text[i] == '/' && text[i + 1] == '/')
+                                {
+                                    edit.Delete(line.Start.Position + i, 2);
+                                    break;
+                                }
+                            }
 
                             break;
                         }
@@ -61,6 +68,26 @@ namespace SassyStudio.Editor
             }
 
             return true;
+        }
+
+        private int GetOffset(ITextSnapshot snapshot, int start, int end)
+        {
+            int offset = int.MaxValue;
+            while (start < end)
+            {
+                var line = snapshot.GetLineFromPosition(start);
+                var text = line.GetText();
+
+                for (int i = 0; i < text.Length; i++)
+                {
+                    if (!char.IsWhiteSpace(text[i]))
+                        offset = Math.Min(offset, i);
+                }
+
+                start = line.EndIncludingLineBreak.Position;
+            }
+
+            return offset == int.MaxValue ? 0 : offset;
         }
 
         protected override IEnumerable<VSConstants.VSStd2KCmdID> SupportedCommands
