@@ -70,8 +70,11 @@ namespace SassyStudio.Integration.SassGem
 
         private string GetSassArguments(FileInfo input, FileInfo output)
         {
-            return new StringBuilder()
-                .Append("--no-cache ")
+            var builder = new StringBuilder().Append("--no-cache ");
+            if (Options.GenerateSourceMaps)
+                builder.Append("--sourcemap ");
+
+            return builder
                 .Append(@"""").Append(input.FullName).Append(@"""").Append(" ")
                 .Append(@"""").Append(output.FullName).Append(@"""")
             .ToString();
