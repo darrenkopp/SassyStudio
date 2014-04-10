@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using SassyStudio.Options;
+using System.Threading.Tasks;
 
 namespace SassyStudio.Integration.SassGem
 {
@@ -16,6 +17,11 @@ namespace SassyStudio.Integration.SassGem
         public SassDocumentCompiler(ScssOptions options)
         {
             Options = options;
+        }
+
+        public Task CompileAsync(FileInfo source, FileInfo output)
+        {
+            return Task.Run(() => Compile(source, output));
         }
 
         public void Compile(FileInfo source, FileInfo output)

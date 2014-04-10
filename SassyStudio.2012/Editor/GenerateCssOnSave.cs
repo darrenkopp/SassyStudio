@@ -18,6 +18,7 @@ using SassyStudio.Integration.LibSass;
 using SassyStudio.Integration.SassGem;
 using SassyStudio.Options;
 using Yahoo.Yui.Compressor;
+using System.Threading.Tasks;
 
 namespace SassyStudio.Editor
 {
@@ -53,7 +54,7 @@ namespace SassyStudio.Editor
             }
         }
 
-        private void OnFileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
+        private async void OnFileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
@@ -73,24 +74,24 @@ namespace SassyStudio.Editor
                     if (Options.IsDebugLoggingEnabled)
                         Logger.Log("Compiling all files referencing include file: " + filename);
 
-                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateAllReferencing(e.Time, e.FilePath)), DispatcherPriority.Background);
+                    await GenerateAllReferencing(e.Time, e.FilePath);
                 }
                 else
                 {
                     if (Options.IsDebugLoggingEnabled)
                         Logger.Log("Compiling: " + filename);
 
-                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => GenerateRootDocument(e.Time, e.FilePath)), DispatcherPriority.Background);
+                    await GenerateRootDocument(e.Time, e.FilePath);
                 }
             }
         }
 
-        private void GenerateRootDocument(DateTime time, string path)
+        private async Task GenerateRootDocument(DateTime time, string path)
         {
             try
             {
-                GenerateCss(time, path);
-                GenerateAllReferencing(time, path);
+                await GenerateCss(time, path);
+                await GenerateAllReferencing(time, path);
             }
             catch (Exception ex)
             {
@@ -98,7 +99,7 @@ namespace SassyStudio.Editor
             }
         }
 
-        private void GenerateAllReferencing(DateTime time, string path)
+        private async Task GenerateAllReferencing(DateTime time, string path)
         {
             try
             {
@@ -108,7 +109,7 @@ namespace SassyStudio.Editor
                 foreach (var document in documents)
                 {
                     if (IsReferenced(source, document, new HashSet<ISassDocument>()))
-                        GenerateCss(time, document.Source.FullName);
+                        await GenerateCss(time, document.Source.FullName);
                 }
             }
             catch (Exception ex)
@@ -137,7 +138,7 @@ namespace SassyStudio.Editor
             return false;
         }
 
-        private void GenerateCss(DateTime time, string path)
+        private async Task GenerateCss(DateTime time, string path)
         {
             if (Options.IsDebugLoggingEnabled)
                 Logger.Log("Beginning compile: " + path);
@@ -159,7 +160,7 @@ namespace SassyStudio.Editor
 
             try
             {
-                compiler.Compile(document, output);
+                await compiler.CompileAsync(document, output);
 
                 // minify
                 if (Options.GenerateMinifiedCssOnSave && output != null)

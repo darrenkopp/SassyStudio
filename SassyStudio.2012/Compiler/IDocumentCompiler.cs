@@ -10,6 +10,7 @@ namespace SassyStudio.Compiler
     interface IDocumentCompiler
     {
         void Compile(FileInfo source, FileInfo output);
+        Task CompileAsync(FileInfo source, FileInfo output);
         FileInfo GetOutput(FileInfo source);
     }
 }

@@ -3,12 +3,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using SassyStudio.Compiler;
 
 namespace SassyStudio.Integration.Compass
 {
     class CompassDocumentCompiler : IDocumentCompiler
     {
+        public Task CompileAsync(FileInfo source, FileInfo output)
+        {
+            return Task.Run(() => Compile(source, output));
+        }
+
         public void Compile(FileInfo source, FileInfo output)
         {
             var project = ResolveProject(source.Directory);

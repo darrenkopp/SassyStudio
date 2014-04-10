@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using LibSassNet;
 using SassyStudio.Compiler;
 using SassyStudio.Options;
@@ -29,6 +30,11 @@ namespace SassyStudio.Integration.LibSass
             var target = new FileInfo(Path.Combine(directory.FullName, filename + ".css"));
 
             return target;
+        }
+
+        public Task CompileAsync(FileInfo source, FileInfo output)
+        {
+            return Task.Run(() => Compile(source, output));
         }
 
         public void Compile(FileInfo source, FileInfo output)
