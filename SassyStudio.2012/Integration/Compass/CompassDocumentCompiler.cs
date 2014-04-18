@@ -46,11 +46,13 @@ namespace SassyStudio.Integration.Compass
                 if (executor.ExitCode != 0)
                 {
                     var message = "Compass returned an error.";
-                    if (errorOutput.Length > 0)
+                    
+                    if (errorOutput.ToString().Trim().Length > 0)
                     {
                         message += Environment.NewLine + errorOutput.ToString();
                     }
-                    else if (standardOutput.Length > 0)
+                    
+                    if (standardOutput.ToString().Trim().Length > 0)
                     {
                         message += Environment.NewLine + standardOutput.ToString();
                     }
