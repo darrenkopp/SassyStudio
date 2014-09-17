@@ -43,7 +43,12 @@ namespace SassyStudio.Integration.LibSass
             if (!string.IsNullOrWhiteSpace(Options.CompilationIncludePaths) && Directory.Exists(Options.CompilationIncludePaths))
                 includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
 
-            var result = Compiler.CompileFile(source.FullName, sourceMapPath: output.Name + ".map", sourceComments: DetermineSourceCommentsMode(Options), additionalIncludePaths: includePaths);
+            // make paths relative and with href style slashes
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var sourceRelative = source.FullName.Replace(currentDirectory, "").Replace(Path.DirectorySeparatorChar.ToString(), "/");
+            var mapRelative = (output.FullName + ".map").Replace(currentDirectory, "").Replace(Path.DirectorySeparatorChar.ToString(), "/");
+
+            var result = Compiler.CompileFile(sourceRelative, sourceMapPath: mapRelative, sourceComments: DetermineSourceCommentsMode(Options), additionalIncludePaths: includePaths);
             var css = result.CSS;
             var sourceMap = result.SourceMap;
             InteropHelper.CheckOut(output.FullName);
