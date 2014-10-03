@@ -80,6 +80,8 @@ namespace SassyStudio.Integration.SassGem
             if (Options.GenerateSourceMaps)
                 builder.Append("--sourcemap ");
 
+            builder.Append("--precision ").Append(Options.Precision).Append(" ");
+
             return builder
                 .Append(@"""").Append(input.FullName).Append(@"""").Append(" ")
                 .Append(@"""").Append(output.FullName).Append(@"""")
