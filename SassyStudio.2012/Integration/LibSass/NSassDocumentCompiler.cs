@@ -48,7 +48,7 @@ namespace SassyStudio.Integration.LibSass
             var sourceRelative = source.FullName.Replace(currentDirectory, "").Replace(Path.DirectorySeparatorChar.ToString(), "/");
             var mapRelative = (output.FullName + ".map").Replace(currentDirectory, "").Replace(Path.DirectorySeparatorChar.ToString(), "/");
 
-            var result = Compiler.CompileFile(sourceRelative, sourceMapPath: mapRelative, sourceComments: DetermineSourceCommentsMode(Options), additionalIncludePaths: includePaths);
+            var result = Compiler.CompileFile(sourceRelative, sourceMapPath: mapRelative, sourceComments: DetermineSourceCommentsMode(Options), precision: Options.Precision, additionalIncludePaths: includePaths);
             var css = result.CSS;
             var sourceMap = result.SourceMap;
             InteropHelper.CheckOut(output.FullName);
