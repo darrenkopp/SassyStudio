@@ -13,12 +13,12 @@ using SassyStudio.Scss;
 namespace SassyStudio
 {
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "0.8.9.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "0.8.9.1", IconResourceID = 400)]
     [GuidAttribute(Guids.guidSassyStudioPkgString)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideOptionPage(typeof(ScssOptions), "Sassy Studio", "General", 101, 102, true, new[] { "CSS", "SCSS" })]
     [ProvideLanguageService(typeof(ScssLanguageService), "SCSS", 100)]
-    [ProvideLanguageExtension(typeof(ScssLanguageService), ".scss")]
+    //[ProvideLanguageExtension(typeof(ScssLanguageService), ".scss")]
     public sealed class SassyStudioPackage : Package
     {
         readonly CancellationTokenSource CancellationTokens = new CancellationTokenSource();

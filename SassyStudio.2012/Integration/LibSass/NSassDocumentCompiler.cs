@@ -43,12 +43,7 @@ namespace SassyStudio.Integration.LibSass
             if (!string.IsNullOrWhiteSpace(Options.CompilationIncludePaths) && Directory.Exists(Options.CompilationIncludePaths))
                 includePaths = includePaths.Concat(Options.CompilationIncludePaths.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
 
-            // make paths relative and with href style slashes
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var sourceRelative = source.FullName.Replace(currentDirectory, "").Replace(Path.DirectorySeparatorChar.ToString(), "/");
-            var mapRelative = (output.FullName + ".map").Replace(currentDirectory, "").Replace(Path.DirectorySeparatorChar.ToString(), "/");
-
-            var result = Compiler.CompileFile(sourceRelative, sourceMapPath: mapRelative, sourceComments: DetermineSourceCommentsMode(Options), precision: Options.Precision, additionalIncludePaths: includePaths);
+            var result = Compiler.CompileFile(source.FullName, sourceMapPath: Options.GenerateSourceMaps ? output.FullName + ".map" : null, includeSourceComments: Options.IncludeSourceComments, precision: Options.Precision, additionalIncludePaths: includePaths);
             var css = result.CSS;
             var sourceMap = result.SourceMap;
             InteropHelper.CheckOut(output.FullName);
@@ -63,15 +58,6 @@ namespace SassyStudio.Integration.LibSass
                 InteropHelper.CheckOut(output.FullName + ".map");
                 File.WriteAllText(output.FullName + ".map", sourceMap, UTF8_ENCODING);
             }
-        }
-
-        private static SourceCommentsMode DetermineSourceCommentsMode(ScssOptions options)
-        {
-            return options.GenerateSourceMaps 
-                ? SourceCommentsMode.SourceMaps 
-                : options.IncludeSourceComments 
-                    ? SourceCommentsMode.Default 
-                    : SourceCommentsMode.None;
         }
 
         private DirectoryInfo DetermineSaveDirectory(FileInfo source)
