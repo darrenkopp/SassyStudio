@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:sdk="http://schemas.microsoft.com/developer/vstemplate-sdkextension/2010">
   <TemplateData>
-    <Name>SASS File</Name>
-    <Description>Adds a new SASS document file to the project</Description>
+    <Name>Sass File</Name>
+    <Description>Adds a new Sass document file to the project</Description>
     <Icon>sassy-72.png</Icon>
     <ProjectType>VisualBasic</ProjectType>
     <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>

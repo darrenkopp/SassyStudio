@@ -41,8 +41,8 @@ namespace SassyStudio.Editor.Intellisense
         public CompletionSet Compile(ITrackingSpan span, IEnumerable<ICompletionValue> values)
         {
             return new CompletionSet(
-                moniker: "SASS",
-                displayName: "SASS",
+                moniker: "Sass",
+                displayName: "Sass",
                 applicableTo: span,
                 completions: new LinkedList<Completion>(Transform(values)).OrderBy(x => x.DisplayText, StringComparer.OrdinalIgnoreCase),
                 completionBuilders: null

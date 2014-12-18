@@ -1,7 +1,7 @@
 # SassyStudio
 
 SassyStudio provides a small amount of integration with Visual Studio to the experience using
-SASS / SCSS a bit friendlier. Here's what we provide so far:
+Sass / SCSS a bit friendlier. Here's what we provide so far:
 
 - Syntax Highlighting
 - Outlining
