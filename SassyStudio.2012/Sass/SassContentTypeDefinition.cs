@@ -10,7 +10,7 @@ namespace SassyStudio.Sass
 {
     public class SassContentTypeDefinition
     {
-        public const string SassContentType = "SASS";
+        public const string SassContentType = "Sass";
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [Export(typeof(ContentTypeDefinition))]
