@@ -19,7 +19,7 @@ namespace SassyStudio.Scss.Classifications
         public ScssXmlDocumentationComment()
             : base(foreground: true)
         {
-            DisplayName = "SCSS Xml Doc Comment";
+            DisplayName = "SCSS XML Doc Comment";
             ForegroundCustomizable = true;
         }
 
