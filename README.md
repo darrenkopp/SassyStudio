@@ -1,3 +1,5 @@
+_Unfortunately, I don't have access to VS2012 anymore so I can't really contribute any improvements unless I can find a maintainer._
+
 # SassyStudio
 
 SassyStudio provides a small amount of integration with Visual Studio to the experience using
