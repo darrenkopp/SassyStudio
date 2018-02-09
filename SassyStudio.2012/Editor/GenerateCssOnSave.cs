@@ -144,14 +144,17 @@ namespace SassyStudio.Editor
                 Logger.Log("Beginning compile: " + path);
 
             var source = new FileInfo(path);
+            //Commented out; having issues with GMT vs BST when saving
+            //'time' is always an hour behind source.LastWriteTime
+
             // file is stale, likely another request coming in
-            if (time < source.LastWriteTime)
+            /*if (time < source.LastWriteTime)
             {
                 if (Options.IsDebugLoggingEnabled)
                     Logger.Log("Ignoring compile due to stale document.");
 
                 return;
-            }
+            }*/
 
             var filename = Path.GetFileNameWithoutExtension(source.Name);
             var document = new FileInfo(path);

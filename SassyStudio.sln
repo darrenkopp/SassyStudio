@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.2012", "SassyStudio.2012\SassyStudio.2012.csproj", "{8185CB00-8C58-41F1-BF06-7E87F470AD4F}"
-EndProject
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B3C680D-4CBE-412B-8690-3B6C70679E2B}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.md = LICENSE.md
@@ -12,16 +12,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ThirdPartyLicenses.md = ThirdPartyLicenses.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Compiler", "SassyStudio.Compiler\SassyStudio.Compiler.csproj", "{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Interfaces", "SassyStudio.Interfaces\SassyStudio.Interfaces.csproj", "{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E6948276-76CB-4EE0-A50A-BA27303992C8}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.2012", "SassyStudio.2012\SassyStudio.2012.csproj", "{8185CB00-8C58-41F1-BF06-7E87F470AD4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Compiler", "SassyStudio.Compiler\SassyStudio.Compiler.csproj", "{2BF67266-400E-40A6-8BA6-4F3BA0DA389F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.Interfaces", "SassyStudio.Interfaces\SassyStudio.Interfaces.csproj", "{049B1E7C-D2B6-45F2-B1A1-BF2A54181925}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SassyStudio.ItemTemplates", "SassyStudio.ItemTemplates\SassyStudio.ItemTemplates.csproj", "{76DECEA8-880D-4792-AA7E-94CED3F4E985}"
 EndProject
